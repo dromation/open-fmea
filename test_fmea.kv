@@ -1,0 +1,52 @@
+#:import KivyLexer kivy.extras.highlight.KivyLexer
+#:import Factory kivy.factory.Factory
+
+MDBoxLayout:
+    screen_manager: sm
+    toolbar: toolbar
+    MDTopAppBar:
+        id: toolbar
+        use_overflow: True
+        #text: "Simple OpenCV"        
+        pos_hint: {"center_x": .5, "center_y": 0.9}
+        size_hint_x: 1
+        size_hint_y: 0.1
+        left_action_items: [["home"],["menu", lambda x: app.callback(x)],["file", lambda x: app.file_manager_open()]]
+        md_bg_color: app.theme_cls.primary_color
+
+    ScreenManager:
+        id: sm
+        size_hint: 1, 0.9
+        pos_hint: {"center_x": .5, "center_y": 0.5}
+        
+        MDScreen:
+            id: FMEAtable
+
+            MDBottomNavigation:
+                #color
+                #panel_color: 0,0,1,.5
+                MDBottomNavigationItem:
+                    id: fmea_seperate
+
+                    name: 'fmea table'
+                    text: "FMEA Seperate Tabs"
+                    icon: 'table-column'
+                    
+                
+                    MDTabs:w
+                        Tab:
+                            title: "tab1"
+                        Tab:
+                            title: "tab1"
+
+
+                MDBottomNavigationItem:
+                    id: fmea_table
+
+                    name: 'fmea table'
+                    text: "FMEA Table"
+                    icon: 'table-large'
+                    
+                
+                    MDFloatLayout:
+                        pos_hint: {"center_x": .5, "center_y": 0.5}
