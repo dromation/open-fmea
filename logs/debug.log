@@ -1,0 +1,25 @@
+2024-06-05 06:52:18,920 - app - INFO - Application started
+2024-06-05 06:52:18,922 - error - ERROR - This is an error message
+2024-06-05 06:52:18,922 - warning - WARNING - This is a warning message
+2024-06-05 06:52:18,922 - info - INFO - This is an informational message
+2024-06-05 06:52:18,923 - debug - DEBUG - This is a debug message
+2024-06-05 06:52:18,993 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-05 06:52:18,993 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-05 06:52:18,993 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 989
+2024-06-05 06:52:19,011 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-05 06:52:19,011 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-05 06:52:19,011 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 159
+2024-06-05 06:52:19,013 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-05 06:52:19,013 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-05 06:52:19,014 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 1141
+2024-06-05 06:52:19,016 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-05 06:52:19,016 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-05 06:52:19,016 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 405
+2024-06-05 06:52:19,017 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-05 06:52:19,018 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-05 06:52:19,018 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 324
+2024-06-05 06:52:19,018 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-05 06:52:19,018 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-05 06:52:19,018 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 347
+2024-06-05 06:52:19,032 - info - INFO - Database initialized
+2024-06-05 06:52:19,033 - app - INFO - FMEA Application initialized

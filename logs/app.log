@@ -1,0 +1,382 @@
+Application started
+2024-06-03 12:21:24,677 - app - INFO - Application started
+2024-06-03 12:21:24,677 - error - ERROR - This is an error message
+2024-06-03 12:21:24,677 - warning - WARNING - This is a warning message
+2024-06-03 12:21:24,678 - info - INFO - This is an informational message
+2024-06-03 12:21:24,678 - debug - DEBUG - This is a debug message
+2024-06-03 12:21:25,098 - info - INFO - Database initialized
+FMEA Application initialized
+2024-06-03 12:21:25,099 - app - INFO - FMEA Application initialized
+2024-06-03 12:21:38,773 - info - INFO - Default table created
+2024-06-03 12:21:44,159 - info - INFO - File closed
+2024-06-03 12:21:54,967 - error - ERROR - Failed to open file: C:/Users/janez/Documents/org/apps/betas/openeqms/v02/open_eqms/open_fmea/Xfmea/test.xml, Error: wrong # args: should be ".!entry49 insert index text"
+2024-06-03 12:22:13,808 - info - INFO - Insert Table function called
+2024-06-03 12:22:27,889 - info - INFO - File closed
+Application started
+2024-06-03 12:35:32,831 - app - INFO - Application started
+2024-06-03 12:35:32,832 - error - ERROR - This is an error message
+2024-06-03 12:35:32,832 - warning - WARNING - This is a warning message
+2024-06-03 12:35:32,832 - info - INFO - This is an informational message
+2024-06-03 12:35:32,832 - debug - DEBUG - This is a debug message
+2024-06-03 12:35:33,299 - info - INFO - Database initialized
+FMEA Application initialized
+2024-06-03 12:35:33,301 - app - INFO - FMEA Application initialized
+2024-06-03 12:35:44,965 - info - INFO - File opened: C:/Users/janez/Documents/org/apps/betas/openeqms/v02/open_eqms/open_fmea/Xfmea/test.xml
+2024-06-03 12:38:12,265 - info - INFO - File saved: C:/Users/janez/Documents/org/apps/betas/openeqms/v02/open_eqms/open_fmea/Xfmea/test.xml
+2024-06-03 12:38:17,190 - info - INFO - File closed
+Application started
+2024-06-03 13:35:24,965 - app - INFO - Application started
+2024-06-03 13:35:24,965 - error - ERROR - This is an error message
+2024-06-03 13:35:24,967 - warning - WARNING - This is a warning message
+2024-06-03 13:35:24,967 - info - INFO - This is an informational message
+2024-06-03 13:35:24,967 - debug - DEBUG - This is a debug message
+2024-06-03 13:35:25,425 - info - INFO - Database initialized
+FMEA Application initialized
+2024-06-03 13:35:25,426 - app - INFO - FMEA Application initialized
+2024-06-03 13:35:34,466 - info - INFO - File opened: C:/Users/janez/Documents/org/apps/betas/openeqms/v02/open_eqms/open_fmea/Xfmea/test.xml
+2024-06-03 13:36:09,691 - info - INFO - File saved: C:/Users/janez/Documents/org/apps/betas/openeqms/v02/open_eqms/open_fmea/Xfmea/test.xml
+2024-06-03 13:36:15,272 - info - INFO - File closed
+Application started
+2024-06-03 18:23:56,797 - app - INFO - Application started
+2024-06-03 18:23:56,797 - error - ERROR - This is an error message
+2024-06-03 18:23:56,797 - warning - WARNING - This is a warning message
+2024-06-03 18:23:56,797 - info - INFO - This is an informational message
+2024-06-03 18:23:56,797 - debug - DEBUG - This is a debug message
+2024-06-03 18:23:57,304 - info - INFO - Database initialized
+FMEA Application initialized
+2024-06-03 18:23:57,304 - app - INFO - FMEA Application initialized
+Application started
+2024-06-03 18:33:25,882 - app - INFO - Application started
+2024-06-03 18:33:25,897 - error - ERROR - This is an error message
+2024-06-03 18:33:25,897 - warning - WARNING - This is a warning message
+2024-06-03 18:33:25,897 - info - INFO - This is an informational message
+2024-06-03 18:33:25,897 - debug - DEBUG - This is a debug message
+2024-06-03 18:33:26,295 - info - INFO - Database initialized
+FMEA Application initialized
+2024-06-03 18:33:26,295 - app - INFO - FMEA Application initialized
+2024-06-03 18:33:51,744 - info - INFO - File closed
+Application started
+2024-06-03 18:43:43,904 - app - INFO - Application started
+2024-06-03 18:43:43,904 - error - ERROR - This is an error message
+2024-06-03 18:43:43,904 - warning - WARNING - This is a warning message
+2024-06-03 18:43:43,904 - info - INFO - This is an informational message
+2024-06-03 18:43:43,904 - debug - DEBUG - This is a debug message
+2024-06-03 18:43:44,313 - info - INFO - Database initialized
+FMEA Application initialized
+2024-06-03 18:43:44,313 - app - INFO - FMEA Application initialized
+2024-06-03 18:43:51,553 - error - ERROR - Failed to open file: C:/Users/janez/Documents/org/apps/betas/openeqms/v02/open_eqms/open_fmea/Xfmea/test.xml, Error: wrong # args: should be ".!treeview set item ?column ?value??"
+2024-06-03 18:44:35,990 - info - INFO - Toggled toolbar visibility
+2024-06-03 18:44:46,256 - info - INFO - File closed
+2024-06-03 18:45:13,706 - info - INFO - File closed
+Application started
+2024-06-03 18:51:34,114 - app - INFO - Application started
+2024-06-03 18:51:34,114 - error - ERROR - This is an error message
+2024-06-03 18:51:34,114 - warning - WARNING - This is a warning message
+2024-06-03 18:51:34,114 - info - INFO - This is an informational message
+2024-06-03 18:51:34,114 - debug - DEBUG - This is a debug message
+2024-06-03 18:51:34,201 - info - INFO - Database initialized
+FMEA Application initialized
+2024-06-03 18:51:34,201 - app - INFO - FMEA Application initialized
+2024-06-03 18:51:40,113 - info - INFO - Default table created
+2024-06-03 18:51:56,965 - debug - DEBUG - Undo performed
+2024-06-03 18:52:06,725 - debug - DEBUG - Undo performed
+Application started
+2024-06-03 18:54:04,533 - app - INFO - Application started
+2024-06-03 18:54:04,533 - error - ERROR - This is an error message
+2024-06-03 18:54:04,540 - warning - WARNING - This is a warning message
+2024-06-03 18:54:04,540 - info - INFO - This is an informational message
+2024-06-03 18:54:04,540 - debug - DEBUG - This is a debug message
+2024-06-03 18:54:04,623 - info - INFO - Database initialized
+FMEA Application initialized
+2024-06-03 18:54:04,624 - app - INFO - FMEA Application initialized
+2024-06-03 18:54:13,387 - info - INFO - File opened: C:/Users/janez/Documents/org/apps/betas/openeqms/v02/open_eqms/open_fmea/Xfmea/test.xml
+2024-06-03 18:54:44,498 - info - INFO - File closed
+Application started
+2024-06-03 18:57:38,891 - app - INFO - Application started
+2024-06-03 18:57:38,891 - error - ERROR - This is an error message
+2024-06-03 18:57:38,891 - warning - WARNING - This is a warning message
+2024-06-03 18:57:38,891 - info - INFO - This is an informational message
+2024-06-03 18:57:38,891 - debug - DEBUG - This is a debug message
+2024-06-03 18:57:38,976 - info - INFO - Database initialized
+FMEA Application initialized
+2024-06-03 18:57:38,977 - app - INFO - FMEA Application initialized
+2024-06-03 18:57:45,669 - info - INFO - Default table created
+2024-06-03 18:58:06,424 - error - ERROR - Failed to save file: C:/Users/janez/Documents/org/apps/betas/openeqms/v02/open_eqms/open_fmea/Xfmea/test2.xml, Error: cannot serialize 30 (type int)
+2024-06-03 18:58:29,819 - debug - DEBUG - Undo performed
+2024-06-03 18:58:44,282 - error - ERROR - Failed to save file: C:/Users/janez/Documents/org/apps/betas/openeqms/v02/open_eqms/open_fmea/Xfmea/test2.xml, Error: cannot serialize 30 (type int)
+2024-06-03 18:58:56,716 - error - ERROR - Failed to save file: C:/Users/janez/Documents/org/apps/betas/openeqms/v02/open_eqms/open_fmea/Xfmea/test2.txt, Error: sequence item 12: expected str instance, int found
+2024-06-03 18:59:08,405 - info - INFO - File closed
+Application started
+2024-06-03 22:11:09,096 - app - INFO - Application started
+2024-06-03 22:11:09,096 - error - ERROR - This is an error message
+2024-06-03 22:11:09,096 - warning - WARNING - This is a warning message
+2024-06-03 22:11:09,096 - info - INFO - This is an informational message
+2024-06-03 22:11:09,096 - debug - DEBUG - This is a debug message
+2024-06-03 22:11:09,225 - info - INFO - Database initialized
+FMEA Application initialized
+2024-06-03 22:11:09,225 - app - INFO - FMEA Application initialized
+2024-06-03 22:11:18,339 - info - INFO - Default table created
+2024-06-03 22:11:34,929 - error - ERROR - Failed to save file: C:/Users/janez/Documents/org/apps/betas/openeqms/v02/open_eqms/open_fmea/Xfmea/test2.xml, Error: cannot serialize 30 (type int)
+2024-06-03 22:12:06,274 - info - INFO - File closed
+Application started
+2024-06-03 22:16:29,995 - app - INFO - Application started
+2024-06-03 22:16:29,995 - error - ERROR - This is an error message
+2024-06-03 22:16:29,995 - warning - WARNING - This is a warning message
+2024-06-03 22:16:29,995 - info - INFO - This is an informational message
+2024-06-03 22:16:29,995 - debug - DEBUG - This is a debug message
+Application started
+2024-06-04 11:07:50,805 - app - INFO - Application started
+2024-06-04 11:07:50,805 - error - ERROR - This is an error message
+2024-06-04 11:07:50,805 - warning - WARNING - This is a warning message
+2024-06-04 11:07:50,805 - info - INFO - This is an informational message
+2024-06-04 11:07:50,805 - debug - DEBUG - This is a debug message
+Application started
+2024-06-04 11:08:18,449 - app - INFO - Application started
+2024-06-04 11:08:18,449 - error - ERROR - This is an error message
+2024-06-04 11:08:18,449 - warning - WARNING - This is a warning message
+2024-06-04 11:08:18,452 - info - INFO - This is an informational message
+2024-06-04 11:08:18,452 - debug - DEBUG - This is a debug message
+Application started
+2024-06-04 11:22:53,040 - app - INFO - Application started
+2024-06-04 11:22:53,040 - error - ERROR - This is an error message
+2024-06-04 11:22:53,040 - warning - WARNING - This is a warning message
+2024-06-04 11:22:53,040 - info - INFO - This is an informational message
+2024-06-04 11:22:53,040 - debug - DEBUG - This is a debug message
+2024-06-04 11:22:53,204 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:22:53,204 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:22:53,204 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 989
+Application started
+2024-06-04 11:23:10,236 - app - INFO - Application started
+2024-06-04 11:23:10,236 - error - ERROR - This is an error message
+2024-06-04 11:23:10,236 - warning - WARNING - This is a warning message
+2024-06-04 11:23:10,236 - info - INFO - This is an informational message
+2024-06-04 11:23:10,236 - debug - DEBUG - This is a debug message
+2024-06-04 11:23:10,352 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:23:10,352 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:23:10,353 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 989
+2024-06-04 11:23:10,368 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:23:10,369 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:23:10,369 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 159
+2024-06-04 11:23:10,371 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:23:10,371 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:23:10,371 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 1141
+2024-06-04 11:23:10,373 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:23:10,375 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:23:10,375 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 405
+2024-06-04 11:23:10,376 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:23:10,376 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:23:10,377 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 324
+2024-06-04 11:23:10,378 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:23:10,378 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:23:10,379 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 347
+2024-06-04 11:23:10,399 - info - INFO - Database initialized
+FMEA Application initialized
+2024-06-04 11:23:10,399 - app - INFO - FMEA Application initialized
+2024-06-04 11:23:16,673 - info - INFO - Toggled toolbar visibility
+Application started
+2024-06-04 11:26:59,624 - app - INFO - Application started
+2024-06-04 11:26:59,624 - error - ERROR - This is an error message
+2024-06-04 11:26:59,624 - warning - WARNING - This is a warning message
+2024-06-04 11:26:59,624 - info - INFO - This is an informational message
+2024-06-04 11:26:59,624 - debug - DEBUG - This is a debug message
+Application started
+2024-06-04 11:38:30,547 - app - INFO - Application started
+2024-06-04 11:38:30,547 - error - ERROR - This is an error message
+2024-06-04 11:38:30,547 - warning - WARNING - This is a warning message
+2024-06-04 11:38:30,547 - info - INFO - This is an informational message
+2024-06-04 11:38:30,547 - debug - DEBUG - This is a debug message
+Application started
+2024-06-04 11:41:17,259 - app - INFO - Application started
+2024-06-04 11:41:17,259 - error - ERROR - This is an error message
+2024-06-04 11:41:17,259 - warning - WARNING - This is a warning message
+2024-06-04 11:41:17,259 - info - INFO - This is an informational message
+2024-06-04 11:41:17,259 - debug - DEBUG - This is a debug message
+2024-06-04 11:41:17,370 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:41:17,371 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:41:17,371 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 989
+2024-06-04 11:41:17,388 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:41:17,389 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:41:17,389 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 159
+2024-06-04 11:41:17,391 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:41:17,391 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:41:17,391 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 1141
+2024-06-04 11:41:17,393 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:41:17,393 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:41:17,393 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 405
+2024-06-04 11:41:17,395 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:41:17,395 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:41:17,395 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 324
+2024-06-04 11:41:17,397 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:41:17,397 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:41:17,397 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 347
+2024-06-04 11:41:17,409 - info - INFO - Database initialized
+FMEA Application initialized
+2024-06-04 11:41:17,410 - app - INFO - FMEA Application initialized
+Application started
+2024-06-04 11:43:50,304 - app - INFO - Application started
+2024-06-04 11:43:50,304 - error - ERROR - This is an error message
+2024-06-04 11:43:50,304 - warning - WARNING - This is a warning message
+2024-06-04 11:43:50,304 - info - INFO - This is an informational message
+2024-06-04 11:43:50,304 - debug - DEBUG - This is a debug message
+2024-06-04 11:43:50,417 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:43:50,417 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:43:50,418 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 989
+2024-06-04 11:43:50,432 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:43:50,433 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:43:50,433 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 159
+2024-06-04 11:43:50,435 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:43:50,435 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:43:50,435 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 1141
+2024-06-04 11:43:50,437 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:43:50,437 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:43:50,438 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 405
+2024-06-04 11:43:50,439 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:43:50,439 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:43:50,440 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 324
+2024-06-04 11:43:50,442 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:43:50,442 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:43:50,442 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 347
+Application started
+2024-06-04 11:44:28,920 - app - INFO - Application started
+2024-06-04 11:44:28,936 - error - ERROR - This is an error message
+2024-06-04 11:44:28,936 - warning - WARNING - This is a warning message
+2024-06-04 11:44:28,936 - info - INFO - This is an informational message
+2024-06-04 11:44:28,936 - debug - DEBUG - This is a debug message
+2024-06-04 11:44:29,037 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:44:29,038 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:44:29,038 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 989
+2024-06-04 11:44:29,052 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:44:29,052 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:44:29,052 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 159
+2024-06-04 11:44:29,054 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:44:29,054 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:44:29,054 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 1141
+2024-06-04 11:44:29,057 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:44:29,057 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:44:29,058 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 405
+2024-06-04 11:44:29,059 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:44:29,059 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:44:29,059 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 324
+2024-06-04 11:44:29,061 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 11:44:29,061 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 11:44:29,061 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 347
+2024-06-04 11:44:29,086 - info - INFO - Database initialized
+FMEA Application initialized
+2024-06-04 11:44:29,092 - app - INFO - FMEA Application initialized
+Application started
+2024-06-04 12:14:19,952 - app - INFO - Application started
+2024-06-04 12:14:19,952 - error - ERROR - This is an error message
+2024-06-04 12:14:19,953 - warning - WARNING - This is a warning message
+2024-06-04 12:14:19,953 - info - INFO - This is an informational message
+2024-06-04 12:14:19,953 - debug - DEBUG - This is a debug message
+Application started
+2024-06-04 12:14:42,292 - app - INFO - Application started
+2024-06-04 12:14:42,292 - error - ERROR - This is an error message
+2024-06-04 12:14:42,292 - warning - WARNING - This is a warning message
+2024-06-04 12:14:42,308 - info - INFO - This is an informational message
+2024-06-04 12:14:42,308 - debug - DEBUG - This is a debug message
+Application started
+2024-06-04 12:14:56,195 - app - INFO - Application started
+2024-06-04 12:14:56,195 - error - ERROR - This is an error message
+2024-06-04 12:14:56,195 - warning - WARNING - This is a warning message
+2024-06-04 12:14:56,195 - info - INFO - This is an informational message
+2024-06-04 12:14:56,195 - debug - DEBUG - This is a debug message
+Application started
+2024-06-04 12:15:26,401 - app - INFO - Application started
+2024-06-04 12:15:26,401 - error - ERROR - This is an error message
+2024-06-04 12:15:26,401 - warning - WARNING - This is a warning message
+2024-06-04 12:15:26,401 - info - INFO - This is an informational message
+2024-06-04 12:15:26,401 - debug - DEBUG - This is a debug message
+Application started
+2024-06-04 13:24:55,071 - app - INFO - Application started
+2024-06-04 13:24:55,071 - error - ERROR - This is an error message
+2024-06-04 13:24:55,071 - warning - WARNING - This is a warning message
+2024-06-04 13:24:55,071 - info - INFO - This is an informational message
+2024-06-04 13:24:55,071 - debug - DEBUG - This is a debug message
+Application started
+2024-06-04 13:25:58,196 - app - INFO - Application started
+2024-06-04 13:25:58,201 - error - ERROR - This is an error message
+2024-06-04 13:25:58,201 - warning - WARNING - This is a warning message
+2024-06-04 13:25:58,202 - info - INFO - This is an informational message
+2024-06-04 13:25:58,202 - debug - DEBUG - This is a debug message
+Application started
+2024-06-04 13:26:23,626 - app - INFO - Application started
+2024-06-04 13:26:23,636 - error - ERROR - This is an error message
+2024-06-04 13:26:23,636 - warning - WARNING - This is a warning message
+2024-06-04 13:26:23,636 - info - INFO - This is an informational message
+2024-06-04 13:26:23,637 - debug - DEBUG - This is a debug message
+2024-06-04 13:26:23,772 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 13:26:23,772 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 13:26:23,773 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 989
+2024-06-04 13:26:23,791 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 13:26:23,791 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 13:26:23,792 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 159
+2024-06-04 13:26:23,794 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 13:26:23,795 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 13:26:23,795 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 1141
+2024-06-04 13:26:23,796 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 13:26:23,796 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 13:26:23,796 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 745
+2024-06-04 13:26:23,799 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 13:26:23,799 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 13:26:23,799 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 405
+2024-06-04 13:26:23,799 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 13:26:23,799 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 13:26:23,802 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 347
+2024-06-04 13:26:23,804 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-04 13:26:23,804 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-04 13:26:23,804 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 324
+2024-06-04 13:26:23,830 - info - INFO - Database initialized
+FMEA Application initialized
+2024-06-04 13:26:23,832 - app - INFO - FMEA Application initialized
+Application started
+2024-06-05 06:46:24,919 - app - INFO - Application started
+2024-06-05 06:46:24,919 - error - ERROR - This is an error message
+2024-06-05 06:46:24,919 - warning - WARNING - This is a warning message
+2024-06-05 06:46:24,919 - info - INFO - This is an informational message
+2024-06-05 06:46:24,919 - debug - DEBUG - This is a debug message
+Application started
+2024-06-05 06:47:57,283 - app - INFO - Application started
+2024-06-05 06:47:57,283 - error - ERROR - This is an error message
+2024-06-05 06:47:57,283 - warning - WARNING - This is a warning message
+2024-06-05 06:47:57,283 - info - INFO - This is an informational message
+2024-06-05 06:47:57,283 - debug - DEBUG - This is a debug message
+2024-06-05 06:47:57,429 - info - INFO - Database initialized
+FMEA Application initialized
+2024-06-05 06:47:57,430 - app - INFO - FMEA Application initialized
+Application started
+2024-06-05 06:50:37,691 - app - INFO - Application started
+2024-06-05 06:50:37,691 - error - ERROR - This is an error message
+2024-06-05 06:50:37,691 - warning - WARNING - This is a warning message
+2024-06-05 06:50:37,691 - info - INFO - This is an informational message
+2024-06-05 06:50:37,691 - debug - DEBUG - This is a debug message
+2024-06-05 06:50:37,761 - info - INFO - Database initialized
+FMEA Application initialized
+2024-06-05 06:50:37,762 - app - INFO - FMEA Application initialized
+Application started
+2024-06-05 06:52:18,920 - app - INFO - Application started
+2024-06-05 06:52:18,922 - error - ERROR - This is an error message
+2024-06-05 06:52:18,922 - warning - WARNING - This is a warning message
+2024-06-05 06:52:18,922 - info - INFO - This is an informational message
+2024-06-05 06:52:18,923 - debug - DEBUG - This is a debug message
+2024-06-05 06:52:18,993 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-05 06:52:18,993 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-05 06:52:18,993 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 989
+2024-06-05 06:52:19,011 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-05 06:52:19,011 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-05 06:52:19,011 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 159
+2024-06-05 06:52:19,013 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-05 06:52:19,013 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-05 06:52:19,014 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 1141
+2024-06-05 06:52:19,016 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-05 06:52:19,016 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-05 06:52:19,016 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 405
+2024-06-05 06:52:19,017 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-05 06:52:19,018 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-05 06:52:19,018 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 324
+2024-06-05 06:52:19,018 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2024-06-05 06:52:19,018 - PIL.PngImagePlugin - DEBUG - STREAM b'pHYs' 41 9
+2024-06-05 06:52:19,018 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 62 347
+2024-06-05 06:52:19,032 - info - INFO - Database initialized
+FMEA Application initialized
+2024-06-05 06:52:19,033 - app - INFO - FMEA Application initialized

@@ -1,0 +1,79 @@
+2024-06-04 13:33:10,991:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2024-06-04 13:33:10,991:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2024-06-04 13:33:10,991:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2024-06-04 13:33:10,991:WARNING:
+'cuml' is a soft dependency and not included in the pycaret installation. Please run: `pip install cuml` to install.
+2024-06-04 13:33:11,179:ERROR:
+'fugue' is a soft dependency and not included in the pycaret installation. Please run: `pip install fugue` to install.
+Alternately, you can install this by running `pip install pycaret[parallel]`
+NoneType: None
+2024-06-04 13:33:11,482:WARNING:
+'prophet' is a soft dependency and not included in the pycaret installation. Please run: `pip install prophet` to install.
+2024-06-04 13:33:33,518:WARNING:<frozen importlib._bootstrap>:914: ImportWarning:
+
+_SixMetaPathImporter.find_spec() not found; falling back to find_module()
+
+
+2024-06-04 13:33:33,547:WARNING:C:\Users\janez\Documents\org\apps\virt\lib\site-packages\torch\distributed\_shard\checkpoint\__init__.py:8: DeprecationWarning:
+
+torch.distributed._shard.checkpoint will be deprecated, use torch.distributed.checkpoint instead
+
+
+2024-06-04 13:33:33,552:WARNING:C:\Users\janez\Documents\org\apps\virt\lib\site-packages\torch\distributed\_sharded_tensor\__init__.py:8: DeprecationWarning:
+
+torch.distributed._sharded_tensor will be deprecated, use torch.distributed._shard.sharded_tensor instead
+
+
+2024-06-04 13:33:33,556:WARNING:C:\Users\janez\Documents\org\apps\virt\lib\site-packages\torch\distributed\_sharding_spec\__init__.py:8: DeprecationWarning:
+
+torch.distributed._sharding_spec will be deprecated, use torch.distributed._shard.sharding_spec instead
+
+
+2024-06-04 13:33:37,765:WARNING:C:\Users\janez\Documents\org\apps\virt\lib\site-packages\torchaudio\backend\utils.py:74: UserWarning:
+
+No audio backend is available.
+
+
+2024-06-04 13:33:37,912:WARNING:C:\Users\janez\Documents\org\apps\virt\lib\site-packages\torchvision\transforms\_functional_pil.py:242: DeprecationWarning:
+
+BILINEAR is deprecated and will be removed in Pillow 10 (2023-07-01). Use Resampling.BILINEAR instead.
+
+
+2024-06-04 13:33:37,912:WARNING:C:\Users\janez\Documents\org\apps\virt\lib\site-packages\torchvision\transforms\_functional_pil.py:286: DeprecationWarning:
+
+NEAREST is deprecated and will be removed in Pillow 10 (2023-07-01). Use Resampling.NEAREST or Dither.NONE instead.
+
+
+2024-06-04 13:33:37,912:WARNING:C:\Users\janez\Documents\org\apps\virt\lib\site-packages\torchvision\transforms\_functional_pil.py:319: DeprecationWarning:
+
+BICUBIC is deprecated and will be removed in Pillow 10 (2023-07-01). Use Resampling.BICUBIC instead.
+
+
+2024-06-04 13:33:38,064:WARNING:C:\Users\janez\Documents\org\apps\virt\lib\site-packages\torchvision\datapoints\__init__.py:12: UserWarning:
+
+The torchvision.datapoints and torchvision.transforms.v2 namespaces are still Beta. While we do not expect major breaking changes, some APIs may still change according to user feedback. Please submit any feedback you may have in this issue: https://github.com/pytorch/vision/issues/6753, and you can also check out https://github.com/pytorch/vision/issues/7319 to learn more about the APIs that we suspect might involve future changes. You can silence this warning by calling torchvision.disable_beta_transforms_warning().
+
+
+2024-06-04 13:33:38,115:WARNING:C:\Users\janez\Documents\org\apps\virt\lib\site-packages\torchvision\transforms\v2\__init__.py:54: UserWarning:
+
+The torchvision.datapoints and torchvision.transforms.v2 namespaces are still Beta. While we do not expect major breaking changes, some APIs may still change according to user feedback. Please submit any feedback you may have in this issue: https://github.com/pytorch/vision/issues/6753, and you can also check out https://github.com/pytorch/vision/issues/7319 to learn more about the APIs that we suspect might involve future changes. You can silence this warning by calling torchvision.disable_beta_transforms_warning().
+
+
+2024-06-04 13:33:38,346:WARNING:<frozen importlib._bootstrap>:914: ImportWarning:
+
+_SixMetaPathImporter.find_spec() not found; falling back to find_module()
+
+
+2024-06-04 13:33:38,867:WARNING:<frozen importlib._bootstrap>:914: ImportWarning:
+
+_SixMetaPathImporter.find_spec() not found; falling back to find_module()
+
+
+2024-06-04 13:33:38,869:WARNING:<frozen importlib._bootstrap>:914: ImportWarning:
+
+_SixMetaPathImporter.find_spec() not found; falling back to find_module()
+
+
