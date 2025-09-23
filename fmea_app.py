@@ -49,8 +49,8 @@ class FMEAApp(tk.Tk):
             ("media/topbar/previous.png", self.previous_screen)]
 
         for icon_path, command in buttons_info:
-              image = Image.open(icon_path)
-              image = image.resize((30, 30), Image.Resampling.LANCZOS)
+            image = Image.open(icon_path)
+            image = image.resize((30, 30), Image.Resampling.LANCZOS)
             icon = ImageTk.PhotoImage(image)
             button = tk.Button(top_app_bar, image=icon, command=command)
             button.image = icon  # Keep a reference to avoid garbage collection
