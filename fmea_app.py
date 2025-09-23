@@ -195,17 +195,16 @@ class FMEAApp(tk.Tk):
         table_contents.insert_row(self, values, tags=self.tree.item(parent_id, "tags"))
 
     def create_default_table(self):
+        table_contents.create_table(self)
         default_data = [
             ["1", "Part A", "Characteristic 1", "Failure Mode 1", "Effect 1", "5", "", "Cause 1", "Control 1", "3", "Detection 1", "2", "30", "Action 1", "Person A", "2024-01-01", "Action Taken 1", "4", "2", "2", "16"],
             ["2", "Part B", "Characteristic 2", "Failure Mode 2", "Effect 2", "4", "", "Cause 2", "Control 2", "4", "Detection 2", "3", "48", "Action 2", "Person B", "2024-01-02", "Action Taken 2", "3", "3", "3", "27"]
         ]
-        
         self.tree.delete(*self.tree.get_children())
         for i, row in enumerate(default_data):
             tag = 'evenrow' if i % 2 == 0 else 'oddrow'
             row_id = table_contents.insert_row(self, row, tags=(tag,))
             table_contents.update_rpn(self, row_id)
-        
         messagebox.showinfo("Info", "Default table created successfully.")
         logger.info_logger.info("Default table created")
 
