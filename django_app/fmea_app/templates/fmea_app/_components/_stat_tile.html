@@ -1,0 +1,5 @@
+<section class="stat-tile {{ tile_class|default:'' }}">
+  <span class="stat-label">{{ label }}</span>
+  <strong class="stat-value">{{ value }}</strong>
+  {% if detail %}<span class="stat-detail">{{ detail }}</span>{% endif %}
+</section>

@@ -1,0 +1,69 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}Ishikawa Review - Open FMEA{% endblock %}
+{% block topbar_title %}Ishikawa Review{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>Cause Influences</h1>
+    <p class="muted">Governed cause links for Ishikawa review.</p>
+  </div>
+  <a class="button primary" href="{% url 'fmea:new_cause_influence' %}">New Influence</a>
+</div>
+
+<form class="panel compact section-block" method="get" action="{% url 'fmea:cause_influence_list' %}">
+  <div class="field-grid">
+    <label>Status
+      <select name="status">
+        <option value="">All statuses</option>
+        {% for status in statuses %}
+          <option value="{{ status.value }}" {% if status_filter == status.value %}selected{% endif %}>{{ status.name|cut:"_"|title }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Category
+      <select name="cause_category_id">
+        <option value="">All categories</option>
+        {% for category in categories %}
+          <option value="{{ category.stable_id }}" {% if category_filter == category.stable_id %}selected{% endif %}>{{ category.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <div>
+      <button class="button" type="submit">Filter</button>
+    </div>
+  </div>
+</form>
+
+<div class="table-shell">
+<table>
+  <thead>
+    <tr>
+      <th>Source</th>
+      <th>Target</th>
+      <th>Category</th>
+      <th>Status</th>
+      <th>Influence</th>
+      <th>Stable ID</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in influences %}
+    <tr>
+      <td>{{ item.influence.source_type }}<br><span class="muted">{{ item.source_label }}</span></td>
+      <td>{{ item.influence.target_type }}<br><span class="muted">{{ item.target_label }}</span></td>
+      <td>{{ item.category_name }}</td>
+      <td><span class="status">{{ item.influence.get_status_display }}</span></td>
+      <td><a href="{% url 'fmea:cause_influence_detail' item.influence.stable_id %}">{{ item.influence.influence_type }}</a></td>
+      <td><code>{{ item.influence.stable_id }}</code></td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="6" class="muted">No cause influences yet.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

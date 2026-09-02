@@ -1,0 +1,41 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}Process Characteristics - Open FMEA{% endblock %}
+{% block topbar_title %}Process Characteristics{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>Process Characteristics</h1>
+    <p class="muted">Instance-level process characteristics tied to operations.</p>
+  </div>
+  <a class="button primary" href="{% url 'fmea:new_process_characteristic' %}">New Process Characteristic</a>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Operation</th>
+      <th>Process</th>
+      <th>Default Category</th>
+      <th>Stable ID</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in process_characteristics %}
+    <tr>
+      <td><a href="{% url 'fmea:process_characteristic_detail' row.item.stable_id %}">{{ row.item.name }}</a></td>
+      <td>{{ row.item.operation }}</td>
+      <td>{{ row.item.operation.process }}</td>
+      <td>{{ row.category_name }}</td>
+      <td><code>{{ row.item.stable_id }}</code></td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="5" class="muted">No process characteristics yet.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

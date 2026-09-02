@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+db.sqlite3
+media/uploads/
+staticfiles/
+*.log
+_to_delete/

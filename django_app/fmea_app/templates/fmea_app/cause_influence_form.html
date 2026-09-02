@@ -1,0 +1,146 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}New Cause Influence - Open FMEA{% endblock %}
+{% block topbar_title %}New Cause Influence{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>New Cause Influence</h1>
+    <p class="muted">Create a governed source-to-target cause link.</p>
+  </div>
+  <a class="button" href="{% url 'fmea:cause_influence_list' %}">Cause Influences</a>
+</div>
+
+<div class="split">
+  <form class="panel compact" method="post" action="{% url 'fmea:create_cause_influence' %}">
+    {% csrf_token %}
+    <div class="field-grid">
+      <label>Source Type
+        <select name="source_type" required>
+          {% for value, label in source_types %}
+            <option value="{{ value }}" {% if source_type == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Source Stable ID
+        <input name="source_id" value="{{ source_id }}" required>
+      </label>
+      <label>Influence Type
+        <input name="influence_type" value="produces" required>
+      </label>
+    </div>
+
+    <div class="field-grid">
+      <label>Target Type
+        <select name="target_type" required>
+          {% for value, label in target_types %}
+            <option value="{{ value }}" {% if target_type == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Target Stable ID
+        <input name="target_id" value="{{ target_id }}" required>
+      </label>
+      <label>Initial Status
+        <input value="Suspected" disabled>
+      </label>
+    </div>
+
+    <div class="field-grid">
+      <label>Cause Category
+        <select name="cause_category_id">
+          <option value="">Uncategorized</option>
+          {% for category in categories %}
+            <option value="{{ category.stable_id }}">{{ category.name }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Strength
+        <input name="strength">
+      </label>
+      <label>Confidence
+        <input name="confidence" type="number" min="0" max="1" step="0.01">
+      </label>
+    </div>
+
+    <label>Source Context
+      <input name="source_context" value="FMEA">
+    </label>
+    <label>Review Note
+      <textarea name="review_note" rows="3"></textarea>
+    </label>
+    <button class="button primary" type="submit">Create Influence</button>
+  </form>
+
+  <aside class="panel stack">
+    {% if source_label %}
+      <div>
+        <h2>Preselected Source</h2>
+        <p>{{ source_type }}: {{ source_label }}</p>
+        <p><code>{{ source_id }}</code></p>
+      </div>
+    {% endif %}
+
+    {% if target_label %}
+      <div>
+        <h2>Preselected Target</h2>
+        <p>{{ target_type }}: {{ target_label }}</p>
+        <p><code>{{ target_id }}</code></p>
+      </div>
+    {% endif %}
+
+    <div>
+      <h2>Known Process Characteristics</h2>
+      <table>
+        <tbody>
+          {% for characteristic in process_characteristics %}
+          <tr><td>{{ characteristic.name }}<br><code>{{ characteristic.stable_id }}</code></td></tr>
+          {% empty %}
+          <tr><td class="muted">No process characteristics.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <h2>Known Product Characteristics</h2>
+      <table>
+        <tbody>
+          {% for characteristic in product_characteristics %}
+          <tr><td>{{ characteristic.name }}<br><code>{{ characteristic.stable_id }}</code></td></tr>
+          {% empty %}
+          <tr><td class="muted">No product characteristics.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <h2>Known Failure Causes</h2>
+      <table>
+        <tbody>
+          {% for cause in failure_causes %}
+          <tr><td>{{ cause.name }}<br><code>{{ cause.stable_id }}</code></td></tr>
+          {% empty %}
+          <tr><td class="muted">No failure causes.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <h2>Known Mechanisms</h2>
+      <table>
+        <tbody>
+          {% for mechanism in failure_mechanisms %}
+          <tr><td>{{ mechanism.name }}<br><code>{{ mechanism.stable_id }}</code></td></tr>
+          {% empty %}
+          <tr><td class="muted">No failure mechanisms.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </aside>
+</div>
+{% endblock %}

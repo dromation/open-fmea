@@ -1,0 +1,650 @@
+{
+  "document": {
+    "revision": 1,
+    "schema_version": "1.0",
+    "stable_id": "ofef:demo:fmea:brake-assembly-process",
+    "type": "FMEADocument"
+  },
+  "entities": [
+    {
+      "description": "Demo project for the first Open-FMEA vertical slice.",
+      "name": "Brake Assembly Launch",
+      "revision": 1,
+      "schema_version": "1.0",
+      "stable_id": "demo:project:brake-assembly",
+      "type": "FMEAProject"
+    },
+    {
+      "description": "",
+      "name": "Brake Caliper Assembly",
+      "part_number": "BC-DEMO-001",
+      "revision": 1,
+      "schema_version": "1.0",
+      "stable_id": "demo:product:brake-caliper",
+      "type": "Product"
+    },
+    {
+      "description": "Seal must prevent fluid leakage under operating load.",
+      "name": "Maintain hydraulic pressure",
+      "operation_id": "demo:operation:station-20",
+      "product_id": "demo:product:brake-caliper",
+      "revision": 1,
+      "schema_version": "1.0",
+      "stable_id": "demo:function:seal-fluid-pressure",
+      "type": "Function"
+    },
+    {
+      "description": "",
+      "name": "Assembly Process",
+      "process_code": "ASM-20",
+      "revision": 1,
+      "schema_version": "1.0",
+      "stable_id": "demo:process:assembly",
+      "type": "Process"
+    },
+    {
+      "description": "",
+      "name": "Install piston seal",
+      "process_id": "demo:process:assembly",
+      "revision": 1,
+      "schema_version": "1.0",
+      "sequence": "20",
+      "stable_id": "demo:operation:station-20",
+      "type": "Operation"
+    },
+    {
+      "attributes": {
+        "nominal": "controlled manual insertion",
+        "observed": "operator-dependent variation"
+      },
+      "cause_category_id": "cause-category:ishikawa-5me:method",
+      "description": "Force applied while seating the piston seal.",
+      "name": "Seal installation force",
+      "operation_id": "demo:operation:station-20",
+      "revision": 1,
+      "schema_version": "1.0",
+      "stable_id": "demo:process-characteristic:installation-force",
+      "type": "ProcessCharacteristic"
+    },
+    {
+      "description": "",
+      "function_id": "demo:function:seal-fluid-pressure",
+      "name": "Leak rate below customer limit",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_reference": "REQ-DEMO-042",
+      "stable_id": "demo:requirement:leak-rate",
+      "type": "Requirement"
+    },
+    {
+      "description": "",
+      "is_special": true,
+      "name": "Seal seat surface condition",
+      "primary_classification_id": null,
+      "requirement_id": "demo:requirement:leak-rate",
+      "revision": 1,
+      "schema_version": "1.0",
+      "stable_id": "demo:characteristic:seal-seat-condition",
+      "type": "ProductCharacteristic"
+    },
+    {
+      "description": "Piston seal does not hold pressure after final assembly.",
+      "fmea_id": "demo:fmea:brake-assembly-process",
+      "function_id": "demo:function:seal-fluid-pressure",
+      "name": "Seal leaks after assembly",
+      "requirement_id": "demo:requirement:leak-rate",
+      "revision": 1,
+      "schema_version": "1.0",
+      "stable_id": "demo:failure-mode:seal-leak",
+      "type": "FailureMode"
+    },
+    {
+      "description": "",
+      "failure_mode_id": "demo:failure-mode:seal-leak",
+      "name": "Reduced braking performance",
+      "revision": 1,
+      "schema_version": "1.0",
+      "stable_id": "demo:effect:loss-of-braking",
+      "type": "FailureEffect"
+    },
+    {
+      "description": "",
+      "failure_mode_id": "demo:failure-mode:seal-leak",
+      "name": "Seal nicked during installation",
+      "revision": 1,
+      "schema_version": "1.0",
+      "stable_id": "demo:cause:seal-nicked",
+      "type": "FailureCause"
+    },
+    {
+      "description": "",
+      "failure_cause_id": "demo:cause:seal-nicked",
+      "name": "Sharp edge contacts seal lip",
+      "revision": 1,
+      "schema_version": "1.0",
+      "stable_id": "demo:mechanism:sharp-edge-contact",
+      "type": "FailureMechanism"
+    },
+    {
+      "control_type": "prevention",
+      "description": "",
+      "failure_cause_id": "demo:cause:seal-nicked",
+      "name": "Chamfer verification before assembly",
+      "revision": 1,
+      "schema_version": "1.0",
+      "stable_id": "demo:prevention:chamfer-check",
+      "type": "PreventionControl"
+    },
+    {
+      "control_type": "detection",
+      "description": "",
+      "failure_cause_id": "demo:cause:seal-nicked",
+      "name": "Pressure decay leak test",
+      "revision": 1,
+      "schema_version": "1.0",
+      "stable_id": "demo:detection:pressure-decay",
+      "type": "DetectionControl"
+    },
+    {
+      "description": "",
+      "detection_control_id": "demo:detection:pressure-decay",
+      "name": "Automated leak tester",
+      "revision": 1,
+      "schema_version": "1.0",
+      "stable_id": "demo:measurement:leak-tester",
+      "type": "MeasurementMethod",
+      "unit": "mbar/min"
+    },
+    {
+      "description": "",
+      "due_date": null,
+      "failure_cause_id": "demo:cause:seal-nicked",
+      "failure_mode_id": "demo:failure-mode:seal-leak",
+      "name": "Add seal installation guide fixture",
+      "responsible_role_id": "demo:role:manufacturing-engineer",
+      "revision": 1,
+      "schema_version": "1.0",
+      "stable_id": "demo:action:add-installation-guide",
+      "status": "in_progress",
+      "type": "RecommendedAction"
+    },
+    {
+      "description": "",
+      "name": "Manufacturing Engineer",
+      "revision": 1,
+      "schema_version": "1.0",
+      "stable_id": "demo:role:manufacturing-engineer",
+      "type": "ResponsibleRole"
+    },
+    {
+      "action_id": "demo:action:add-installation-guide",
+      "description": "",
+      "name": "Fixture trial record",
+      "reference_uri": "demo://fixture-trial-001",
+      "revision": 1,
+      "schema_version": "1.0",
+      "stable_id": "demo:evidence:fixture-trial",
+      "type": "Evidence"
+    },
+    {
+      "configuration": {
+        "variant": "configurable-poc-matrix"
+      },
+      "method": "aiag-vda-ap-poc",
+      "name": "Action Priority PoC Matrix",
+      "rating_scales": {
+        "detection": {
+          "maximum": 10,
+          "minimum": 1
+        },
+        "occurrence": {
+          "maximum": 10,
+          "minimum": 1
+        },
+        "severity": {
+          "maximum": 10,
+          "minimum": 1
+        }
+      },
+      "revision": 1,
+      "schema_version": "1.0",
+      "stable_id": "demo:evaluation-definition:action-priority-poc",
+      "type": "EvaluationDefinition"
+    },
+    {
+      "configuration": {
+        "formula": "severity * occurrence * detection"
+      },
+      "method": "classic-rpn",
+      "name": "Classic RPN",
+      "rating_scales": {
+        "detection": {
+          "maximum": 10,
+          "minimum": 1
+        },
+        "occurrence": {
+          "maximum": 10,
+          "minimum": 1
+        },
+        "severity": {
+          "maximum": 10,
+          "minimum": 1
+        }
+      },
+      "revision": 1,
+      "schema_version": "1.0",
+      "stable_id": "demo:evaluation-definition:classic-rpn",
+      "type": "EvaluationDefinition"
+    },
+    {
+      "cause_category_id": "cause-category:ishikawa-5me:method",
+      "confidence": null,
+      "evidence_ids": [],
+      "influence_type": "produces",
+      "review_note": "Demo: installation method can damage the seal.",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_context": "seed_demo",
+      "source_id": "demo:cause:seal-nicked",
+      "source_type": "FailureCause",
+      "stable_id": "demo:cause-influence:seal-nicked-method",
+      "status": "possible",
+      "strength": "medium",
+      "target_id": "demo:failure-mode:seal-leak",
+      "target_type": "FailureMode",
+      "type": "CauseInfluence"
+    },
+    {
+      "description": "Work method, setup, sequence, and process instruction factors.",
+      "name": "Method",
+      "revision": 1,
+      "schema_version": "1.0",
+      "scheme_id": "cause-category-scheme:ishikawa-5me-default",
+      "sort_order": 4,
+      "stable_id": "cause-category:ishikawa-5me:method",
+      "type": "CauseCategory"
+    },
+    {
+      "description": "Default configurable cause-category scheme for Ishikawa review.",
+      "name": "Ishikawa 5M+E (default)",
+      "revision": 1,
+      "schema_version": "1.0",
+      "stable_id": "cause-category-scheme:ishikawa-5me-default",
+      "type": "CauseCategoryScheme"
+    },
+    {
+      "cause_category_id": "cause-category:ishikawa-5me:machine",
+      "confidence": null,
+      "evidence_ids": [
+        "demo:evidence:fixture-trial"
+      ],
+      "influence_type": "contributes_to",
+      "review_note": "Demo: fixture trial linked the sharp edge to seal damage.",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_context": "seed_demo",
+      "source_id": "demo:mechanism:sharp-edge-contact",
+      "source_type": "FailureMechanism",
+      "stable_id": "demo:cause-influence:sharp-edge-machine",
+      "status": "correlated",
+      "strength": "high",
+      "target_id": "demo:failure-mode:seal-leak",
+      "target_type": "FailureMode",
+      "type": "CauseInfluence"
+    },
+    {
+      "description": "Equipment, tooling, fixtures, and machine condition.",
+      "name": "Machine",
+      "revision": 1,
+      "schema_version": "1.0",
+      "scheme_id": "cause-category-scheme:ishikawa-5me-default",
+      "sort_order": 2,
+      "stable_id": "cause-category:ishikawa-5me:machine",
+      "type": "CauseCategory"
+    }
+  ],
+  "evaluations": [
+    {
+      "actor": "seed_demo",
+      "evaluated_at": "2026-08-30T12:00:00+00:00",
+      "evaluation_definition_id": "demo:evaluation-definition:action-priority-poc",
+      "failure_mode_id": "demo:failure-mode:seal-leak",
+      "inputs": {
+        "detection": 5,
+        "occurrence": 4,
+        "severity": 9
+      },
+      "method": "aiag-vda-ap-poc",
+      "result": {
+        "priority": "high",
+        "variant": "configurable-poc-matrix"
+      },
+      "revision": 1,
+      "schema_version": "1.0",
+      "stable_id": "demo:risk-evaluation:seal-leak:action-priority",
+      "trigger": "initial-demo-risk",
+      "type": "RiskEvaluation"
+    },
+    {
+      "actor": "seed_demo",
+      "evaluated_at": "2026-08-30T12:00:00+00:00",
+      "evaluation_definition_id": "demo:evaluation-definition:classic-rpn",
+      "failure_mode_id": "demo:failure-mode:seal-leak",
+      "inputs": {
+        "detection": 5,
+        "occurrence": 4,
+        "severity": 9
+      },
+      "method": "classic-rpn",
+      "result": {
+        "classification": "medium",
+        "score": 180
+      },
+      "revision": 1,
+      "schema_version": "1.0",
+      "stable_id": "demo:risk-evaluation:seal-leak:classic-rpn",
+      "trigger": "initial-demo-risk",
+      "type": "RiskEvaluation"
+    }
+  ],
+  "fmea": {
+    "description": "Initial process FMEA for assembly risk review.",
+    "fmea_type": "process",
+    "lifecycle": "in_review",
+    "name": "Brake Assembly Process FMEA",
+    "project_id": "demo:project:brake-assembly",
+    "revision": 1,
+    "schema_version": "1.0",
+    "scope": "Station 20 brake caliper assembly and verification.",
+    "stable_id": "demo:fmea:brake-assembly-process",
+    "team": [
+      "Quality Engineer",
+      "Manufacturing Engineer",
+      "Production Lead"
+    ],
+    "type": "FMEA"
+  },
+  "format": "open-fmea-exchange",
+  "relationships": [
+    {
+      "provenance": {
+        "source": "django-adapter"
+      },
+      "relationship_type": "project_contains_fmea",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_id": "demo:project:brake-assembly",
+      "stable_id": "rel:4726b3f71b3f5095a71f632317a2da6e",
+      "target_id": "demo:fmea:brake-assembly-process",
+      "type": "Relationship"
+    },
+    {
+      "provenance": {
+        "source": "django-adapter"
+      },
+      "relationship_type": "fmea_contains_product",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_id": "demo:fmea:brake-assembly-process",
+      "stable_id": "rel:7e97906308fa5d688a74e5e90ea6716d",
+      "target_id": "demo:product:brake-caliper",
+      "type": "Relationship"
+    },
+    {
+      "provenance": {
+        "source": "django-adapter"
+      },
+      "relationship_type": "product_has_function",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_id": "demo:product:brake-caliper",
+      "stable_id": "rel:3d82c964747d5fcaa167ec9fc859a7e6",
+      "target_id": "demo:function:seal-fluid-pressure",
+      "type": "Relationship"
+    },
+    {
+      "provenance": {
+        "source": "django-adapter"
+      },
+      "relationship_type": "fmea_contains_process",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_id": "demo:fmea:brake-assembly-process",
+      "stable_id": "rel:2c65f6e586345b6484e450b9d7f0e1f8",
+      "target_id": "demo:process:assembly",
+      "type": "Relationship"
+    },
+    {
+      "provenance": {
+        "source": "django-adapter"
+      },
+      "relationship_type": "process_has_operation",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_id": "demo:process:assembly",
+      "stable_id": "rel:b8ec755944db543c8014419bb02087a3",
+      "target_id": "demo:operation:station-20",
+      "type": "Relationship"
+    },
+    {
+      "provenance": {
+        "source": "django-adapter"
+      },
+      "relationship_type": "operation_has_function",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_id": "demo:operation:station-20",
+      "stable_id": "rel:a1d9d10fcc84540fbf7ffd552426dd3c",
+      "target_id": "demo:function:seal-fluid-pressure",
+      "type": "Relationship"
+    },
+    {
+      "provenance": {
+        "source": "django-adapter"
+      },
+      "relationship_type": "operation_has_process_characteristic",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_id": "demo:operation:station-20",
+      "stable_id": "rel:eb14b2a7807e5f6d882a603aa62f3d1b",
+      "target_id": "demo:process-characteristic:installation-force",
+      "type": "Relationship"
+    },
+    {
+      "provenance": {
+        "source": "django-adapter"
+      },
+      "relationship_type": "function_has_requirement",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_id": "demo:function:seal-fluid-pressure",
+      "stable_id": "rel:f5ad690b279958cf846758e753b1d09a",
+      "target_id": "demo:requirement:leak-rate",
+      "type": "Relationship"
+    },
+    {
+      "provenance": {
+        "source": "django-adapter"
+      },
+      "relationship_type": "requirement_has_product_characteristic",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_id": "demo:requirement:leak-rate",
+      "stable_id": "rel:02a8a6cc28865efda738564c3ac52766",
+      "target_id": "demo:characteristic:seal-seat-condition",
+      "type": "Relationship"
+    },
+    {
+      "provenance": {
+        "source": "django-adapter"
+      },
+      "relationship_type": "fmea_contains_failure_mode",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_id": "demo:fmea:brake-assembly-process",
+      "stable_id": "rel:7d8d19d139c4574280d971711f1e551b",
+      "target_id": "demo:failure-mode:seal-leak",
+      "type": "Relationship"
+    },
+    {
+      "provenance": {
+        "source": "django-adapter"
+      },
+      "relationship_type": "function_has_failure_mode",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_id": "demo:function:seal-fluid-pressure",
+      "stable_id": "rel:97a10c2e4b9b53b8b931db8d5f31fe1e",
+      "target_id": "demo:failure-mode:seal-leak",
+      "type": "Relationship"
+    },
+    {
+      "provenance": {
+        "source": "django-adapter"
+      },
+      "relationship_type": "requirement_has_failure_mode",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_id": "demo:requirement:leak-rate",
+      "stable_id": "rel:4b5d8f9af3205072a6bb80cfdaff2518",
+      "target_id": "demo:failure-mode:seal-leak",
+      "type": "Relationship"
+    },
+    {
+      "provenance": {
+        "source": "django-adapter"
+      },
+      "relationship_type": "failure_mode_has_effect",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_id": "demo:failure-mode:seal-leak",
+      "stable_id": "rel:dd5e1f6d3bb35d359663fafadfc7d257",
+      "target_id": "demo:effect:loss-of-braking",
+      "type": "Relationship"
+    },
+    {
+      "provenance": {
+        "source": "django-adapter"
+      },
+      "relationship_type": "failure_mode_has_cause",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_id": "demo:failure-mode:seal-leak",
+      "stable_id": "rel:3b1eb0df64f653b7a6289db0f2637ee3",
+      "target_id": "demo:cause:seal-nicked",
+      "type": "Relationship"
+    },
+    {
+      "provenance": {
+        "source": "django-adapter"
+      },
+      "relationship_type": "failure_cause_has_mechanism",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_id": "demo:cause:seal-nicked",
+      "stable_id": "rel:b40879c7ee9957a5b15b1c34508961dd",
+      "target_id": "demo:mechanism:sharp-edge-contact",
+      "type": "Relationship"
+    },
+    {
+      "provenance": {
+        "source": "django-adapter"
+      },
+      "relationship_type": "failure_cause_has_prevention_control",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_id": "demo:cause:seal-nicked",
+      "stable_id": "rel:1674d132833b50ce90e170c6815efb1e",
+      "target_id": "demo:prevention:chamfer-check",
+      "type": "Relationship"
+    },
+    {
+      "provenance": {
+        "source": "django-adapter"
+      },
+      "relationship_type": "failure_cause_has_detection_control",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_id": "demo:cause:seal-nicked",
+      "stable_id": "rel:88e212baf7dc50b08008f94fc60e315e",
+      "target_id": "demo:detection:pressure-decay",
+      "type": "Relationship"
+    },
+    {
+      "provenance": {
+        "source": "django-adapter"
+      },
+      "relationship_type": "detection_control_has_measurement",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_id": "demo:detection:pressure-decay",
+      "stable_id": "rel:7b5eafe2e6cc5092b475246257d7f80a",
+      "target_id": "demo:measurement:leak-tester",
+      "type": "Relationship"
+    },
+    {
+      "provenance": {
+        "source": "django-adapter"
+      },
+      "relationship_type": "failure_cause_has_recommended_action",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_id": "demo:cause:seal-nicked",
+      "stable_id": "rel:00e94ab21b085faeb98d7705a92f405b",
+      "target_id": "demo:action:add-installation-guide",
+      "type": "Relationship"
+    },
+    {
+      "provenance": {
+        "source": "django-adapter"
+      },
+      "relationship_type": "failure_mode_has_recommended_action",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_id": "demo:failure-mode:seal-leak",
+      "stable_id": "rel:7f7706059a73548f9f9040ad984385e2",
+      "target_id": "demo:action:add-installation-guide",
+      "type": "Relationship"
+    },
+    {
+      "provenance": {
+        "source": "django-adapter"
+      },
+      "relationship_type": "action_has_responsible_role",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_id": "demo:action:add-installation-guide",
+      "stable_id": "rel:4d261a517b7f5422aa55224bd8e8bd5e",
+      "target_id": "demo:role:manufacturing-engineer",
+      "type": "Relationship"
+    },
+    {
+      "provenance": {
+        "source": "django-adapter"
+      },
+      "relationship_type": "action_has_evidence",
+      "revision": 1,
+      "schema_version": "1.0",
+      "source_id": "demo:action:add-installation-guide",
+      "stable_id": "rel:e3d8713d792458ffa150a96092b1e699",
+      "target_id": "demo:evidence:fixture-trial",
+      "type": "Relationship"
+    }
+  ],
+  "revisions": [
+    {
+      "actor": "seed_demo",
+      "created_at": "2026-08-30T12:00:00+00:00",
+      "fmea_id": "demo:fmea:brake-assembly-process",
+      "lifecycle_from": "draft",
+      "lifecycle_to": "in_review",
+      "reason": "Initial demo FMEA created for Phase B vertical slice.",
+      "revision": 1,
+      "revision_number": 1,
+      "schema_version": "1.0",
+      "stable_id": "demo:revision:brake-assembly-process:001",
+      "type": "FMEARevision"
+    }
+  ],
+  "schema_version": "1.0"
+}

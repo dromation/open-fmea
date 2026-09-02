@@ -1,0 +1,3 @@
+* text=auto
+docs/exchange-format/*.json text eol=lf
+django_app/**/migrations/*.py text eol=lf

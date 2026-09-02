@@ -1,0 +1,39 @@
+# Review — Phase B Django PoC Implementation (branch `codex/phase-b-django-poc`)
+
+Status: Independent review, verified directly against the working tree — not an ADR, not a merge/commit authorization by itself.
+
+Reviewer: Claude, acting as Open-FMEA Technical Architect, per the role established in the governing brief.
+
+Scope: the staged changeset on `codex/phase-b-django-poc` (126 files, 3957 insertions), checked against `OpenFMEA_Architecture_and_Portability_Report.md` and `ADR-0000-adopt-django-poc-and-freeze-legacy.md`, by direct inspection of the actual files — not by trusting the summary in the status update.
+
+## Verdict
+
+**No blocking defects.** This is a strong first PoC: the portability guardrails from the architecture report aren't just described, they're implemented and independently checkable. Two findings below (one moderate, one minor/hygiene) are worth fixing, but neither blocks committing this branch.
+
+## What was verified and holds up
+
+- **Identity discipline matches Section 6 exactly, enforced twice over.** `StableModel` (`django_app/fmea_app/models.py`) carries `stable_id` (opaque, `uuid4().hex`-derived, unique, `editable=False`) and `revision` (`PositiveIntegerField`, default 1) on every model. Every `to_domain()` method maps foreign relations to `.stable_id`, never a raw Django PK. Confirmed by direct grep: **zero** occurrences of a raw `"id":` key anywhere in the exported OFEF JSON. The JSON Schema (`docs/exchange-format/ofef.schema.json`) enforces the same rule structurally, independent of the exporter code, via `"not": {"required": ["id"]}` on every entity definition. Two independent layers closing the exact risk the architecture report flagged as the top portability threat.
+- **The "no Django import" guardrail is real, not aspirational.** `tests/test_no_django_imports.py` spawns a subprocess with only `domain/` and `django_app/` on the path, imports `fmea_domain` and `fmea_evaluation`, and asserts `django` never entered `sys.modules`. That's an executable guardrail, not a comment.
+- **`fmea_domain/entities.py` is genuinely framework-free** — frozen, `kw_only` dataclasses, no Django import — and matches the domain model in the architecture report's Section 4 essentially one-to-one (structural/risk/control/action objects, `FMEALifecycle` and `ActionStatus` enums, `EvaluationDefinition`/`RiskEvaluation` as first-class entities carrying inputs + result + actor + trigger + timestamp together, never a bare recalculated number — matches Section 10's provenance requirement).
+- **Evaluation calculators are exactly the approved PoC scope**: `classic-rpn` and `aiag-vda-ap-poc`, pure functions over a validated `RiskRating`, dispatched by `EvaluationDefinition.method`. No scope creep beyond what ADR-0000 authorized.
+- **`rules.py` implements a real lifecycle state machine** (`draft → in_review → approved → superseded → obsolete`, with `SUPERSEDED`/`OBSOLETE` correctly terminal or near-terminal) matching Section 11, and rejects invalid transitions rather than silently allowing them.
+- **`ofef.py` export is format-deterministic**: `json.dumps(..., indent=2, sort_keys=True)`. This mattered for reviewing the changeset at all — it's the reason the demo export's diff (see Finding 1) is legible instead of noise from key reordering.
+- **The legacy freeze matches ADR-0000 and the architecture report's Section 19 condition exactly**: full physical move to `legacy/tkinter-prototype/`, nothing left behind at the old paths, a README added there. I checked specifically whether the Pillow crash bug from PR #4 made it into the frozen snapshot — it did not: `fmea_app.py` line 51 now reads `resample_filter = getattr(Image, "Resampling", Image).LANCZOS`, which is a more robust fix than PR #4's own hardcoded `Image.Resampling.LANCZOS` (this version also works on Pillow versions older than 9.1, which lack the `Resampling` enum). Good — the legacy branch is not being frozen with a known crash bug in it.
+- **`.gitignore` is correct**: `db.sqlite3`, `__pycache__/`, `*.log`, and even `_to_delete/` are excluded; the Tkinter prototype's stale `.pyc` files were removed from tracking as part of this change.
+
+## Findings
+
+**1. (Moderate) The committed `docs/exchange-format/demo.ofef.json` is not actually reproducible.** Re-running `migrate` → `seed_demo` → `export_ofef` against a fresh database produces a byte-different file from the one currently staged — confirmed directly: the unstaged working-tree diff on this file changes every `RiskEvaluation.stable_id`, every `EvaluationDefinition.stable_id` (on genuine first creation), and every `evaluated_at` timestamp. Root cause: `seed_demo.py` pins a fixed `stable_id` for every hand-authored demo entity (e.g. `stable_id="demo:project:brake-assembly"`) except `RiskEvaluation` records, which get their `stable_id` from the model's random `uuid4().hex` default with nothing pinning it, and `evaluated_at` is real wall-clock time at seed time. This isn't an identity-model bug — opaque, unpinned IDs are the *correct* choice for real usage — it's specifically a problem for a file that's checked into version control as if it were a stable fixture: every future re-run of the documented verification steps will produce a spurious diff on this file, and it weakens its usefulness as the golden fixture for the architecture report's Section 17 portability acceptance test, which needs a comparable, stable export to check against.
+
+   Two reasonable fixes, either is fine: (a) stop tracking `demo.ofef.json` in git — treat it as a regenerable artifact, add it to `.gitignore`, keep only the schema tracked; or (b) make `seed_demo` fully deterministic for `RiskEvaluation` too, the same way `services.py` already derives a deterministic relationship ID (`uuid.uuid5(uuid.NAMESPACE_URL, key)`) — apply the same pattern to seeded risk evaluations, and inject a fixed/frozen `evaluated_at` in demo-seeding mode specifically. Recommend (b) if this file is meant to double as the Section 17 test fixture; otherwise (a) is simpler and equally correct.
+
+**2. (Minor, hygiene) The unstaged migration diff is a full-file rewrite for no model change.** `django_app/fmea_app/migrations/0001_initial.py` shows 966 changed lines (essentially the entire file) between the staged version and the current working tree, even though nothing in `models.py` changed between those two points. This is almost certainly Python's per-process hash-seed randomization affecting the order `CreateModel` operations get emitted by Django's migration autodetector across two separate `makemigrations` runs — a known Django quirk, not a correctness bug (both versions are functionally equivalent). Recommendation: treat `0001_initial.py` as frozen once it's committed — don't re-run `makemigrations` unless a model actually changes. If migration freshness needs checking in CI later, use `manage.py makemigrations --check --no-input` rather than diffing file bytes.
+
+## Not blocking, worth noting
+
+- `SECRET_KEY` and `DEBUG` in `settings.py` both have safe PoC defaults gated behind environment variables (`open-fmea-dev-only`, defaults to `DEBUG=1`) — appropriate for a local PoC, just don't let these defaults survive into anything beyond local/dev use.
+- `fmea_domain/rules.py` currently covers rating validation, revision incrementing, and lifecycle transitions only — "required relationships" and "action completion" rules named in the architecture report aren't implemented yet. That's fine for this slice's scope; flagging only so it isn't forgotten as the vertical slice grows.
+
+## Recommendation
+
+Fix Finding 1 (either option) before merging this branch forward, since it directly affects the portability acceptance test's usefulness. Finding 2 needs no code change, just a process note. Everything else checked out against both the architecture report and ADR-0000 by direct inspection, not by trusting the status summary alone.

@@ -1,68 +1,52 @@
-# FMEAApp
+# Open FMEA
 
-FMEAApp is a comprehensive Failure Modes and Effects Analysis (FMEA) tool designed to streamline your risk management processes. This application offers a user-friendly interface with dynamic screens and an intuitive top app bar, ensuring ease of use and productivity.
+Open FMEA is being rebuilt as a domain-first Django application for Failure Modes and Effects Analysis. The current development line keeps the legacy Tkinter prototype for reference, while new work starts from portable Python domain objects and thin Django persistence.
 
-## Features
+## Repository Layout
 
-- **Dynamic Screen Management**: Effortlessly switch between different analysis tables with our screen manager.
-- **Top App Bar**: Access commonly used functions with ease using icon-based buttons for home, open file, save as, undo, redo, next screen, and previous screen.
-- **Editable Tables**: Interactive FMEA tables with editable cells for Severity, Occurrence, Detection, and action plans.
-- **Automated RPN Calculation**: Automatic calculation and color-coded visualization of Risk Priority Numbers (RPN).
-- **File Operations**: Seamlessly open, save, and manage FMEA tables in various formats including text, JSON, XML, and SQL.
-- **Database Connectivity**: Ready for integration with databases to store and retrieve FMEA data.
+```text
+architecture/                 Architecture reports, ADRs, and future specs
+django_app/                   Django project and application packages
+domain/fmea_domain/           Framework-free Open-FMEA domain model and rules
+docs/exchange-format/         Open-FMEA Exchange Format documentation and schema
+legacy/tkinter-prototype/     Frozen Tkinter/SQLite prototype from beta-v01
+tests/                        Domain and portability tests
+```
 
-## Installation
+## Development Setup
 
-1. **Clone the Repository**:
-    ```bash
-    git clone https://github.com/Dromation/FMEAApp.git
-    cd FMEAApp
-    ```
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
 
-2. **Install Dependencies**:
-    ```bash
-    pip install -r requirements.txt
-    ```
+## Run Checks
 
-3. **Run the Application**:
-    ```bash
-    python fmea_app.py
-    ```
+```powershell
+python -m unittest discover -s tests
+python manage.py check
+```
 
-## Building the Executable
+## Run the Django PoC
 
-To build the executable using PyInstaller, follow these steps:
+```powershell
+python manage.py migrate
+python manage.py seed_demo
+python manage.py runserver
+```
 
-1. **Increase Recursion Limit and Build**:
-    ```bash
-    python build.py
-    ```
+Then open `http://127.0.0.1:8000/`.
 
-## Requirements
+## Legacy Prototype
 
-- Python 3.6 or higher
-- PIL (Pillow)
-- Tkinter
-- PyInstaller
+The previous Tkinter/PyInstaller prototype is preserved under `legacy/tkinter-prototype/`. It is a historical reference and seed-data source, not the active architecture for new feature work.
 
-## Known Issues
-Platform Specific: Some features may not work as expected on non-Windows platforms.
-Icon Paths: Ensure that all icon paths are correctly set relative to the project directory.
+## Architecture
 
-## Contributing
-We welcome contributions! Please fork this repository and submit pull requests with your improvements and bug fixes.
+The starting architecture report is stored at `architecture/OpenFMEA_Architecture_and_Portability_Report.md`. The first ratified implementation decision is `architecture/adr/ADR-0000-adopt-django-poc-and-freeze-legacy.md`.
 
 ## License
-This project is licensed under the GPL 3.0 License. See the LICENSE file for details.
 
-## Contact
-For questions or suggestions, please open an issue on GitHub.
-
-## Branch Information
-
-We recently merged a new branch `beta` with several enhancements and bug fixes. Coders looking to contribute or explore the latest features should check out the `beta` branch.
-
-To switch to the `beta` branch:
-```bash
-git checkout beta
-
+This project is licensed under the GPL 3.0 License. See `LICENSE` for details.
