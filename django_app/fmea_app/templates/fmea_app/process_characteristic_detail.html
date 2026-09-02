@@ -11,6 +11,7 @@
   </div>
   <div class="button-row">
     <a class="button" href="{% url 'fmea:process_characteristic_list' %}">Process Characteristics</a>
+    <a class="button" href="{% url 'fmea:process_flow' process_characteristic.operation.process.stable_id %}?operation_id={{ process_characteristic.operation.stable_id|urlencode }}">View in Process Flow</a>
     <a class="button primary" href="{% url 'fmea:new_cause_influence' %}?source_type=ProcessCharacteristic&source_id={{ process_characteristic.stable_id|urlencode }}">Add Influence</a>
   </div>
 </div>

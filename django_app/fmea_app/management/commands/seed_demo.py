@@ -230,6 +230,20 @@ class Command(BaseCommand):
             review_note="Demo: fixture trial linked the sharp edge to seal damage.",
         )
 
+        _upsert_cause_influence(
+            stable_id="demo:cause-influence:installation-force-seal-seat",
+            source_type="ProcessCharacteristic",
+            source_id="demo:process-characteristic:installation-force",
+            target_type="ProductCharacteristic",
+            target_id="demo:characteristic:seal-seat-condition",
+            influence_type="affects",
+            status=CauseInfluenceStatus.POSSIBLE.value,
+            cause_category_id=categories["Method"].stable_id,
+            strength="medium",
+            source_context="seed_demo",
+            review_note="Demo: installation force variation affects the seal seat surface condition.",
+        )
+
         models.RiskEvaluation.objects.filter(failure_mode=failure_mode, actor="seed_demo").delete()
         evaluate_failure_mode(
             failure_mode=failure_mode,

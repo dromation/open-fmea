@@ -88,6 +88,7 @@ def fmea_detail(request, stable_id: str):
         .order_by("name")
     )
     worksheet_rows = _build_worksheet_rows(failure_modes)
+    processes = fmea.processes.prefetch_related("operations").order_by("name")
     return render(
         request,
         "fmea_app/fmea_detail.html",
@@ -95,6 +96,7 @@ def fmea_detail(request, stable_id: str):
             "fmea": fmea,
             "failure_modes": failure_modes,
             "worksheet_rows": worksheet_rows,
+            "processes": processes,
             "failure_mode_form": forms.FailureModeForm(),
             "effect_form": forms.FailureEffectForm(),
             "cause_form": forms.FailureCauseForm(),
@@ -303,6 +305,76 @@ def process_characteristic_detail(request, stable_id: str):
             "category": category,
             "outgoing_influences": outgoing,
             "incoming_influences": incoming,
+        },
+    )
+
+
+def process_flow(request, stable_id: str):
+    process = get_object_or_404(models.Process.objects.select_related("fmea"), stable_id=stable_id)
+    operations = list(process.operations.order_by("sequence", "name"))
+
+    selected_operation_id = request.GET.get("operation_id", "").strip()
+    selected_operation = None
+    if selected_operation_id:
+        selected_operation = next(
+            (operation for operation in operations if operation.stable_id == selected_operation_id),
+            None,
+        )
+    if selected_operation is None and operations:
+        selected_operation = operations[0]
+
+    process_characteristics = []
+    linked_product_characteristics = []
+    if selected_operation is not None:
+        category_by_id = _category_by_id()
+        characteristics = list(
+            models.ProcessCharacteristic.objects.filter(operation=selected_operation).order_by("name")
+        )
+        process_characteristics = [
+            {
+                "item": characteristic,
+                "category_name": (
+                    category_by_id[characteristic.cause_category_id].name
+                    if characteristic.cause_category_id in category_by_id
+                    else "Uncategorized"
+                ),
+                "attribute_items": sorted((characteristic.attributes or {}).items()),
+            }
+            for characteristic in characteristics
+        ]
+
+        source_ids = [characteristic.stable_id for characteristic in characteristics]
+        influences = list(
+            models.CauseInfluence.objects.filter(
+                source_type="ProcessCharacteristic",
+                source_id__in=source_ids,
+                target_type="ProductCharacteristic",
+            ).order_by("target_id", "status")
+        )
+        product_characteristic_by_id = {
+            item.stable_id: item
+            for item in models.ProductCharacteristic.objects.filter(
+                stable_id__in=[influence.target_id for influence in influences]
+            )
+        }
+        linked_product_characteristics = [
+            {
+                "influence": influence,
+                "product_characteristic": product_characteristic_by_id.get(influence.target_id),
+                "source_label": _label_for_reference(influence.source_type, influence.source_id),
+            }
+            for influence in influences
+        ]
+
+    return render(
+        request,
+        "fmea_app/process_flow.html",
+        {
+            "process": process,
+            "operations": operations,
+            "selected_operation": selected_operation,
+            "process_characteristics": process_characteristics,
+            "linked_product_characteristics": linked_product_characteristics,
         },
     )
 

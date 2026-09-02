@@ -717,6 +717,58 @@ td {
   margin-bottom: var(--space-4);
 }
 
+.process-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.process-step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  font-weight: 650;
+}
+
+.process-step:hover,
+.process-step:focus {
+  border-color: var(--accent-primary);
+  color: var(--text-primary);
+}
+
+.process-step.is-active {
+  border-color: var(--accent-primary-strong);
+  background: #141d2d;
+  color: var(--text-primary);
+}
+
+.process-step-index {
+  flex: 0 0 auto;
+  min-width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--bg-card-strong);
+  color: var(--text-secondary);
+  font-weight: 750;
+}
+
+.process-step.is-active .process-step-index {
+  background: var(--accent-primary-strong);
+  color: #fff;
+}
+
+.attribute-table td:first-child {
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
 @media (max-width: 980px) {
   .app-shell,
   .app-shell.sidebar-collapsed {

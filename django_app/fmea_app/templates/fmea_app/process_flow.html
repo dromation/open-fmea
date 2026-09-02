@@ -1,0 +1,129 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}{{ process.name }} Flow - Open FMEA{% endblock %}
+{% block topbar_title %}Process Flow{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>{{ process.name }}</h1>
+    <p class="muted">{{ process.fmea }} / {{ process.process_code }}</p>
+  </div>
+  <div class="button-row">
+    <a class="button" href="{% url 'fmea:fmea_detail' process.fmea.stable_id %}">Back to FMEA</a>
+    <a class="button" href="{% url 'fmea:process_characteristic_list' %}">Process Characteristics</a>
+  </div>
+</div>
+
+<div class="grid">
+  <section class="panel span-4">
+    <h2>Operations</h2>
+    <p class="muted">Ordered steps in this process.</p>
+    <nav class="process-steps" aria-label="Process operations">
+      {% for operation in operations %}
+        <a
+          class="process-step{% if operation == selected_operation %} is-active{% endif %}"
+          href="?operation_id={{ operation.stable_id|urlencode }}"
+        >
+          <span class="process-step-index">{{ forloop.counter }}</span>
+          <span>{{ operation.name }}{% if operation.sequence %} <span class="muted">(#{{ operation.sequence }})</span>{% endif %}</span>
+        </a>
+      {% empty %}
+        <p class="muted">No operations defined for this process yet.</p>
+      {% endfor %}
+    </nav>
+  </section>
+
+  <section class="panel span-8">
+    {% if selected_operation %}
+      <h2>{{ selected_operation.name }}</h2>
+      <p class="muted">{{ selected_operation.description }}</p>
+    {% else %}
+      <h2>No operation selected</h2>
+      <p class="muted">Add an Operation to this Process to see its characteristics.</p>
+    {% endif %}
+  </section>
+</div>
+
+<section class="panel section-gap">
+  <div class="panel-heading">
+    <h2>Process Characteristics</h2>
+    <p class="muted">Characteristics captured for {{ selected_operation.name|default:"the selected operation" }}.</p>
+  </div>
+  <div class="table-shell">
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Default Category</th>
+        <th>Attributes</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in process_characteristics %}
+      <tr>
+        <td><a href="{% url 'fmea:process_characteristic_detail' row.item.stable_id %}">{{ row.item.name }}</a></td>
+        <td>{{ row.item.description }}</td>
+        <td>{{ row.category_name }}</td>
+        <td>
+          {% if row.attribute_items %}
+            <table class="attribute-table">
+              <tbody>
+                {% for key, value in row.attribute_items %}
+                <tr><td>{{ key }}</td><td>{{ value }}</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <span class="muted">No attributes recorded</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4" class="muted">No process characteristics for this operation yet.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section class="panel section-gap">
+  <div class="panel-heading">
+    <h2>Linked Product Characteristics</h2>
+    <p class="muted">Product characteristics reached by a Cause Influence from this operation's process characteristics.</p>
+  </div>
+  <div class="table-shell">
+  <table>
+    <thead>
+      <tr>
+        <th>Product Characteristic</th>
+        <th>From Process Characteristic</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in linked_product_characteristics %}
+      <tr>
+        <td>
+          {% if row.product_characteristic %}
+            <a href="{% url 'fmea:new_cause_influence' %}?source_type=ProductCharacteristic&source_id={{ row.product_characteristic.stable_id|urlencode }}">{{ row.product_characteristic.name }}</a>
+          {% else %}
+            <span class="muted">{{ row.influence.target_id }}</span>
+          {% endif %}
+        </td>
+        <td>{{ row.source_label }}</td>
+        <td>{% include "fmea_app/_components/_status_badge.html" with label=row.influence.get_status_display status=row.influence.status %}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="3" class="muted">No linked product characteristics yet.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</section>
+{% endblock %}

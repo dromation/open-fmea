@@ -41,6 +41,39 @@
   </aside>
 
   <section class="panel span-12">
+    <div class="panel-heading">
+      <h2>Processes</h2>
+      <p class="muted">Process flow and process characteristics for this FMEA.</p>
+    </div>
+    <div class="table-shell">
+    <table>
+      <thead>
+        <tr>
+          <th>Process</th>
+          <th>Process Code</th>
+          <th>Operations</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for process in processes %}
+        <tr>
+          <td>{{ process.name }}</td>
+          <td>{{ process.process_code }}</td>
+          <td>{{ process.operations.all|length }}</td>
+          <td><a class="button" href="{% url 'fmea:process_flow' process.stable_id %}">View Process Flow</a></td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" class="muted">No processes defined yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section class="panel span-12">
     <div class="toolbar">
       <div>
         <h2>FMEA Worksheet</h2>

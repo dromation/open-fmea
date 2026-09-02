@@ -20,6 +20,7 @@
       <th>Process</th>
       <th>Default Category</th>
       <th>Stable ID</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -30,10 +31,11 @@
       <td>{{ row.item.operation.process }}</td>
       <td>{{ row.category_name }}</td>
       <td><code>{{ row.item.stable_id }}</code></td>
+      <td><a class="button" href="{% url 'fmea:process_flow' row.item.operation.process.stable_id %}?operation_id={{ row.item.operation.stable_id|urlencode }}">Process Flow</a></td>
     </tr>
     {% empty %}
     <tr>
-      <td colspan="5" class="muted">No process characteristics yet.</td>
+      <td colspan="6" class="muted">No process characteristics yet.</td>
     </tr>
     {% endfor %}
   </tbody>

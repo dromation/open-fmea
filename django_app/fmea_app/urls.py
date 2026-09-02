@@ -26,6 +26,11 @@ urlpatterns = [
         views.process_characteristic_detail,
         name="process_characteristic_detail",
     ),
+    path(
+        "processes/<str:stable_id>/flow/",
+        views.process_flow,
+        name="process_flow",
+    ),
     path("cause-influences/", views.cause_influence_list, name="cause_influence_list"),
     path("cause-influences/new/", views.new_cause_influence, name="new_cause_influence"),
     path("cause-influences/create/", views.create_cause_influence_view, name="create_cause_influence"),
