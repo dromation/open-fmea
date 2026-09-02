@@ -3,6 +3,8 @@ __pycache__/
 .venv/
 .pytest_cache/
 db.sqlite3
+db.sqlite3-journal
+*.sqlite3-journal
 media/uploads/
 staticfiles/
 *.log
