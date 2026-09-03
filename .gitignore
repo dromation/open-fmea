@@ -9,3 +9,4 @@ media/uploads/
 staticfiles/
 *.log
 _to_delete/
+architecture/mockups/

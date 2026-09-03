@@ -25,6 +25,91 @@
   --space-5: 24px;
   --radius: 8px;
   --shadow-soft: 0 16px 40px rgba(0, 0, 0, 0.22);
+  --bg-sidebar: #0b101a;
+  --bg-topbar: rgba(18, 24, 38, 0.92);
+  --bg-nav-active: #141d2d;
+  --bg-control: #182235;
+  --bg-control-hover: #1d2b42;
+  --bg-table-head: #151d2c;
+  --bg-track: #0f1624;
+  --pill-info-bg: rgba(129, 140, 248, 0.12);
+  --pill-info-fg: #c7d2fe;
+  --link-color: #93c5fd;
+  --link-color-hover: #bfdbfe;
+  --code-color: #c4b5fd;
+  --brand-mark-bg: #123b61;
+  --brand-mark-fg: #dbeafe;
+  --status-good-text: #86efac;
+  --status-warning-text: #fcd34d;
+  --status-critical-text: #fca5a5;
+}
+
+/* Light theme — new tokens. The media-query block covers a first-time
+   visitor with no stored preference (honors OS prefers-color-scheme);
+   the attribute-selector block covers an explicit user choice (always
+   wins once toggled, in either direction). Every existing dark value
+   above is unchanged; alpha-based (rgba) tokens are not redefined here
+   because they already composite correctly over either background. */
+:root:not([data-theme="dark"]) {
+  @media (prefers-color-scheme: light) {
+    color-scheme: light;
+    --bg-app: #f5f7fb;
+    --bg-surface: #ffffff;
+    --bg-card: #ffffff;
+    --bg-card-strong: #f1f4f9;
+    --bg-input: #ffffff;
+    --border-subtle: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #5b6b82;
+    --bg-sidebar: #ffffff;
+    --bg-topbar: rgba(255, 255, 255, 0.92);
+    --bg-nav-active: #e8edf5;
+    --bg-control: #f1f4f9;
+    --bg-control-hover: #e2e8f0;
+    --bg-table-head: #f1f5f9;
+    --bg-track: #e2e8f0;
+    --pill-info-fg: #4338ca;
+    --link-color: #1d4ed8;
+    --link-color-hover: #1e40af;
+    --code-color: #6d28d9;
+    --brand-mark-bg: #dbeafe;
+    --brand-mark-fg: #1e3a8a;
+    --status-good-text: #15803d;
+    --status-warning-text: #92400e;
+    --status-critical-text: #b91c1c;
+  }
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg-app: #f5f7fb;
+  --bg-surface: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-strong: #f1f4f9;
+  --bg-input: #ffffff;
+  --border-subtle: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #5b6b82;
+  --bg-sidebar: #ffffff;
+  --bg-topbar: rgba(255, 255, 255, 0.92);
+  --bg-nav-active: #e8edf5;
+  --bg-control: #f1f4f9;
+  --bg-control-hover: #e2e8f0;
+  --bg-table-head: #f1f5f9;
+  --bg-track: #e2e8f0;
+  --pill-info-fg: #4338ca;
+  --link-color: #1d4ed8;
+  --link-color-hover: #1e40af;
+  --code-color: #6d28d9;
+  --brand-mark-bg: #dbeafe;
+  --brand-mark-fg: #1e3a8a;
+  --status-good-text: #15803d;
+  --status-warning-text: #92400e;
+  --status-critical-text: #b91c1c;
 }
 
 * {
@@ -47,13 +132,13 @@ body {
 }
 
 a {
-  color: #93c5fd;
+  color: var(--link-color);
   text-decoration: none;
 }
 
 a:hover,
 a:focus {
-  color: #bfdbfe;
+  color: var(--link-color-hover);
   text-decoration: none;
 }
 
@@ -61,7 +146,7 @@ code {
   display: inline-block;
   max-width: 100%;
   overflow-wrap: anywhere;
-  color: #c4b5fd;
+  color: var(--code-color);
   font-family: "Cascadia Mono", Consolas, "Liberation Mono", monospace;
   font-size: 0.9em;
 }
@@ -115,7 +200,7 @@ p {
 .sidebar {
   min-height: 100vh;
   padding: var(--space-4);
-  background: #0b101a;
+  background: var(--bg-sidebar);
   border-right: 1px solid var(--border-subtle);
   position: sticky;
   top: 0;
@@ -147,8 +232,8 @@ p {
   width: 36px;
   height: 36px;
   border-radius: var(--radius);
-  background: #123b61;
-  color: #dbeafe;
+  background: var(--brand-mark-bg);
+  color: var(--brand-mark-fg);
   font-weight: 800;
   overflow: hidden;
 }
@@ -204,7 +289,7 @@ p {
 .nav-link:hover,
 .nav-link:focus,
 .nav-link.is-active {
-  background: #141d2d;
+  background: var(--bg-nav-active);
   border-color: var(--border-subtle);
   color: var(--text-primary);
 }
@@ -244,7 +329,7 @@ p {
   justify-content: space-between;
   gap: var(--space-4);
   padding: 0 var(--space-5);
-  background: rgba(18, 24, 38, 0.92);
+  background: var(--bg-topbar);
   border-bottom: 1px solid var(--border-subtle);
   position: sticky;
   top: 0;
@@ -277,8 +362,8 @@ p {
   padding: 0 var(--space-2);
   border: 1px solid var(--border-subtle);
   border-radius: 999px;
-  background: rgba(129, 140, 248, 0.12);
-  color: #c7d2fe;
+  background: var(--pill-info-bg);
+  color: var(--pill-info-fg);
   font-size: 12px;
   font-weight: 750;
   white-space: nowrap;
@@ -317,7 +402,7 @@ button {
   padding: 0 var(--space-3);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius);
-  background: #182235;
+  background: var(--bg-control);
   color: var(--text-primary);
   font: inherit;
   font-weight: 750;
@@ -329,7 +414,7 @@ button {
 button:hover,
 button:focus {
   border-color: var(--accent-primary);
-  background: #1d2b42;
+  background: var(--bg-control-hover);
   color: var(--text-primary);
 }
 
@@ -345,7 +430,7 @@ button:focus {
 }
 
 .button.danger {
-  color: #fecaca;
+  color: var(--status-critical-text);
   border-color: rgba(239, 68, 68, 0.45);
 }
 
@@ -354,6 +439,38 @@ button:focus {
   width: 36px;
   height: 36px;
   padding: 0;
+}
+
+.theme-toggle svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
+/* Icon shows the mode a click would switch TO is hidden; the icon for
+   the mode currently in effect is shown. Default (no data-theme
+   attribute, no light system preference) = dark, so the sun icon
+   ("switch to light") shows and the moon icon is hidden. */
+.theme-toggle .theme-toggle-icon-dark {
+  display: none;
+}
+
+:root[data-theme="light"] .theme-toggle .theme-toggle-icon-light {
+  display: none;
+}
+
+:root[data-theme="light"] .theme-toggle .theme-toggle-icon-dark {
+  display: block;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) .theme-toggle .theme-toggle-icon-light {
+    display: none;
+  }
+
+  :root:not([data-theme]) .theme-toggle .theme-toggle-icon-dark {
+    display: block;
+  }
 }
 
 .mobile-sidebar-toggle {
@@ -526,7 +643,7 @@ tr:last-child td {
 }
 
 th {
-  background: #151d2c;
+  background: var(--bg-table-head);
   color: var(--text-secondary);
   font-size: 12px;
   font-weight: 800;
@@ -613,7 +730,7 @@ td {
 .status-low {
   background: rgba(34, 197, 94, 0.14);
   border-color: rgba(34, 197, 94, 0.35);
-  color: #86efac;
+  color: var(--status-good-text);
 }
 
 .status-rejected,
@@ -621,7 +738,7 @@ td {
 .status-high {
   background: rgba(239, 68, 68, 0.14);
   border-color: rgba(239, 68, 68, 0.35);
-  color: #fca5a5;
+  color: var(--status-critical-text);
 }
 
 .status-possible,
@@ -630,7 +747,7 @@ td {
 .status-in_review {
   background: rgba(245, 158, 11, 0.14);
   border-color: rgba(245, 158, 11, 0.35);
-  color: #fcd34d;
+  color: var(--status-warning-text);
 }
 
 .status-very_high {
@@ -641,17 +758,17 @@ td {
 
 .risk-high,
 .risk-critical {
-  color: #fca5a5;
+  color: var(--status-critical-text);
   font-weight: 800;
 }
 
 .risk-medium {
-  color: #fcd34d;
+  color: var(--status-warning-text);
   font-weight: 800;
 }
 
 .risk-low {
-  color: #86efac;
+  color: var(--status-good-text);
   font-weight: 800;
 }
 
@@ -670,7 +787,7 @@ td {
 .status-track {
   height: 8px;
   border-radius: 999px;
-  background: #0f1624;
+  background: var(--bg-track);
   overflow: hidden;
 }
 
@@ -679,12 +796,12 @@ td {
   height: 8px;
   border: 0;
   border-radius: 999px;
-  background: #0f1624;
+  background: var(--bg-track);
   overflow: hidden;
 }
 
 .status-progress::-webkit-progress-bar {
-  background: #0f1624;
+  background: var(--bg-track);
 }
 
 .status-progress::-webkit-progress-value,
@@ -761,7 +878,7 @@ td {
 
 .process-step.is-active {
   border-color: var(--accent-primary-strong);
-  background: #141d2d;
+  background: var(--bg-nav-active);
   color: var(--text-primary);
 }
 

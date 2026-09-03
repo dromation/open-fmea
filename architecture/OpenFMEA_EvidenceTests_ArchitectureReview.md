@@ -45,10 +45,19 @@ Status workflow: `Planned` / `In Execution` / `Completed` / `On Hold` / `Cancell
 3. **Relationship to `EffectivenessVerification`.** Leave `EffectivenessVerification` alone (simplest, no migration risk, accepted duplication for one narrow case) — or treat `ValidationTest` (with its optional `RecommendedAction` link) as the superset and stop using `EffectivenessVerification` for new records going forward, without deleting/migrating existing rows (per the "nothing deleted, only superseded" rule)? Recommend the latter — avoids two parallel, overlapping "did this action work" mechanisms.
 4. **Nav/page scope for this first increment.** A full standalone "Evidence & Tests" page (stat cards, filters, detail panel) matching the mockup, or a lighter first cut (a table + create form only, no donut charts/stat aggregation) with the fuller dashboard as a later refinement — same "full 10×10 grid vs. collapsed summary" style choice as the Risk Matrix review had.
 
+## 4a. Amendment (2026-09-03) — Mockup 14 ("Validation Trajectory") confirms and extends this design
+
+A further mockup, "Validation Trajectory," showed a detail panel for its validation/test records — Objective, Method, Acceptance Criteria, Planned/Actual dates, Evidence files — nearly identical to this review's proposed `ValidationTest` shape. This is strong evidence that "Evidence & Tests" (Mockup 10) and "Validation Trajectory" (Mockup 14) are two *views* over the same underlying entity (a flat table vs. a lifecycle-phase timeline), not two separate things to design independently. Two more decisions this raises, additive to Section 4:
+
+5. **Lifecycle phase.** Mockup 14 tracks each `ValidationTest` against a six-stage lifecycle (Concept/Design/Prototype/Verification/Validation/Release), with its own per-phase status. Is this a field on `ValidationTest` itself (which phase is this test for), or a separate structure where one test can appear at multiple phases over its life? Recommend the simpler reading — one `ValidationTest` row belongs to one lifecycle phase — until a case for the richer structure is shown.
+6. **"Test Plan" grouping entity.** Mockup 14 links a `ValidationTest` to a `TP-002` "Test Plan" — implies a plan groups multiple tests (e.g., all tests for one release). Not proposed as in-scope for a first increment — flagged so it isn't silently designed around; a `ValidationTest.test_plan` FK can be added later without reshaping anything decided now.
+
+These do not remove Section 4's original blockers: Decisions 1-3 are still the hard blockers for a first Codex instruction. They do expand the recorded design surface to six decisions total, so a later full implementation should account for lifecycle phase and Test Plan grouping instead of treating them as separate surprise requirements.
+
 ## 5. What this review does not propose
 
 No `System`/`System Characteristics Base`/`ClassificationScheme` dependency (unlike Mockup 8/9's items, `ValidationTest` stands on its own — it links to the already-real `FailureMode`, not to a not-yet-approved characteristics graph). No Validation Trajectory or Change Impact (the two other items in the mockups' "VALIDATION & CHANGE" nav group) — those remain separately deferred and this review does not fold them in. No AI involvement of any kind. No change to `Evidence`, `RecommendedAction`, or `ActionStatus`.
 
 ## Recommendation
 
-**NOT YET READY** — unlike the Risk Matrix and Functions/Actions reviews, this one has a real new entity and at least one hard infrastructure decision (file storage) behind it, not just default-able UI judgment calls. Recommend deciding Section 4 first; a Codex instruction should not be written until at least Decisions 1–3 are settled (Decision 4 can reasonably default to "lighter first cut" without blocking).
+**NOT YET READY** — unlike the Risk Matrix and Functions/Actions reviews, this one has a real new entity and at least one hard infrastructure decision (file storage) behind it, not just default-able UI judgment calls. Recommend deciding Decisions 1-3 first; Decisions 4-6 can be scoped or deferred once the first model slice is defined.

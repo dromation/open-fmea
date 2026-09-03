@@ -1,11 +1,54 @@
 (function () {
+  const THEME_STORAGE_KEY = "open-fmea-theme";
+
+  function readStoredTheme() {
+    try {
+      const value = window.localStorage.getItem(THEME_STORAGE_KEY);
+      return value === "light" || value === "dark" ? value : null;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  function writeStoredTheme(value) {
+    try {
+      window.localStorage.setItem(THEME_STORAGE_KEY, value);
+    } catch (err) {
+      /* localStorage unavailable (private browsing, disabled storage) —
+         the toggle still works for the current page load via the
+         data-theme attribute, it just won't persist. */
+    }
+  }
+
+  function systemPrefersLight() {
+    return (
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: light)").matches
+    );
+  }
+
+  const root = document.documentElement;
+  const storedTheme = readStoredTheme();
+  if (storedTheme) {
+    root.setAttribute("data-theme", storedTheme);
+  }
+
+  document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const current = root.getAttribute("data-theme") || (systemPrefersLight() ? "light" : "dark");
+      const next = current === "light" ? "dark" : "light";
+      root.setAttribute("data-theme", next);
+      writeStoredTheme(next);
+    });
+  });
+
   const shell = document.querySelector("[data-app-shell]");
   if (!shell) {
     return;
   }
 
-  const stored = window.localStorage.getItem("open-fmea-sidebar-collapsed");
-  if (stored === "1") {
+  const storedSidebar = window.localStorage.getItem("open-fmea-sidebar-collapsed");
+  if (storedSidebar === "1") {
     shell.classList.add("sidebar-collapsed");
   }
 
