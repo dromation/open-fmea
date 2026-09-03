@@ -150,6 +150,13 @@ p {
   background: #123b61;
   color: #dbeafe;
   font-weight: 800;
+  overflow: hidden;
+}
+
+.brand-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .brand-text {

@@ -1,7 +1,8 @@
+{% load static %}
 <aside class="sidebar" aria-label="Primary navigation">
   <div class="sidebar-brand-row">
     <a class="brand" href="{% url 'fmea:dashboard' %}">
-      <span class="brand-mark">OF</span>
+      <span class="brand-mark"><img src="{% static 'fmea_app/img/logo.png' %}" alt="" width="36" height="36"></span>
       <span class="brand-text">Open FMEA</span>
     </a>
     <button class="icon-button sidebar-toggle" type="button" data-sidebar-toggle aria-label="Toggle sidebar">
