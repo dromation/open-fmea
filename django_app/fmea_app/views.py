@@ -21,6 +21,17 @@ from .services import (
     legal_cause_influence_transition_statuses,
     transition_cause_influence,
 )
+from .risk_matrix import (
+    METHOD_LABELS,
+    cell_evaluations,
+    grid_rows,
+    high_risk_failure_mode_count,
+    normalize_method,
+    top_evaluations,
+    unevaluated_failure_mode_count,
+)
+
+RISK_MATRIX_METHOD_CHOICES = list(METHOD_LABELS.items())
 
 
 def dashboard(request):
@@ -48,6 +59,7 @@ def dashboard(request):
             ),
             "cause_status_breakdown": _cause_status_breakdown(),
             "recent_activity": _recent_activity(),
+            "high_risk_failure_mode_count": high_risk_failure_mode_count(),
         },
     )
 
@@ -379,6 +391,57 @@ def process_flow(request, stable_id: str):
     )
 
 
+def risk_matrix(request):
+    method = normalize_method(request.GET.get("method"))
+    return render(
+        request,
+        "fmea_app/risk_matrix.html",
+        {
+            "method": method,
+            "methods": RISK_MATRIX_METHOD_CHOICES,
+            "grid_rows": grid_rows(method),
+            "unevaluated_count": unevaluated_failure_mode_count(method),
+        },
+    )
+
+
+def risk_matrix_cell(request):
+    method = normalize_method(request.GET.get("method"))
+    severity = _optional_int(request.GET.get("severity"))
+    occurrence = _optional_int(request.GET.get("occurrence"))
+    evaluations = (
+        cell_evaluations(method, severity, occurrence)
+        if severity is not None and occurrence is not None
+        else []
+    )
+    return render(
+        request,
+        "fmea_app/risk_matrix_cell.html",
+        {
+            "method": method,
+            "method_label": METHOD_LABELS.get(method, method),
+            "methods": RISK_MATRIX_METHOD_CHOICES,
+            "severity": severity,
+            "occurrence": occurrence,
+            "evaluations": evaluations,
+        },
+    )
+
+
+def risk_matrix_top(request):
+    method = normalize_method(request.GET.get("method"))
+    return render(
+        request,
+        "fmea_app/risk_matrix_top.html",
+        {
+            "method": method,
+            "method_label": METHOD_LABELS.get(method, method),
+            "methods": RISK_MATRIX_METHOD_CHOICES,
+            "evaluations": top_evaluations(method),
+        },
+    )
+
+
 def new_cause_influence(request):
     source_type = request.GET.get("source_type", "").strip()
     source_id = request.GET.get("source_id", "").strip()
@@ -674,3 +737,16 @@ def _optional_float(value: str) -> float | None:
     if not stripped:
         return None
     return float(stripped)
+
+
+def _optional_int(value: str | None) -> int | None:
+    if value is None:
+        return None
+    stripped = value.strip()
+    if not stripped:
+        return None
+    try:
+        return int(stripped)
+    except ValueError:
+        return None
+

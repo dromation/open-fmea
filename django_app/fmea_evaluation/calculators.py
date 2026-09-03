@@ -44,6 +44,21 @@ def classify_rpn(rpn: int) -> str:
     return "low"
 
 
+def classify_severity_occurrence(severity: int, occurrence: int) -> str:
+    """Bands a (severity, occurrence) pair on the same 1-10 scale RiskRating
+    already validates to. Independent of any RiskEvaluation method - this is
+    a grid-coloring band, not a replacement for classify_rpn or the AP bands.
+    See Codex_Instruction_RiskMatrix_Slice.md Section 2."""
+    product = severity * occurrence
+    if product <= 8:
+        return "low"
+    if product <= 24:
+        return "medium"
+    if product <= 48:
+        return "high"
+    return "very_high"
+
+
 def calculate_action_priority(rating: RiskRating) -> EvaluationResult:
     validate_rating(rating)
     priority = _action_priority_band(rating)

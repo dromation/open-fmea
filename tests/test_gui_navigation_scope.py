@@ -16,9 +16,9 @@ class GuiNavigationScopeTests(TestCase):
         self.assertContains(response, "Import Sessions")
         self.assertContains(response, "Cause Influences")
         self.assertContains(response, "Process Characteristics")
+        self.assertContains(response, "Risk Matrix")
 
         for unbuilt_label in (
-            "Risk Matrix",
             "Validation Trajectory",
             "CAPA",
             "Control Plans",

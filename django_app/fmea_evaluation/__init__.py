@@ -7,6 +7,8 @@ from .calculators import (
     calculate,
     calculate_action_priority,
     calculate_classic_rpn,
+    classify_rpn,
+    classify_severity_occurrence,
 )
 
 __all__ = [
@@ -16,4 +18,6 @@ __all__ = [
     "calculate",
     "calculate_action_priority",
     "calculate_classic_rpn",
+    "classify_rpn",
+    "classify_severity_occurrence",
 ]
