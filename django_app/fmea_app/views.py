@@ -101,6 +101,9 @@ def fmea_detail(request, stable_id: str):
     )
     worksheet_rows = _build_worksheet_rows(failure_modes)
     processes = fmea.processes.prefetch_related("operations").order_by("name")
+    functions = models.Function.objects.filter(
+        Q(product__fmea=fmea) | Q(operation__process__fmea=fmea)
+    ).select_related("product", "operation").order_by("name")
     return render(
         request,
         "fmea_app/fmea_detail.html",
@@ -109,12 +112,15 @@ def fmea_detail(request, stable_id: str):
             "failure_modes": failure_modes,
             "worksheet_rows": worksheet_rows,
             "processes": processes,
-            "failure_mode_form": forms.FailureModeForm(),
+            "functions": functions,
+            "function_form": forms.FunctionForm(fmea=fmea),
+            "failure_mode_form": forms.FailureModeForm(fmea=fmea),
             "effect_form": forms.FailureEffectForm(),
             "cause_form": forms.FailureCauseForm(),
             "prevention_form": forms.PreventionControlForm(),
             "detection_form": forms.DetectionControlForm(),
             "risk_form": forms.RiskEvaluationForm(),
+            "action_form": forms.RecommendedActionForm(),
         },
     )
 
@@ -122,12 +128,24 @@ def fmea_detail(request, stable_id: str):
 @require_POST
 def add_failure_mode(request, stable_id: str):
     fmea = get_fmea_by_stable_id(stable_id)
-    form = forms.FailureModeForm(request.POST)
+    form = forms.FailureModeForm(request.POST, fmea=fmea)
     if form.is_valid():
         failure_mode = form.save(commit=False)
         failure_mode.fmea = fmea
         failure_mode.save()
         messages.success(request, "Failure mode added.")
+    else:
+        messages.error(request, _form_errors(form))
+    return redirect("fmea:fmea_detail", stable_id=fmea.stable_id)
+
+
+@require_POST
+def add_function(request, stable_id: str):
+    fmea = get_fmea_by_stable_id(stable_id)
+    form = forms.FunctionForm(request.POST, fmea=fmea)
+    if form.is_valid():
+        form.save()
+        messages.success(request, "Function added.")
     else:
         messages.error(request, _form_errors(form))
     return redirect("fmea:fmea_detail", stable_id=fmea.stable_id)
@@ -187,6 +205,52 @@ def add_detection_control(request, stable_id: str):
     else:
         messages.error(request, _form_errors(form))
     return redirect("fmea:fmea_detail", stable_id=cause.failure_mode.fmea.stable_id)
+
+
+@require_POST
+def add_action_to_cause(request, stable_id: str):
+    cause = get_object_or_404(FailureCause, stable_id=stable_id)
+    form = forms.RecommendedActionForm(request.POST)
+    if form.is_valid():
+        action = form.save(commit=False)
+        action.failure_cause = cause
+        action.failure_mode = None
+        action.save()
+        messages.success(request, "Action added.")
+    else:
+        messages.error(request, _form_errors(form))
+    return redirect("fmea:fmea_detail", stable_id=cause.failure_mode.fmea.stable_id)
+
+
+@require_POST
+def add_action_to_failure_mode(request, stable_id: str):
+    failure_mode = get_object_or_404(FailureMode, stable_id=stable_id)
+    form = forms.RecommendedActionForm(request.POST)
+    if form.is_valid():
+        action = form.save(commit=False)
+        action.failure_mode = failure_mode
+        action.failure_cause = None
+        action.save()
+        messages.success(request, "Action added.")
+    else:
+        messages.error(request, _form_errors(form))
+    return redirect("fmea:fmea_detail", stable_id=failure_mode.fmea.stable_id)
+
+
+def action_detail(request, stable_id: str):
+    action = get_object_or_404(
+        models.RecommendedAction.objects.select_related(
+            "failure_mode__fmea",
+            "failure_cause__failure_mode__fmea",
+            "responsible_role",
+        ),
+        stable_id=stable_id,
+    )
+    return render(
+        request,
+        "fmea_app/action_detail.html",
+        {"action": action},
+    )
 
 
 @require_POST

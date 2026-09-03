@@ -11,6 +11,7 @@ urlpatterns = [
     path("fmeas/create/", views.create_fmea, name="create_fmea"),
     path("fmea/<str:stable_id>/", views.fmea_detail, name="fmea_detail"),
     path("fmea/<str:stable_id>/failure-modes/add/", views.add_failure_mode, name="add_failure_mode"),
+    path("fmea/<str:stable_id>/functions/add/", views.add_function, name="add_function"),
     path(
         "process-characteristics/",
         views.process_characteristic_list,
@@ -53,4 +54,11 @@ urlpatterns = [
     path("failure-mode/<str:stable_id>/evaluate/", views.evaluate_failure, name="evaluate_failure"),
     path("cause/<str:stable_id>/prevention-controls/add/", views.add_prevention_control, name="add_prevention_control"),
     path("cause/<str:stable_id>/detection-controls/add/", views.add_detection_control, name="add_detection_control"),
+    path("cause/<str:stable_id>/actions/add/", views.add_action_to_cause, name="add_action_to_cause"),
+    path(
+        "failure-mode/<str:stable_id>/actions/add/",
+        views.add_action_to_failure_mode,
+        name="add_action_to_failure_mode",
+    ),
+    path("actions/<str:stable_id>/", views.action_detail, name="action_detail"),
 ]

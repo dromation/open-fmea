@@ -74,6 +74,51 @@
   </section>
 
   <section class="panel span-12">
+    <div class="panel-heading">
+      <h2>Functions</h2>
+      <p class="muted">Functions for this FMEA's products and operations.</p>
+    </div>
+    <div class="table-shell">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Product</th>
+          <th>Operation</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for function in functions %}
+        <tr>
+          <td>{{ function.name }}</td>
+          <td>{{ function.description }}</td>
+          <td>{{ function.product|default:"" }}</td>
+          <td>{{ function.operation|default:"" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" class="muted">No functions defined yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    <form class="compact" method="post" action="{% url 'fmea:add_function' fmea.stable_id %}">
+      {% csrf_token %}
+      <div class="field-grid">
+        <label>Name {{ function_form.name }}</label>
+        <label>Description {{ function_form.description }}</label>
+        <label>Product {{ function_form.product }}</label>
+        <label>Operation {{ function_form.operation }}</label>
+        <div>
+          <button class="button" type="submit">Add Function</button>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <section class="panel span-12">
     <div class="toolbar">
       <div>
         <h2>FMEA Worksheet</h2>
@@ -179,6 +224,7 @@
       <div class="field-grid">
         <label>Name {{ failure_mode_form.name }}</label>
         <label>Description {{ failure_mode_form.description }}</label>
+        <label>Function {{ failure_mode_form.function }}</label>
         <div>
           <button class="button primary" type="submit">Add Failure Mode</button>
         </div>
@@ -271,6 +317,49 @@
         </section>
       </div>
 
+      <div class="grid section-gap">
+        <section class="span-12">
+          <h3>Actions (not tied to a specific cause)</h3>
+          <div class="table-shell">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Responsible</th>
+                <th>Due Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for action in failure_mode.recommended_actions.all %}
+              <tr>
+                <td><a href="{% url 'fmea:action_detail' action.stable_id %}">{{ action.name }}</a></td>
+                <td><span class="status status-{{ action.status }}">{{ action.get_status_display }}</span></td>
+                <td>{{ action.responsible_role|default:"" }}</td>
+                <td>{{ action.due_date|default:"" }}</td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="4" class="muted">No actions not tied to a specific cause yet.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          </div>
+          <form class="compact" method="post" action="{% url 'fmea:add_action_to_failure_mode' failure_mode.stable_id %}">
+            {% csrf_token %}
+            <div class="field-grid">
+              <label>Name {{ action_form.name }}</label>
+              <label>Description {{ action_form.description }}</label>
+              <label>Responsible {{ action_form.responsible_role }}</label>
+              <label>Status {{ action_form.status }}</label>
+              <label>Due Date {{ action_form.due_date }}</label>
+              <div>
+                <button class="button" type="submit">Add Action</button>
+              </div>
+            </div>
+          </form>
+        </section>
+      </div>
+
       {% for cause in failure_mode.causes.all %}
       <div class="grid section-gap">
         <section class="span-6">
@@ -308,6 +397,49 @@
             <label>Name {{ detection_form.name }}</label>
             <label>Description {{ detection_form.description }}</label>
             <button class="button" type="submit">Add Detection</button>
+          </form>
+        </section>
+      </div>
+
+      <div class="grid section-gap">
+        <section class="span-12">
+          <h3>Actions for {{ cause.name }}</h3>
+          <div class="table-shell">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Responsible</th>
+                <th>Due Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for action in cause.recommended_actions.all %}
+              <tr>
+                <td><a href="{% url 'fmea:action_detail' action.stable_id %}">{{ action.name }}</a></td>
+                <td><span class="status status-{{ action.status }}">{{ action.get_status_display }}</span></td>
+                <td>{{ action.responsible_role|default:"" }}</td>
+                <td>{{ action.due_date|default:"" }}</td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="4" class="muted">No actions for this cause yet.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          </div>
+          <form class="compact" method="post" action="{% url 'fmea:add_action_to_cause' cause.stable_id %}">
+            {% csrf_token %}
+            <div class="field-grid">
+              <label>Name {{ action_form.name }}</label>
+              <label>Description {{ action_form.description }}</label>
+              <label>Responsible {{ action_form.responsible_role }}</label>
+              <label>Status {{ action_form.status }}</label>
+              <label>Due Date {{ action_form.due_date }}</label>
+              <div>
+                <button class="button" type="submit">Add Action</button>
+              </div>
+            </div>
           </form>
         </section>
       </div>
