@@ -1,0 +1,49 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}Ishikawa - {{ failure_mode.name }}{% endblock %}
+{% block topbar_title %}Ishikawa Board{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>{{ failure_mode.name }}</h1>
+    <p class="muted">Cause influences grouped by cause category.</p>
+  </div>
+  <div class="button-row">
+    <a class="button" href="{% url 'fmea:fmea_detail' failure_mode.fmea.stable_id %}">FMEA</a>
+    <a class="button primary" href="{% url 'fmea:new_cause_influence' %}?target_type=FailureMode&target_id={{ failure_mode.stable_id|urlencode }}">Add Influence</a>
+  </div>
+</div>
+
+<div class="grid">
+  {% for group in groups %}
+  <section class="panel span-6">
+    <h2>{{ group.name }}</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Influence</th>
+          <th>Source</th>
+          <th>Status</th>
+          <th>Target</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in group.items %}
+        <tr>
+          <td><a href="{% url 'fmea:cause_influence_detail' item.influence.stable_id %}">{{ item.influence.influence_type }}</a></td>
+          <td>{{ item.influence.source_type }}<br><span class="muted">{{ item.source_label }}</span></td>
+          <td><span class="status">{{ item.influence.get_status_display }}</span></td>
+          <td>{{ item.influence.target_type }}<br><span class="muted">{{ item.target_label }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+  {% empty %}
+  <section class="panel span-12">
+    <p class="muted">No cause influences for this failure mode.</p>
+  </section>
+  {% endfor %}
+</div>
+{% endblock %}

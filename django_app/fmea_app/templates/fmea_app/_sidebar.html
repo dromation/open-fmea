@@ -1,0 +1,130 @@
+{% load static %}
+<aside class="sidebar" aria-label="Primary navigation">
+  <div class="sidebar-brand-row">
+    <a class="brand" href="{% url 'fmea:dashboard' %}">
+      <span class="brand-mark"><img src="{% static 'fmea_app/img/logo.png' %}" alt="" width="36" height="36"></span>
+      <span class="brand-text">Open FMEA</span>
+    </a>
+    <button class="icon-button sidebar-toggle" type="button" data-sidebar-toggle aria-label="Toggle sidebar">
+      <span aria-hidden="true">‹</span>
+    </button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-group">
+      <div class="nav-group-title">HOME</div>
+      <a class="nav-link" href="{% url 'fmea:dashboard' %}" data-nav-link>
+        <span class="nav-dot" aria-hidden="true"></span>
+        <span>Home</span>
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">WORKSPACE</div>
+      <a class="nav-link" href="{% url 'fmea:project_list' %}" data-nav-link>
+        <span class="nav-dot" aria-hidden="true"></span>
+        <span>FMEA Projects</span>
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">CONTEXT</div>
+      <a class="nav-link" href="{% url 'fmea:process_characteristic_list' %}" data-nav-link>
+        <span class="nav-dot" aria-hidden="true"></span>
+        <span>Process Characteristics</span>
+      </a>
+      <a class="nav-link" href="{% url 'fmea:engineering_context' %}" data-nav-link>
+        <span class="nav-dot" aria-hidden="true"></span>
+        <span>Engineering Context</span>
+      </a>
+      <a class="nav-link" href="{% url 'fmea:system_list' %}" data-nav-link>
+        <span class="nav-dot" aria-hidden="true"></span>
+        <span>System / Product / Process</span>
+      </a>
+      <a class="nav-link" href="{% url 'fmea:characteristic_link_list' %}" data-nav-link>
+        <span class="nav-dot" aria-hidden="true"></span>
+        <span>Characteristics Flow</span>
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">RISK</div>
+      <a class="nav-link" href="{% url 'fmea:risk_matrix' %}" data-nav-link>
+        <span class="nav-dot" aria-hidden="true"></span>
+        <span>Risk Matrix</span>
+      </a>
+      <a class="nav-link" href="{% url 'fmea:risk_trajectory_index' %}" data-nav-link>
+        <span class="nav-dot" aria-hidden="true"></span>
+        <span>Risk Trajectory & Propagation</span>
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">FMEA ANALYSIS</div>
+      <a class="nav-link" href="{% url 'fmea:dfmea_worksheet' %}" data-nav-link>
+        <span class="nav-dot" aria-hidden="true"></span>
+        <span>DFMEA</span>
+      </a>
+      <a class="nav-link" href="{% url 'fmea:pfmea_worksheet' %}" data-nav-link>
+        <span class="nav-dot" aria-hidden="true"></span>
+        <span>PFMEA</span>
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">FMEA ELEMENTS</div>
+      <a class="nav-link" href="{% url 'fmea:failure_mode_list' %}" data-nav-link>
+        <span class="nav-dot" aria-hidden="true"></span>
+        <span>Failure Modes</span>
+      </a>
+      <a class="nav-link" href="{% url 'fmea:failure_cause_list' %}" data-nav-link>
+        <span class="nav-dot" aria-hidden="true"></span>
+        <span>Causes</span>
+      </a>
+      <a class="nav-link" href="{% url 'fmea:failure_effect_list' %}" data-nav-link>
+        <span class="nav-dot" aria-hidden="true"></span>
+        <span>Effects</span>
+      </a>
+      <a class="nav-link" href="{% url 'fmea:prevention_control_list' %}" data-nav-link>
+        <span class="nav-dot" aria-hidden="true"></span>
+        <span>Preventive Controls</span>
+      </a>
+      <a class="nav-link" href="{% url 'fmea:detection_control_list' %}" data-nav-link>
+        <span class="nav-dot" aria-hidden="true"></span>
+        <span>Detection Controls</span>
+      </a>
+      <a class="nav-link" href="{% url 'fmea:action_list' %}" data-nav-link>
+        <span class="nav-dot" aria-hidden="true"></span>
+        <span>Actions</span>
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">VALIDATION & CHANGE</div>
+      <a class="nav-link" href="{% url 'fmea:validation_test_list' %}" data-nav-link>
+        <span class="nav-dot" aria-hidden="true"></span>
+        <span>Evidence & Tests</span>
+      </a>
+      <a class="nav-link" href="{% url 'fmea:change_list' %}" data-nav-link>
+        <span class="nav-dot" aria-hidden="true"></span>
+        <span>Change Impact</span>
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Import & Review</div>
+      <a class="nav-link" href="{% url 'fmea_review:session_list' %}" data-nav-link>
+        <span class="nav-dot" aria-hidden="true"></span>
+        <span>Import Sessions</span>
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Ishikawa / Cause Analysis</div>
+      <a class="nav-link" href="{% url 'fmea:cause_influence_list' %}" data-nav-link>
+        <span class="nav-dot" aria-hidden="true"></span>
+        <span>Cause Influences</span>
+      </a>
+    </div>
+  </nav>
+</aside>

@@ -1,0 +1,198 @@
+{% extends "fmea_app/base.html" %}
+{% load static %}
+
+{% block title %}Open FMEA{% endblock %}
+{% block topbar_title %}FMEA Workspace{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>FMEA Workspace</h1>
+    <p class="muted">Create, review, and maintain process or product FMEAs in the local PoC database.</p>
+  </div>
+  <div class="button-row">
+    <a class="button" href="{% url 'fmea_review:session_list' %}">Import XLSX</a>
+  </div>
+</div>
+
+<div class="grid">
+  {% include "fmea_app/_components/_stat_tile.html" with label="FMEA Projects" value=fmea_count detail="Total FMEA records" tile_class="span-3" %}
+  {% include "fmea_app/_components/_stat_tile.html" with label="Pending Review" value=pending_candidate_count detail=pending_review_detail tile_class="span-3" %}
+  <a class="stat-tile span-3" href="{% url 'fmea:risk_matrix' %}">
+    <span class="stat-label">High Risk Items</span>
+    <strong class="stat-value">{{ high_risk_failure_mode_count }}</strong>
+    <span class="stat-detail">High/very high Severity x Occurrence band, classic RPN - view Risk Matrix</span>
+  </a>
+  {% include "fmea_app/_components/_stat_tile.html" with label="Projects" value=project_count detail="Total FMEA Project records" tile_class="span-3" %}
+  {% include "fmea_app/_components/_stat_tile.html" with label="Failure Modes" value=failure_mode_count detail="Across all FMEAs" tile_class="span-3" %}
+  {% include "fmea_app/_components/_stat_tile.html" with label="Actions" value=action_count detail="Total recommended actions" tile_class="span-3" %}
+
+  <section class="panel span-6">
+    <div class="panel-heading">
+      <h2>Actions Summary</h2>
+      <p class="muted">Computed from RecommendedAction status and due date, as of today.</p>
+    </div>
+    <div class="grid">
+      {% include "fmea_app/_components/_stat_tile.html" with label="Total" value=actions_total tile_class="span-4" %}
+      {% include "fmea_app/_components/_stat_tile.html" with label="Overdue" value=actions_overdue tile_class="span-4" %}
+      {% include "fmea_app/_components/_stat_tile.html" with label="Due Soon" value=actions_due_soon detail="Within 7 days" tile_class="span-4" %}
+    </div>
+  </section>
+
+  <section class="panel span-6">
+    <div class="panel-heading">
+      <h2>Risk Evaluation Trend</h2>
+      <p class="muted">RiskEvaluation count per day, trailing 30 days.</p>
+    </div>
+    <canvas id="risk-trend-chart" height="120"></canvas>
+  </section>
+
+  <section class="panel span-6">
+    <div class="panel-heading">
+      <h2>Cause Influences by Status</h2>
+      <p class="muted">Counts grouped from current CauseInfluence records.</p>
+    </div>
+    <div class="status-breakdown">
+      {% for row in cause_status_breakdown %}
+        <div class="status-row">
+          {% include "fmea_app/_components/_status_badge.html" with label=row.label status=row.status %}
+          <progress class="status-progress" max="100" value="{{ row.percent }}" aria-label="{{ row.label }} count"></progress>
+          <strong>{{ row.count }}</strong>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="panel span-7" id="fmea-projects">
+    <div class="panel-heading">
+      <h2>FMEAs</h2>
+    </div>
+    <div class="table-shell">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Project</th>
+            <th>Type</th>
+            <th>Lifecycle</th>
+            <th>Stable ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for fmea in fmeas %}
+          <tr>
+            <td><a href="{% url 'fmea:fmea_detail' fmea.stable_id %}">{{ fmea.name }}</a></td>
+            <td>{{ fmea.project|default:"" }}</td>
+            <td>{{ fmea.get_fmea_type_display }}</td>
+            <td>{% include "fmea_app/_components/_status_badge.html" with label=fmea.get_lifecycle_display status=fmea.lifecycle %}</td>
+            <td><code>{{ fmea.stable_id }}</code></td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" class="muted">No FMEA records.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel span-5">
+    <div class="panel-heading">
+      <h2>Recent Activity</h2>
+    </div>
+    {% if recent_activity %}
+      <ol class="activity-list">
+        {% for activity in recent_activity %}
+          <li class="activity-item">
+            <div>
+              <p class="activity-title">{{ activity.kind }} - {{ activity.title }}</p>
+              <div class="activity-meta">{{ activity.description }}<br><code>{{ activity.stable_id }}</code></div>
+            </div>
+            <time class="activity-meta">{{ activity.when }}</time>
+          </li>
+        {% endfor %}
+      </ol>
+    {% else %}
+      <p class="muted">No reviewed activity yet.</p>
+    {% endif %}
+  </section>
+
+  <section class="panel span-4">
+    <div class="panel-heading">
+      <h2>Create FMEA</h2>
+    </div>
+    <form class="compact" method="post" action="{% url 'fmea:create_fmea' %}">
+      {% csrf_token %}
+      <label>Name {{ fmea_form.name }}</label>
+      <label>Project {{ fmea_form.project }}</label>
+      <label>Type {{ fmea_form.fmea_type }}</label>
+      <label>Scope {{ fmea_form.scope }}</label>
+      <button class="button primary" type="submit">Create FMEA</button>
+    </form>
+  </section>
+
+  <section class="panel span-4">
+    <div class="panel-heading">
+      <h2>Create Project</h2>
+    </div>
+    <form class="compact" method="post" action="{% url 'fmea:create_project' %}">
+      {% csrf_token %}
+      <label>Name {{ project_form.name }}</label>
+      <label>Project Code {{ project_form.project_code }}</label>
+      <label>Status {{ project_form.status }}</label>
+      <label>Description {{ project_form.description }}</label>
+      <button class="button" type="submit">Create Project</button>
+    </form>
+  </section>
+
+  <section class="panel span-4">
+    <div class="panel-heading">
+      <h2>Import Workbooks</h2>
+      <p class="muted">Stage XLSX cells as review candidates before they become controlled FMEA objects.</p>
+    </div>
+    <form class="compact" action="{% url 'fmea_review:upload_xlsx' %}" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <label>Workbook <input type="file" name="workbook" accept=".xlsx,.xlsm"></label>
+      <button class="button" type="submit">Upload for Review</button>
+    </form>
+  </section>
+</div>
+
+{{ risk_trend_data|json_script:"risk-trend-data" }}
+<script src="{% static 'fmea_app/vendor/chartjs/chart.umd.min.js' %}"></script>
+<script>
+  (function () {
+    var data = JSON.parse(document.getElementById("risk-trend-data").textContent);
+    var canvas = document.getElementById("risk-trend-chart");
+    if (!canvas || typeof Chart === "undefined") {
+      return;
+    }
+    new Chart(canvas.getContext("2d"), {
+      type: "bar",
+      data: {
+        labels: data.labels,
+        datasets: [
+          {
+            label: "Risk Evaluations",
+            data: data.counts,
+            backgroundColor: "#4f7cff",
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { precision: 0 },
+          },
+        },
+        plugins: {
+          legend: { display: false },
+        },
+      },
+    });
+  })();
+</script>
+{% endblock %}

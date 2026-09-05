@@ -1,0 +1,98 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}Import Session{% endblock %}
+{% block topbar_title %}Import Session{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>{{ session.source_filename }}</h1>
+    <p class="muted"><code>{{ session.document_version }}</code></p>
+  </div>
+  <a class="button" href="{% url 'fmea_review:session_list' %}">Back</a>
+</div>
+
+<section class="stack section-block">
+  <div class="toolbar">
+    <div>
+      <h2>Detected FMEA Rows</h2>
+      <p class="muted">Logical row groups reconstructed from workbook structure.</p>
+    </div>
+  </div>
+  <div class="table-shell">
+  <table>
+    <thead>
+      <tr>
+        <th>Source</th>
+        <th>Failure Mode</th>
+        <th>Function</th>
+        <th>Cause</th>
+        <th>Controls</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row_group in session.row_groups.all %}
+      <tr>
+        <td>
+          <a href="{% url 'fmea_review:row_group_detail' row_group.stable_id %}">{{ row_group.source_range }}</a>
+        </td>
+        <td>{{ row_group.detected_fields.FailureMode|join:", " }}</td>
+        <td>{{ row_group.detected_fields.Function|join:", " }}</td>
+        <td>{{ row_group.detected_fields.FailureCause|join:", " }}</td>
+        <td>
+          {{ row_group.detected_fields.PreventionControl|join:", " }}
+          {% if row_group.detected_fields.DetectionControl %}
+            <br>{{ row_group.detected_fields.DetectionControl|join:", " }}
+          {% endif %}
+        </td>
+        <td><span class="status">{{ row_group.get_review_status_display }}</span></td>
+        <td><a class="button" href="{% url 'fmea_review:row_group_detail' row_group.stable_id %}">Review Row</a></td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="7" class="muted">No row groups detected. Use the candidate list below.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<h2>Cell Candidates</h2>
+<div class="table-shell">
+<table>
+  <thead>
+    <tr>
+      <th>Value</th>
+      <th>Suggested Type</th>
+      <th>Source</th>
+      <th>Row Group</th>
+      <th>Status</th>
+      <th>Accepted Object</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for candidate in session.candidates.all %}
+    <tr>
+      <td><a href="{% url 'fmea_review:candidate_detail' candidate.stable_id %}">{{ candidate.extracted_value }}</a></td>
+      <td>{{ candidate.suggested_domain_type }}</td>
+      <td>{{ candidate.sheet_name }} row {{ candidate.row_number }}, {{ candidate.column_name }}</td>
+      <td>
+        {% if candidate.row_group %}
+          <a href="{% url 'fmea_review:row_group_detail' candidate.row_group.stable_id %}">{{ candidate.row_group.source_range }}</a>
+        {% endif %}
+      </td>
+      <td><span class="status">{{ candidate.get_review_status_display }}</span></td>
+      <td><code>{{ candidate.accepted_object_stable_id|default:"" }}</code></td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="6" class="muted">No candidates.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

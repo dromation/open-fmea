@@ -1,0 +1,79 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}Change Impact - Open FMEA{% endblock %}
+{% block topbar_title %}Change Impact{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>Change Log</h1>
+    <p class="muted">Design, supplier, regulatory, process, and material changes and their affected Failure Modes.</p>
+  </div>
+  <a class="button primary" href="{% url 'fmea:new_change' %}">New Change</a>
+</div>
+
+<form class="panel compact section-block" method="get" action="{% url 'fmea:change_list' %}">
+  <div class="field-grid">
+    <label>Type
+      <select name="change_type">
+        <option value="">All</option>
+        {% for value, label in change_type_choices %}
+          <option value="{{ value }}" {% if change_type == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Impact Level
+      <select name="impact_level">
+        <option value="">All</option>
+        {% for value, label in impact_level_choices %}
+          <option value="{{ value }}" {% if impact_level == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Status
+      <select name="status">
+        <option value="">All</option>
+        {% for value, label in status_choices %}
+          <option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <div>
+      <button class="button" type="submit">Apply</button>
+    </div>
+  </div>
+</form>
+
+<section class="panel">
+  <div class="table-shell">
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Type</th>
+          <th>Impact Level</th>
+          <th>Status</th>
+          <th>Owner</th>
+          <th>Target Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for change in changes %}
+        <tr>
+          <td><a href="{% url 'fmea:change_detail' change.stable_id %}">{{ change.title }}</a></td>
+          <td>{{ change.get_change_type_display }}</td>
+          <td>{{ change.get_impact_level_display }}</td>
+          <td><span class="status status-{{ change.status }}">{{ change.get_status_display }}</span></td>
+          <td>{{ change.owner|default:"" }}</td>
+          <td>{{ change.target_date|default:"" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="muted">No changes recorded yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

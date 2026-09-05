@@ -1,0 +1,50 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}Risk Matrix Cell - Open FMEA{% endblock %}
+{% block topbar_title %}Risk Matrix{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>Severity {{ severity }} x Occurrence {{ occurrence }}</h1>
+    <p class="muted">{{ method_label }} - failure modes placed in this cell by their most recent evaluation under this method.</p>
+  </div>
+  <div class="button-row">
+    <a class="button" href="{% url 'fmea:risk_matrix' %}?method={{ method }}">Back to Matrix</a>
+  </div>
+</div>
+
+<div class="table-shell">
+  <table>
+    <thead>
+      <tr>
+        <th>Failure Mode</th>
+        <th>FMEA</th>
+        <th>Score / Band</th>
+        <th>Trajectory</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for evaluation in evaluations %}
+      <tr>
+        <td><a href="{% url 'fmea:fmea_detail' evaluation.failure_mode.fmea.stable_id %}">{{ evaluation.failure_mode.name }}</a></td>
+        <td>{{ evaluation.failure_mode.fmea.name }}</td>
+        <td>
+          {% if evaluation.result.score %}
+            <span>RPN {{ evaluation.result.score }}</span>
+            {% include "fmea_app/_components/_status_badge.html" with label=evaluation.result.classification|title status=evaluation.result.classification %}
+          {% else %}
+            {% include "fmea_app/_components/_status_badge.html" with label=evaluation.result.priority|title status=evaluation.result.priority %}
+          {% endif %}
+        </td>
+        <td><a href="{% url 'fmea:risk_trajectory' evaluation.failure_mode.stable_id %}">View Trajectory</a></td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4" class="muted">No failure modes in this cell.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

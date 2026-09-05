@@ -1,0 +1,76 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}Cause Influence - Open FMEA{% endblock %}
+{% block topbar_title %}Cause Influence{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>{{ influence.influence_type }}</h1>
+    <p class="muted">{{ influence.source_type }} to {{ influence.target_type }}</p>
+  </div>
+  <div class="button-row">
+    <a class="button" href="{% url 'fmea:cause_influence_list' %}">Cause Influences</a>
+    {% if influence.target_type == "FailureMode" %}
+      <a class="button" href="{% url 'fmea:ishikawa_board' influence.target_id %}">Ishikawa</a>
+    {% endif %}
+  </div>
+</div>
+
+<div class="split">
+  <section class="stack">
+    <table>
+      <tbody>
+        <tr><th>Status</th><td><span class="status">{{ influence.get_status_display }}</span></td></tr>
+        <tr><th>Category</th><td>{{ item.category_name }}</td></tr>
+        <tr><th>Source</th><td>{{ influence.source_type }}: {{ item.source_label }}<br><code>{{ influence.source_id }}</code></td></tr>
+        <tr><th>Target</th><td>{{ influence.target_type }}: {{ item.target_label }}<br><code>{{ influence.target_id }}</code></td></tr>
+        <tr><th>Strength</th><td>{{ influence.strength|default:"" }}</td></tr>
+        <tr><th>Confidence</th><td>{{ influence.confidence|default:"" }}</td></tr>
+        <tr><th>Source Context</th><td>{{ influence.source_context }}</td></tr>
+        <tr><th>Evidence IDs</th><td>{{ influence.evidence_ids|join:", " }}</td></tr>
+        <tr><th>Review Note</th><td>{{ influence.review_note }}</td></tr>
+        <tr><th>Stable ID</th><td><code>{{ influence.stable_id }}</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <aside class="panel">
+    <h2>Transition Status</h2>
+    <form class="compact" method="post" action="{% url 'fmea:transition_cause_influence' influence.stable_id %}">
+      {% csrf_token %}
+      <label>New Status
+        <select name="new_status" required>
+          {% for status in legal_statuses %}
+            <option value="{{ status.value }}">{{ status.name|cut:"_"|title }}</option>
+          {% empty %}
+            <option value="">No legal transitions</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Cause Category
+        <select name="cause_category_id">
+          <option value="">Uncategorized</option>
+          {% for category in categories %}
+            <option value="{{ category.stable_id }}" {% if influence.cause_category_id == category.stable_id %}selected{% endif %}>{{ category.name }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      {% if influence.target_type == "FailureMode" %}
+        <label>Confirm Against Failure Cause
+          <select name="failure_cause_stable_id">
+            <option value="">Select when confirming root cause</option>
+            {% for cause in target_failure_causes %}
+              <option value="{{ cause.stable_id }}">{{ cause.name }}</option>
+            {% endfor %}
+          </select>
+        </label>
+      {% endif %}
+      <label>Review Note
+        <textarea name="review_note" rows="4"></textarea>
+      </label>
+      <button class="button primary" type="submit">Apply Transition</button>
+    </form>
+  </aside>
+</div>
+{% endblock %}

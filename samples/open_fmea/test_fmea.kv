@@ -1,0 +1,88 @@
+#:import KivyLexer kivy.extras.highlight.KivyLexer
+#:import Factory kivy.factory.Factory
+
+MDBoxLayout:
+    screen_manager: sm
+    toolbar: toolbar
+    size: root.width, root.height
+    orientation: "vertical"
+    MDTopAppBar:
+        id: toolbar
+        use_overflow: True
+        #text: "Simple OpenCV"        
+        pos_hint: {"center_x": .5, "center_y": 0.93}
+        size_hint_x: 1
+        size_hint_y: 0.07
+        left_action_items: [["home"],["menu", lambda x: app.callback(x)],["file", lambda x: app.file_manager_open()]]
+        md_bg_color: app.theme_cls.primary_color
+
+    ScreenManager:
+        id: sm
+        size_hint_x: 1
+        size_hint_y: 0.86
+        pos_hint: {"center_x": .5, "center_y": 0.5}
+        transition: 'swipe'
+        MDScreen:
+            id: FMEAtable
+            name: 'FMEAtable'
+            size_hint: 1, 0.9
+            pos_hint: {"center_x": .5, "center_y": 0.5}
+            MDFloatLayout:
+                pos_hint: {"center_x": .5, "center_y": 0.5}
+
+                MDTextField:
+                    pos_hint: {"center_x": .5, "center_y": 0.5}
+                    size_hint: 0.2, 0.3
+                    hint_text: "FMEA table"
+            
+        
+        MDScreen:
+            id: FMEAcolumn
+            name: 'FMEAcolumn'
+            #size_hint: 1, 0.9
+            pos_hint: {"center_x": .5, "center_y": 0.5}
+            MDTabs:
+                #pos_hint: {"center_x": .5, "center_y": 0.5}
+
+                Tab:
+                    title: "tab1"
+                    MDFloatLayout:
+                        pos_hint: {"center_x": .5, "center_y": 0.5}
+
+                        MDTextField:
+                            pos_hint: {"center_x": .5, "center_y": 0.5}
+                            size_hint: 0.2, 0.3
+                            hint_text: "hello here"
+                Tab:
+                    title: "tab1"
+                    MDFloatLayout:
+                        pos_hint: {"center_x": .5, "center_y": 0.5}
+
+                        MDTextField:
+                            pos_hint: {"center_x": .5, "center_y": 0.5}
+                            size_hint: 0.2, 0.3
+                            hint_text: "hello here"
+    MDBoxLayout:
+        pos_hint: {"center_x": .5, "center_y": 0.1}
+        orientation: 'horizontal'
+        size_hint: 0.3, 0.1
+        MDIconButton:
+            id: fmea_seperate
+            pos_hint: {"center_x": .4, "center_y": 0.5}
+            md_bg_color: app.theme_cls.primary_color
+            name: 'fmea table'
+            text: "FMEA INPUT TABS"
+            icon: 'table-column'
+            on_release: sm.current = 'FMEAcolumn'
+        
+            
+        MDIconButton:
+            id: fmea_table
+            pos_hint: {"center_x": .6, "center_y": 0.5}
+            md_bg_color: app.theme_cls.primary_color
+
+            name: 'fmea table'
+            text: "FMEA Table"
+            icon: 'table-large'
+            on_release: sm.current = 'FMEAtable'
+        

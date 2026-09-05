@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dromation.github.io/open-fmea/schemas/ofef-1.0.schema.json",
+  "title": "Open-FMEA Exchange Format",
+  "type": "object",
+  "required": ["format", "schema_version", "document", "fmea", "entities", "relationships", "evaluations", "revisions"],
+  "properties": {
+    "format": {
+      "const": "open-fmea-exchange"
+    },
+    "schema_version": {
+      "const": "1.0"
+    },
+    "document": {
+      "$ref": "#/$defs/domainEntity"
+    },
+    "fmea": {
+      "$ref": "#/$defs/domainEntity"
+    },
+    "entities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/domainEntity"
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/domainEntity"
+      }
+    },
+    "evaluations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/domainEntity"
+      }
+    },
+    "revisions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/domainEntity"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "stableId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{7,127}$"
+    },
+    "domainEntity": {
+      "type": "object",
+      "required": ["type", "stable_id", "schema_version", "revision"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stable_id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "schema_version": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": true,
+      "not": {
+        "required": ["id"]
+      }
+    }
+  }
+}

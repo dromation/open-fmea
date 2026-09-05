@@ -1,0 +1,63 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}{{ validation_test.name }} - Open FMEA{% endblock %}
+{% block topbar_title %}Validation Test{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>{{ validation_test.name }}</h1>
+    <p class="muted">{{ validation_test.get_test_type_display }} &middot; {{ validation_test.get_lifecycle_gate_display }}</p>
+  </div>
+  <div class="button-row">
+    <a class="button" href="{% url 'fmea:validation_test_list' %}">Evidence & Tests</a>
+    <a class="button" href="{% url 'fmea:fmea_detail' validation_test.failure_mode.fmea.stable_id %}">Back to FMEA</a>
+  </div>
+</div>
+
+<div class="grid">
+  <section class="panel span-8">
+    <h2>Details</h2>
+    <table>
+      <tbody>
+        <tr><th>Test Type</th><td>{{ validation_test.get_test_type_display }}</td></tr>
+        <tr><th>Method</th><td>{{ validation_test.method|default:"" }}</td></tr>
+        <tr><th>Objective</th><td>{{ validation_test.objective|default:"" }}</td></tr>
+        <tr><th>Nominal / Target</th><td>{{ validation_test.nominal_target|default:"" }}</td></tr>
+        <tr><th>Acceptance Criteria</th><td>{{ validation_test.acceptance_criteria|default:"" }}</td></tr>
+        <tr><th>Result Status</th><td><span class="status status-{{ validation_test.result_status }}">{{ validation_test.get_result_status_display }}</span></td></tr>
+        <tr><th>Planned Date</th><td>{{ validation_test.planned_date|default:"" }}</td></tr>
+        <tr><th>Executed Date</th><td>{{ validation_test.executed_date|default:"" }}</td></tr>
+        <tr><th>Priority</th><td>{{ validation_test.get_priority_display }}</td></tr>
+        <tr><th>Owner</th><td>{{ validation_test.owner|default:"" }}</td></tr>
+        <tr><th>Lifecycle Gate</th><td>{{ validation_test.get_lifecycle_gate_display }}</td></tr>
+        <tr><th>Status</th><td><span class="status status-{{ validation_test.status }}">{{ validation_test.get_status_display }}</span></td></tr>
+        <tr>
+          <th>Failure Mode</th>
+          <td><a href="{% url 'fmea:fmea_detail' validation_test.failure_mode.fmea.stable_id %}">{{ validation_test.failure_mode.name }}</a></td>
+        </tr>
+        <tr>
+          <th>Recommended Action</th>
+          <td>
+            {% if validation_test.recommended_action %}
+              <a href="{% url 'fmea:action_detail' validation_test.recommended_action.stable_id %}">{{ validation_test.recommended_action.name }}</a>
+            {% else %}
+              <span class="muted">Not linked to an action</span>
+            {% endif %}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <aside class="panel span-4">
+    <h2>Identity</h2>
+    <table>
+      <tbody>
+        <tr><th>Stable ID</th><td><code>{{ validation_test.stable_id }}</code></td></tr>
+        <tr><th>Revision</th><td>{{ validation_test.revision }}</td></tr>
+      </tbody>
+    </table>
+  </aside>
+</div>
+{% endblock %}

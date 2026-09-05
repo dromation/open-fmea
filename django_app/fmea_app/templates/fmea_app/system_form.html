@@ -1,0 +1,26 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}{% if system %}Edit System{% else %}New System{% endif %} - Open FMEA{% endblock %}
+{% block topbar_title %}{% if system %}Edit System{% else %}New System{% endif %}{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>{% if system %}Edit {{ system.name }}{% else %}New System{% endif %}</h1>
+    <p class="muted">A container above Products and Processes; supports nested Systems via Parent.</p>
+  </div>
+  <a class="button" href="{% url 'fmea:system_list' %}">Systems</a>
+</div>
+
+<form class="panel compact" method="post" action="{% if system %}{% url 'fmea:system_edit' system.stable_id %}{% else %}{% url 'fmea:system_create' %}{% endif %}">
+  {% csrf_token %}
+  <div class="field-grid">
+    <label>Name {{ form.name }}</label>
+    <label>Code {{ form.code }}</label>
+    <label>Parent {{ form.parent }}</label>
+    <label>Status {{ form.status }}</label>
+  </div>
+  <label>Description {{ form.description }}</label>
+  <button class="button primary" type="submit">{% if system %}Save Changes{% else %}Create System{% endif %}</button>
+</form>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}{{ process_characteristic.name }} - Open FMEA{% endblock %}
+{% block topbar_title %}Process Characteristic{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>{{ process_characteristic.name }}</h1>
+    <p class="muted">{{ process_characteristic.operation }} / {{ process_characteristic.operation.process }}</p>
+  </div>
+  <div class="button-row">
+    <a class="button" href="{% url 'fmea:process_characteristic_list' %}">Process Characteristics</a>
+    <a class="button" href="{% url 'fmea:process_flow' process_characteristic.operation.process.stable_id %}?operation_id={{ process_characteristic.operation.stable_id|urlencode }}">View in Process Flow</a>
+    <a class="button primary" href="{% url 'fmea:new_cause_influence' %}?source_type=ProcessCharacteristic&source_id={{ process_characteristic.stable_id|urlencode }}">Add Influence</a>
+  </div>
+</div>
+
+<div class="split">
+  <section class="stack">
+    <table>
+      <tbody>
+        <tr><th>Name</th><td>{{ process_characteristic.name }}</td></tr>
+        <tr><th>Description</th><td>{{ process_characteristic.description }}</td></tr>
+        <tr><th>Operation</th><td>{{ process_characteristic.operation }}</td></tr>
+        <tr><th>Process</th><td>{{ process_characteristic.operation.process }}</td></tr>
+        <tr><th>Default Category</th><td>{{ category.name|default:"Uncategorized" }}</td></tr>
+        <tr><th>Attributes</th><td><code>{{ process_characteristic.attributes }}</code></td></tr>
+        <tr><th>Control Type</th><td>{{ process_characteristic.get_control_type_display|default:"" }}</td></tr>
+        <tr><th>Method</th><td>{{ process_characteristic.method|default:"" }}</td></tr>
+        <tr><th>Resource / Equipment</th><td>{{ process_characteristic.resource_equipment|default:"" }}</td></tr>
+        <tr><th>Frequency / Trigger</th><td>{{ process_characteristic.frequency_trigger|default:"" }}</td></tr>
+        <tr><th>Status</th><td><span class="status status-{{ process_characteristic.status }}">{{ process_characteristic.get_status_display }}</span></td></tr>
+        <tr><th>Effectiveness</th><td>{{ process_characteristic.get_effectiveness_display }}</td></tr>
+        <tr><th>Owner</th><td>{{ process_characteristic.owner|default:"" }}</td></tr>
+        <tr><th>Review Due</th><td>{{ process_characteristic.review_due|default:"" }}</td></tr>
+        <tr><th>Reaction Plan</th><td>{{ process_characteristic.reaction_plan|default:"" }}</td></tr>
+        <tr><th>Stable ID</th><td><code>{{ process_characteristic.stable_id }}</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <aside class="panel">
+    <h2>Incoming Influences</h2>
+    <table>
+      <tbody>
+        {% for row in incoming_influences %}
+        <tr>
+          <td><a href="{% url 'fmea:cause_influence_detail' row.influence.stable_id %}">{{ row.influence.influence_type }}</a><br><span class="muted">{{ row.source_label }}</span></td>
+        </tr>
+        {% empty %}
+        <tr><td class="muted">No incoming influences.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </aside>
+</div>
+
+<section class="panel section-gap">
+  <h2>Outgoing Influences</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Influence</th>
+        <th>Target</th>
+        <th>Status</th>
+        <th>Category</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in outgoing_influences %}
+      <tr>
+        <td><a href="{% url 'fmea:cause_influence_detail' row.influence.stable_id %}">{{ row.influence.influence_type }}</a></td>
+        <td>{{ row.influence.target_type }}<br><span class="muted">{{ row.target_label }}</span></td>
+        <td><span class="status">{{ row.influence.get_status_display }}</span></td>
+        <td>{{ row.category_name }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4" class="muted">No outgoing influences.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

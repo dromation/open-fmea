@@ -1,0 +1,465 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}{{ fmea.name }} - Open FMEA{% endblock %}
+{% block topbar_title %}{{ fmea.name }}{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>{{ fmea.name }}</h1>
+    <p class="muted">{{ fmea.scope }}</p>
+  </div>
+  <div class="button-row">
+    <a class="button" href="{% url 'fmea:dashboard' %}">Workspace</a>
+    <a class="button" href="{% url 'fmea_review:session_list' %}">Import XLSX</a>
+    <a class="button" href="/admin/fmea_app/fmea/?q={{ fmea.stable_id|urlencode }}">Admin Edit</a>
+  </div>
+</div>
+
+<div class="grid">
+  <section class="panel span-8">
+    <h2>Analysis Context</h2>
+    <table>
+      <tbody>
+        <tr><th>Project</th><td>{{ fmea.project|default:"" }}</td></tr>
+        <tr><th>Type</th><td>{{ fmea.get_fmea_type_display }}</td></tr>
+        <tr><th>Lifecycle</th><td><span class="status">{{ fmea.get_lifecycle_display }}</span></td></tr>
+        <tr><th>Team</th><td>{{ fmea.team|join:", " }}</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <aside class="panel span-4">
+    <h2>Identity</h2>
+    <table>
+      <tbody>
+        <tr><th>Stable ID</th><td><code>{{ fmea.stable_id }}</code></td></tr>
+        <tr><th>Revision</th><td>{{ fmea.revision }}</td></tr>
+        <tr><th>Failure modes</th><td>{{ failure_modes|length }}</td></tr>
+      </tbody>
+    </table>
+  </aside>
+
+  <section class="panel span-12">
+    <div class="panel-heading">
+      <h2>Processes</h2>
+      <p class="muted">Process flow and process characteristics for this FMEA.</p>
+    </div>
+    <div class="table-shell">
+    <table>
+      <thead>
+        <tr>
+          <th>Process</th>
+          <th>Process Code</th>
+          <th>Operations</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for process in processes %}
+        <tr>
+          <td>{{ process.name }}</td>
+          <td>{{ process.process_code }}</td>
+          <td>{{ process.operations.all|length }}</td>
+          <td><a class="button" href="{% url 'fmea:process_flow' process.stable_id %}">View Process Flow</a></td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" class="muted">No processes defined yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section class="panel span-12">
+    <div class="panel-heading">
+      <h2>Functions</h2>
+      <p class="muted">Functions for this FMEA's products and operations.</p>
+    </div>
+    <div class="table-shell">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Product</th>
+          <th>Operation</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for function in functions %}
+        <tr>
+          <td>{{ function.name }}</td>
+          <td>{{ function.description }}</td>
+          <td>{{ function.product|default:"" }}</td>
+          <td>{{ function.operation|default:"" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" class="muted">No functions defined yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    <form class="compact" method="post" action="{% url 'fmea:add_function' fmea.stable_id %}">
+      {% csrf_token %}
+      <div class="field-grid">
+        <label>Name {{ function_form.name }}</label>
+        <label>Description {{ function_form.description }}</label>
+        <label>Product {{ function_form.product }}</label>
+        <label>Operation {{ function_form.operation }}</label>
+        <div>
+          <button class="button" type="submit">Add Function</button>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <section class="panel span-12">
+    <div class="toolbar">
+      <div>
+        <h2>FMEA Worksheet</h2>
+        <p class="muted">Primary table view for functions, requirements, failure modes, effects, causes, controls, and risk ratings.</p>
+      </div>
+    </div>
+    <div class="worksheet-wrap">
+      <table class="worksheet">
+        <thead>
+          <tr>
+            <th class="wide">Function</th>
+            <th class="wide">Requirement</th>
+            <th class="wide">Product Characteristics</th>
+            <th class="wide">Classification</th>
+            <th class="wide">Failure Mode</th>
+            <th class="wide">Effects</th>
+            <th class="wide">Cause</th>
+            <th class="wide">Prevention Controls</th>
+            <th class="wide">Detection Controls</th>
+            <th class="rating">S</th>
+            <th class="rating">O</th>
+            <th class="rating">D</th>
+            <th>Risk</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in worksheet_rows %}
+          <tr>
+            <td class="wide">{{ row.function|default:"" }}</td>
+            <td class="wide">{{ row.requirement|default:"" }}</td>
+            <td class="wide">
+              <span class="cell-list">
+                {% for characteristic in row.product_characteristics %}
+                  <span class="cell-item">{{ characteristic.name }}<span class="cell-detail">{{ characteristic.description }}</span></span>
+                {% empty %}
+                  <span class="muted">No product characteristics</span>
+                {% endfor %}
+              </span>
+            </td>
+            <td class="wide">
+              <span class="cell-list">
+                {% for characteristic in row.product_characteristics %}
+                  <span class="cell-item">{{ characteristic.primary_classification.name|default:"—" }}</span>
+                {% empty %}
+                  <span class="muted">&mdash;</span>
+                {% endfor %}
+              </span>
+            </td>
+            <td class="wide">
+              <strong>{{ row.failure_mode.name }}</strong>
+              <span class="cell-detail">{{ row.failure_mode.description }}</span>
+            </td>
+            <td class="wide">
+              <span class="cell-list">
+                {% for effect in row.effects %}
+                  <span class="cell-item">{{ effect.name }}<span class="cell-detail">{{ effect.description }}</span></span>
+                {% empty %}
+                  <span class="muted">No effects</span>
+                {% endfor %}
+              </span>
+            </td>
+            <td class="wide">
+              {% if row.cause %}
+                <strong>{{ row.cause.name }}</strong>
+                <span class="cell-detail">{{ row.cause.description }}</span>
+              {% else %}
+                <span class="muted">No cause</span>
+              {% endif %}
+            </td>
+            <td class="wide">
+              <span class="cell-list">
+                {% for control in row.prevention_controls %}
+                  <span class="cell-item">{{ control.name }}<span class="cell-detail">{{ control.description }}</span></span>
+                {% empty %}
+                  <span class="muted">No prevention controls</span>
+                {% endfor %}
+              </span>
+            </td>
+            <td class="wide">
+              <span class="cell-list">
+                {% for control in row.detection_controls %}
+                  <span class="cell-item">{{ control.name }}<span class="cell-detail">{{ control.description }}</span></span>
+                {% empty %}
+                  <span class="muted">No detection controls</span>
+                {% endfor %}
+              </span>
+            </td>
+            <td class="rating">{{ row.severity }}</td>
+            <td class="rating">{{ row.occurrence }}</td>
+            <td class="rating">{{ row.detection }}</td>
+            <td>
+              {% if row.result %}
+                <span class="risk-{{ row.result_class }}">{{ row.result }}</span>
+              {% else %}
+                <span class="muted">Not evaluated</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="12" class="muted">No worksheet rows yet. Add a failure mode below or import an XLSX workbook for review.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel span-12">
+    <h2>Add Failure Mode</h2>
+    <form class="compact" method="post" action="{% url 'fmea:add_failure_mode' fmea.stable_id %}">
+      {% csrf_token %}
+      <div class="field-grid">
+        <label>Name {{ failure_mode_form.name }}</label>
+        <label>Description {{ failure_mode_form.description }}</label>
+        <label>Function {{ failure_mode_form.function }}</label>
+        <div>
+          <button class="button primary" type="submit">Add Failure Mode</button>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <section class="span-12 stack">
+    {% for failure_mode in failure_modes %}
+    <article class="panel">
+      <div class="toolbar">
+        <div>
+          <h2>{{ failure_mode.name }}</h2>
+          <p class="muted">{{ failure_mode.description }}</p>
+        </div>
+        <div class="button-row">
+          <a class="button" href="{% url 'fmea:ishikawa_board' failure_mode.stable_id %}">Ishikawa</a>
+          <a class="button" href="{% url 'fmea:new_cause_influence' %}?target_type=FailureMode&target_id={{ failure_mode.stable_id|urlencode }}">Add Influence</a>
+          {% with latest=failure_mode.risk_evaluations.first %}
+            {% if latest %}
+              {% if latest.result.score %}
+                <span class="risk-{{ latest.result.classification }}">RPN {{ latest.result.score }}</span>
+              {% elif latest.result.priority %}
+                <span class="risk-{{ latest.result.priority }}">{{ latest.result.priority|upper }}</span>
+              {% endif %}
+            {% else %}
+              <span class="muted">Not evaluated</span>
+            {% endif %}
+          {% endwith %}
+        </div>
+      </div>
+
+      <div class="grid">
+        <section class="span-4">
+          <h3>Effects</h3>
+          <table>
+            <tbody>
+              {% for effect in failure_mode.effects.all %}
+              <tr><td>{{ effect.name }}<br><span class="muted">{{ effect.description }}</span></td></tr>
+              {% empty %}
+              <tr><td class="muted">No effects.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <form class="compact" method="post" action="{% url 'fmea:add_failure_effect' failure_mode.stable_id %}">
+            {% csrf_token %}
+            <label>Name {{ effect_form.name }}</label>
+            <label>Description {{ effect_form.description }}</label>
+            <button class="button" type="submit">Add Effect</button>
+          </form>
+        </section>
+
+        <section class="span-4">
+          <h3>Causes</h3>
+          <table>
+            <tbody>
+              {% for cause in failure_mode.causes.all %}
+              <tr>
+                <td>
+                  <strong>{{ cause.name }}</strong><br>
+                  <span class="muted">{{ cause.description }}</span>
+                  <div class="muted">Prevention: {{ cause.prevention_controls.count }} / Detection: {{ cause.detection_controls.count }}</div>
+                </td>
+              </tr>
+              {% empty %}
+              <tr><td class="muted">No causes.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <form class="compact" method="post" action="{% url 'fmea:add_failure_cause' failure_mode.stable_id %}">
+            {% csrf_token %}
+            <label>Name {{ cause_form.name }}</label>
+            <label>Description {{ cause_form.description }}</label>
+            <button class="button" type="submit">Add Cause</button>
+          </form>
+        </section>
+
+        <section class="span-4">
+          <h3>Risk Evaluation</h3>
+          <form class="compact" method="post" action="{% url 'fmea:evaluate_failure' failure_mode.stable_id %}">
+            {% csrf_token %}
+            <label>Method {{ risk_form.definition }}</label>
+            <div class="field-grid">
+              <label>S {{ risk_form.severity }}</label>
+              <label>O {{ risk_form.occurrence }}</label>
+              <label>D {{ risk_form.detection }}</label>
+            </div>
+            <button class="button" type="submit">Save Evaluation</button>
+          </form>
+        </section>
+      </div>
+
+      <div class="grid section-gap">
+        <section class="span-12">
+          <h3>Actions (not tied to a specific cause)</h3>
+          <div class="table-shell">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Responsible</th>
+                <th>Due Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for action in failure_mode.recommended_actions.all %}
+              <tr>
+                <td><a href="{% url 'fmea:action_detail' action.stable_id %}">{{ action.name }}</a></td>
+                <td><span class="status status-{{ action.status }}">{{ action.get_status_display }}</span></td>
+                <td>{{ action.responsible_role|default:"" }}</td>
+                <td>{{ action.due_date|default:"" }}</td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="4" class="muted">No actions not tied to a specific cause yet.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          </div>
+          <form class="compact" method="post" action="{% url 'fmea:add_action_to_failure_mode' failure_mode.stable_id %}">
+            {% csrf_token %}
+            <div class="field-grid">
+              <label>Name {{ action_form.name }}</label>
+              <label>Description {{ action_form.description }}</label>
+              <label>Responsible {{ action_form.responsible_role }}</label>
+              <label>Status {{ action_form.status }}</label>
+              <label>Due Date {{ action_form.due_date }}</label>
+              <div>
+                <button class="button" type="submit">Add Action</button>
+              </div>
+            </div>
+          </form>
+        </section>
+      </div>
+
+      {% for cause in failure_mode.causes.all %}
+      <div class="grid section-gap">
+        <section class="span-6">
+          <h3>Prevention Controls for {{ cause.name }}</h3>
+          <table>
+            <tbody>
+              {% for prevention in cause.prevention_controls.all %}
+              <tr><td>{{ prevention.name }}<br><span class="muted">{{ prevention.description }}</span></td></tr>
+              {% empty %}
+              <tr><td class="muted">No prevention controls.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <form class="compact" method="post" action="{% url 'fmea:add_prevention_control' cause.stable_id %}">
+            {% csrf_token %}
+            <label>Name {{ prevention_form.name }}</label>
+            <label>Description {{ prevention_form.description }}</label>
+            <button class="button" type="submit">Add Prevention</button>
+          </form>
+        </section>
+
+        <section class="span-6">
+          <h3>Detection Controls for {{ cause.name }}</h3>
+          <table>
+            <tbody>
+              {% for detection in cause.detection_controls.all %}
+              <tr><td>{{ detection.name }}<br><span class="muted">{{ detection.description }}</span></td></tr>
+              {% empty %}
+              <tr><td class="muted">No detection controls.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <form class="compact" method="post" action="{% url 'fmea:add_detection_control' cause.stable_id %}">
+            {% csrf_token %}
+            <label>Name {{ detection_form.name }}</label>
+            <label>Description {{ detection_form.description }}</label>
+            <button class="button" type="submit">Add Detection</button>
+          </form>
+        </section>
+      </div>
+
+      <div class="grid section-gap">
+        <section class="span-12">
+          <h3>Actions for {{ cause.name }}</h3>
+          <div class="table-shell">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Responsible</th>
+                <th>Due Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for action in cause.recommended_actions.all %}
+              <tr>
+                <td><a href="{% url 'fmea:action_detail' action.stable_id %}">{{ action.name }}</a></td>
+                <td><span class="status status-{{ action.status }}">{{ action.get_status_display }}</span></td>
+                <td>{{ action.responsible_role|default:"" }}</td>
+                <td>{{ action.due_date|default:"" }}</td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="4" class="muted">No actions for this cause yet.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          </div>
+          <form class="compact" method="post" action="{% url 'fmea:add_action_to_cause' cause.stable_id %}">
+            {% csrf_token %}
+            <div class="field-grid">
+              <label>Name {{ action_form.name }}</label>
+              <label>Description {{ action_form.description }}</label>
+              <label>Responsible {{ action_form.responsible_role }}</label>
+              <label>Status {{ action_form.status }}</label>
+              <label>Due Date {{ action_form.due_date }}</label>
+              <div>
+                <button class="button" type="submit">Add Action</button>
+              </div>
+            </div>
+          </form>
+        </section>
+      </div>
+      {% endfor %}
+    </article>
+    {% empty %}
+    <section class="panel">
+      <p class="muted">No failure modes yet. Add the first one above or import an XLSX workbook for review.</p>
+    </section>
+    {% endfor %}
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}Risk Trajectory & Propagation - Open FMEA{% endblock %}
+{% block topbar_title %}Risk Trajectory & Propagation{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>Risk Trajectory & Propagation</h1>
+    <p class="muted">Failure Modes with a recorded evaluation history, oldest to newest.</p>
+  </div>
+  <a class="button" href="{% url 'fmea:risk_matrix' %}">Risk Matrix</a>
+</div>
+
+<div class="table-shell">
+  <table>
+    <thead>
+      <tr>
+        <th>Failure Mode</th>
+        <th>FMEA</th>
+        <th>Evaluations</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for failure_mode in failure_modes %}
+      <tr>
+        <td><a href="{% url 'fmea:risk_trajectory' failure_mode.stable_id %}">{{ failure_mode.name }}</a></td>
+        <td><a href="{% url 'fmea:fmea_detail' failure_mode.fmea.stable_id %}">{{ failure_mode.fmea.name }}</a></td>
+        <td>{{ failure_mode.evaluation_count }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="3" class="muted">No failure modes have a recorded evaluation yet.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}New Process Characteristic - Open FMEA{% endblock %}
+{% block topbar_title %}New Process Characteristic{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>New Process Characteristic</h1>
+    <p class="muted">Create an operation-specific process characteristic.</p>
+  </div>
+  <a class="button" href="{% url 'fmea:process_characteristic_list' %}">Process Characteristics</a>
+</div>
+
+<form class="panel compact" method="post" action="{% url 'fmea:new_process_characteristic' %}">
+  {% csrf_token %}
+  <div class="field-grid">
+    <label>Operation {{ form.operation }}</label>
+    <label>Name {{ form.name }}</label>
+    <label>Default Category {{ form.cause_category_id }}</label>
+    <label>Control Type {{ form.control_type }}</label>
+    <label>Method {{ form.method }}</label>
+    <label>Resource / Equipment {{ form.resource_equipment }}</label>
+    <label>Frequency / Trigger {{ form.frequency_trigger }}</label>
+    <label>Status {{ form.status }}</label>
+    <label>Effectiveness {{ form.effectiveness }}</label>
+    <label>Owner {{ form.owner }}</label>
+    <label>Review Due {{ form.review_due }}</label>
+  </div>
+  <label>Description {{ form.description }}</label>
+  <label>Attributes JSON {{ form.attributes }}</label>
+  <label>Reaction Plan {{ form.reaction_plan }}</label>
+  <button class="button primary" type="submit">Create Process Characteristic</button>
+</form>
+{% endblock %}

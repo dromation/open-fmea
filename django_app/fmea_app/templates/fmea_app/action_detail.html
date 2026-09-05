@@ -1,0 +1,55 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}{{ action.name }} - Open FMEA{% endblock %}
+{% block topbar_title %}Action{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>{{ action.name }}</h1>
+    <p class="muted">{{ action.description }}</p>
+  </div>
+  <div class="button-row">
+    {% if action.failure_cause %}
+      <a class="button" href="{% url 'fmea:fmea_detail' action.failure_cause.failure_mode.fmea.stable_id %}">Back to FMEA</a>
+    {% elif action.failure_mode %}
+      <a class="button" href="{% url 'fmea:fmea_detail' action.failure_mode.fmea.stable_id %}">Back to FMEA</a>
+    {% endif %}
+  </div>
+</div>
+
+<div class="grid">
+  <section class="panel span-8">
+    <h2>Details</h2>
+    <table>
+      <tbody>
+        <tr><th>Status</th><td><span class="status status-{{ action.status }}">{{ action.get_status_display }}</span></td></tr>
+        <tr><th>Responsible</th><td>{{ action.responsible_role|default:"" }}</td></tr>
+        <tr><th>Due Date</th><td>{{ action.due_date|default:"" }}</td></tr>
+        <tr>
+          <th>Linked to</th>
+          <td>
+            {% if action.failure_cause %}
+              Cause: {{ action.failure_cause.name }}
+            {% elif action.failure_mode %}
+              Failure Mode: {{ action.failure_mode.name }}
+            {% else %}
+              <span class="muted">Not linked</span>
+            {% endif %}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <aside class="panel span-4">
+    <h2>Identity</h2>
+    <table>
+      <tbody>
+        <tr><th>Stable ID</th><td><code>{{ action.stable_id }}</code></td></tr>
+        <tr><th>Revision</th><td>{{ action.revision }}</td></tr>
+      </tbody>
+    </table>
+  </aside>
+</div>
+{% endblock %}

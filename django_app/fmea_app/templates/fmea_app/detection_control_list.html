@@ -1,0 +1,44 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}Detection Controls - Open FMEA{% endblock %}
+{% block topbar_title %}Detection Controls{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>Detection Controls</h1>
+    <p class="muted">All Detection Controls across every FMEA. Edit from each FMEA's own worksheet.</p>
+  </div>
+</div>
+
+<section class="panel">
+  <div class="table-shell">
+    <table>
+      <thead>
+        <tr>
+          <th>FMEA</th>
+          <th>Failure Mode</th>
+          <th>Cause</th>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for control in controls %}
+        <tr>
+          <td><a href="{% url 'fmea:fmea_detail' control.failure_cause.failure_mode.fmea.stable_id %}">{{ control.failure_cause.failure_mode.fmea.name }}</a></td>
+          <td>{{ control.failure_cause.failure_mode.name }}</td>
+          <td>{{ control.failure_cause.name }}</td>
+          <td>{{ control.name }}</td>
+          <td>{{ control.description|default:"" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" class="muted">No detection controls yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

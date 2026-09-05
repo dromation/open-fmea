@@ -1,0 +1,78 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}Characteristics Flow - Open FMEA{% endblock %}
+{% block topbar_title %}Characteristics Flow{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>Characteristics Flow</h1>
+    <p class="muted">Manually recorded relationships between Product Characteristics.</p>
+  </div>
+  <a class="button primary" href="{% url 'fmea:characteristic_link_create' %}">New Link</a>
+</div>
+
+<form class="panel compact section-block" method="get" action="{% url 'fmea:characteristic_link_list' %}">
+  <div class="field-grid">
+    <label>Relationship Type
+      <select name="relationship_type">
+        <option value="">All</option>
+        {% for value, label in relationship_type_choices %}
+          <option value="{{ value }}" {% if relationship_type == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Characteristic
+      <select name="characteristic">
+        <option value="">All</option>
+        {% for characteristic in characteristics %}
+          <option value="{{ characteristic.pk }}" {% if characteristic_id == characteristic.pk|stringformat:"s" %}selected{% endif %}>{{ characteristic.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <div>
+      <button class="button" type="submit">Apply</button>
+    </div>
+  </div>
+</form>
+
+<section class="panel">
+  <div class="table-shell">
+    <table>
+      <thead>
+        <tr>
+          <th>From Characteristic</th>
+          <th>To Characteristic</th>
+          <th>Relationship Type</th>
+          <th>Strength</th>
+          <th>Created By</th>
+          <th>Created At</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for link in links %}
+        <tr>
+          <td>{{ link.from_characteristic.name }}</td>
+          <td>{{ link.to_characteristic.name }}</td>
+          <td>{{ link.get_relationship_type_display }}</td>
+          <td>{{ link.get_strength_display }}</td>
+          <td>{{ link.created_by|default:"" }}</td>
+          <td>{{ link.created_at }}</td>
+          <td>
+            <form method="post" action="{% url 'fmea:characteristic_link_delete' link.stable_id %}">
+              {% csrf_token %}
+              <button class="button" type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7" class="muted">No characteristic links recorded yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}Process Characteristics - Open FMEA{% endblock %}
+{% block topbar_title %}Process Characteristics{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>Process Characteristics</h1>
+    <p class="muted">Instance-level process characteristics tied to operations.</p>
+  </div>
+  <a class="button primary" href="{% url 'fmea:new_process_characteristic' %}">New Process Characteristic</a>
+</div>
+
+<form class="panel compact section-block" method="get" action="{% url 'fmea:process_characteristic_list' %}">
+  <div class="field-grid">
+    <label>Control Type
+      <select name="control_type">
+        <option value="">All</option>
+        {% for value, label in control_type_choices %}
+          <option value="{{ value }}" {% if control_type_filter == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Status
+      <select name="status">
+        <option value="">All</option>
+        {% for value, label in status_choices %}
+          <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <div>
+      <button class="button" type="submit">Apply</button>
+    </div>
+  </div>
+</form>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Operation</th>
+      <th>Process</th>
+      <th>Default Category</th>
+      <th>Control Type</th>
+      <th>Status</th>
+      <th>Effectiveness</th>
+      <th>Owner</th>
+      <th>Review Due</th>
+      <th>Stable ID</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in process_characteristics %}
+    <tr>
+      <td><a href="{% url 'fmea:process_characteristic_detail' row.item.stable_id %}">{{ row.item.name }}</a></td>
+      <td>{{ row.item.operation }}</td>
+      <td>{{ row.item.operation.process }}</td>
+      <td>{{ row.category_name }}</td>
+      <td>{{ row.item.get_control_type_display|default:"" }}</td>
+      <td><span class="status status-{{ row.item.status }}">{{ row.item.get_status_display }}</span></td>
+      <td>{{ row.item.get_effectiveness_display }}</td>
+      <td>{{ row.item.owner|default:"" }}</td>
+      <td>{{ row.item.review_due|default:"" }}</td>
+      <td><code>{{ row.item.stable_id }}</code></td>
+      <td><a class="button" href="{% url 'fmea:process_flow' row.item.operation.process.stable_id %}?operation_id={{ row.item.operation.stable_id|urlencode }}">Process Flow</a></td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="11" class="muted">No process characteristics yet.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

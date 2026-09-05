@@ -1,0 +1,98 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}FMEA Row Review{% endblock %}
+{% block topbar_title %}FMEA Row Review{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>{{ row_group.source_range }}</h1>
+    <p class="muted">{{ row_group.session.source_filename }} - {{ row_group.get_review_status_display }}</p>
+  </div>
+  <a class="button" href="{% url 'fmea_review:session_detail' row_group.session.stable_id %}">Back</a>
+</div>
+
+<div class="split">
+  <section class="stack">
+    <table>
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for field_name, values in row_group.detected_fields.items %}
+        <tr>
+          <th>{{ field_name }}</th>
+          <td>{{ values|join:", " }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="2" class="muted">No mapped fields detected.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Cell</th>
+          <th>Suggested Type</th>
+          <th>Source</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for candidate in row_group.candidates.all %}
+        <tr>
+          <td><a href="{% url 'fmea_review:candidate_detail' candidate.stable_id %}">{{ candidate.extracted_value }}</a></td>
+          <td>{{ candidate.suggested_domain_type }}</td>
+          <td>{{ candidate.sheet_name }} row {{ candidate.row_number }}, {{ candidate.column_name }}</td>
+          <td><span class="status">{{ candidate.get_review_status_display }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <section class="stack">
+    <form action="{% url 'fmea_review:accept_row_group' row_group.stable_id %}" method="post" class="compact">
+      {% csrf_token %}
+      <label>Target FMEA
+        <select name="fmea_stable_id" required>
+          <option value="">Select FMEA</option>
+          {% for fmea in fmeas %}
+            <option value="{{ fmea.stable_id }}">{{ fmea.name }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Operation Stable ID
+        <input name="operation_stable_id" placeholder="Required for ProcessCharacteristic rows">
+      </label>
+      <label>Cause Category Stable ID
+        <input name="cause_category_stable_id" placeholder="Optional default for ProcessCharacteristic">
+      </label>
+      <button class="button primary" type="submit">Accept Row</button>
+    </form>
+
+    <form action="{% url 'fmea_review:reject_row_group' row_group.stable_id %}" method="post" class="compact">
+      {% csrf_token %}
+      <label>Reason
+        <input name="reason" placeholder="Reason">
+      </label>
+      <button class="button danger" type="submit">Reject Row</button>
+    </form>
+
+    <table>
+      <tbody>
+        <tr><th>Row Group Stable ID</th><td><code>{{ row_group.stable_id }}</code></td></tr>
+        <tr><th>Parser</th><td>{{ row_group.parser_version }}</td></tr>
+        <tr><th>Accepted Objects</th><td><code>{{ row_group.accepted_object_stable_ids|join:", " }}</code></td></tr>
+        <tr><th>Review Note</th><td>{{ row_group.review_note }}</td></tr>
+      </tbody>
+    </table>
+  </section>
+</div>
+{% endblock %}

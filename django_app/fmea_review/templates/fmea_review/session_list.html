@@ -1,0 +1,49 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}Import Review{% endblock %}
+{% block topbar_title %}Import Review{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>Import Review</h1>
+    <p class="muted">XLSX/XLSM workbooks staged as reviewable Open-FMEA candidates.</p>
+  </div>
+  <a class="button" href="{% url 'fmea:dashboard' %}">Workspace</a>
+</div>
+
+<form class="panel compact section-block" action="{% url 'fmea_review:upload_xlsx' %}" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <label>Workbook <input type="file" name="workbook" accept=".xlsx,.xlsm"></label>
+  <button class="button primary" type="submit">Upload Workbook</button>
+</form>
+
+<div class="table-shell">
+<table>
+  <thead>
+    <tr>
+      <th>Workbook</th>
+      <th>Status</th>
+      <th>Candidates</th>
+      <th>Uploaded</th>
+      <th>Stable ID</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for session in sessions %}
+    <tr>
+      <td><a href="{% url 'fmea_review:session_detail' session.stable_id %}">{{ session.source_filename }}</a></td>
+      <td><span class="status">{{ session.get_status_display }}</span></td>
+      <td>{{ session.candidates.count }}</td>
+      <td>{{ session.uploaded_at }}</td>
+      <td><code>{{ session.stable_id }}</code></td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="5" class="muted">No import sessions.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

@@ -1,0 +1,5 @@
+[tool.pytest.ini_options]
+pythonpath = ["domain", "django_app"]
+DJANGO_SETTINGS_MODULE = "open_fmea_project.settings"
+testpaths = ["tests"]
+addopts = "-q"

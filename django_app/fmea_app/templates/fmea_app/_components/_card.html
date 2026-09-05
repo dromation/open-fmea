@@ -1,0 +1,9 @@
+<section class="panel {{ card_class|default:'' }}">
+  {% if title %}
+    <div class="panel-heading">
+      <h2>{{ title }}</h2>
+      {% if subtitle %}<p class="muted">{{ subtitle }}</p>{% endif %}
+    </div>
+  {% endif %}
+  {% if body %}<p>{{ body }}</p>{% endif %}
+</section>

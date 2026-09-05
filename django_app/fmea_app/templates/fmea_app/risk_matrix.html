@@ -1,0 +1,77 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}Risk Matrix - Open FMEA{% endblock %}
+{% block topbar_title %}Risk Matrix{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>Risk Overview (All FMEAs)</h1>
+    <p class="muted">Severity x Occurrence, every FailureMode across every FMEA. Detection is not a grid axis.</p>
+  </div>
+  <div class="button-row">
+    <a class="button" href="{% url 'fmea:risk_matrix_top' %}?method={{ method }}">Top High Risk Items</a>
+  </div>
+</div>
+
+<form class="panel compact section-block" method="get" action="{% url 'fmea:risk_matrix' %}">
+  <div class="field-grid">
+    <label>Method
+      <select name="method">
+        {% for value, label in methods %}
+          <option value="{{ value }}" {% if method == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <div>
+      <button class="button" type="submit">Apply</button>
+    </div>
+  </div>
+</form>
+
+<section class="panel section-block">
+  <div class="panel-heading">
+    <h2>Severity x Occurrence</h2>
+    <p class="muted">
+      {% if unevaluated_count %}
+        {{ unevaluated_count }} failure mode{{ unevaluated_count|pluralize }} have no {{ method }} evaluation yet.
+      {% else %}
+        Every failure mode has an evaluation under this method.
+      {% endif %}
+    </p>
+  </div>
+  <div class="table-shell">
+    <div class="risk-matrix-grid" role="table" aria-label="Severity by Occurrence risk matrix">
+      <div class="risk-matrix-corner" role="columnheader">Occ \ Sev</div>
+      {% for cell in grid_rows.0 %}
+        <div class="risk-matrix-axis-label" role="columnheader">{{ cell.severity }}</div>
+      {% endfor %}
+      {% for row in grid_rows %}
+        <div class="risk-matrix-axis-label" role="rowheader">{{ row.0.occurrence }}</div>
+        {% for cell in row %}
+          {% if cell.count %}
+            <a
+              class="risk-matrix-cell risk-band-{{ cell.band }}"
+              href="{% url 'fmea:risk_matrix_cell' %}?method={{ method }}&severity={{ cell.severity }}&occurrence={{ cell.occurrence }}"
+              role="cell"
+              title="Severity {{ cell.severity }} x Occurrence {{ cell.occurrence }} - {{ cell.band }}"
+            >{{ cell.count }}</a>
+          {% else %}
+            <div
+              class="risk-matrix-cell risk-band-{{ cell.band }} is-empty"
+              role="cell"
+              title="Severity {{ cell.severity }} x Occurrence {{ cell.occurrence }} - {{ cell.band }}"
+            ></div>
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+  <div class="risk-matrix-legend">
+    <span class="status status-low">Low</span>
+    <span class="status status-medium">Medium</span>
+    <span class="status status-high">High</span>
+    <span class="status status-very_high">Very High</span>
+  </div>
+</section>
+{% endblock %}

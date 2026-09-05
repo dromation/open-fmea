@@ -1,0 +1,48 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}Causes - Open FMEA{% endblock %}
+{% block topbar_title %}Causes{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>Causes</h1>
+    <p class="muted">All Causes across every FMEA. Edit from each FMEA's own worksheet.</p>
+  </div>
+</div>
+
+<section class="panel">
+  <div class="table-shell">
+    <table>
+      <thead>
+        <tr>
+          <th>FMEA</th>
+          <th>Failure Mode</th>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Prevention Controls</th>
+          <th>Detection Controls</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+        <tr>
+          <td><a href="{% url 'fmea:fmea_detail' row.cause.failure_mode.fmea.stable_id %}">{{ row.cause.failure_mode.fmea.name }}</a></td>
+          <td>{{ row.cause.failure_mode.name }}</td>
+          <td>{{ row.cause.name }}</td>
+          <td>{{ row.cause.description|default:"" }}</td>
+          <td>{{ row.prevention_controls_count }}</td>
+          <td>{{ row.detection_controls_count }}</td>
+          <td>{{ row.actions_count }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7" class="muted">No causes yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

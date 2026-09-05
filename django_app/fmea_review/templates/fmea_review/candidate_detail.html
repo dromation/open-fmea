@@ -1,0 +1,87 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}Import Candidate{% endblock %}
+{% block topbar_title %}Import Candidate{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>{{ record.suggested_domain_type }}</h1>
+    <p class="muted">{{ record.sheet_name }} row {{ record.row_number }}, {{ record.column_name }}</p>
+  </div>
+  <a class="button" href="{% url 'fmea_review:session_detail' record.session.stable_id %}">Back</a>
+</div>
+
+<div class="split">
+  <section>
+    <table>
+      <tbody>
+        <tr><th>Extracted Value</th><td>{{ record.extracted_value }}</td></tr>
+        <tr><th>Status</th><td>{{ record.get_review_status_display }}</td></tr>
+        <tr>
+          <th>Row Group</th>
+          <td>
+            {% if record.row_group %}
+              <a href="{% url 'fmea_review:row_group_detail' record.row_group.stable_id %}">{{ record.row_group.source_range }}</a>
+            {% endif %}
+          </td>
+        </tr>
+        <tr><th>Candidate Stable ID</th><td><code>{{ record.stable_id }}</code></td></tr>
+        <tr><th>Accepted Object</th><td><code>{{ record.accepted_object_stable_id|default:"" }}</code></td></tr>
+        <tr><th>Validation Issues</th><td>{{ record.validation_issues|join:", " }}</td></tr>
+      </tbody>
+    </table>
+  </section>
+  <section>
+    <form class="form-block" action="{% url 'fmea_review:accept_candidate' record.stable_id %}" method="post">
+      {% csrf_token %}
+      <p><input name="fmea_stable_id" placeholder="FMEA stable_id"></p>
+      <p><input name="function_stable_id" placeholder="Function stable_id"></p>
+      <p><input name="requirement_stable_id" placeholder="Requirement stable_id"></p>
+      <p><input name="operation_stable_id" placeholder="Operation stable_id"></p>
+      <p><input name="cause_category_stable_id" placeholder="CauseCategory stable_id"></p>
+      <p><input name="failure_mode_stable_id" placeholder="FailureMode stable_id"></p>
+      <p><input name="failure_cause_stable_id" placeholder="FailureCause stable_id"></p>
+      <button class="button" type="submit">Accept</button>
+    </form>
+
+    <form class="form-block" action="{% url 'fmea_review:modify_candidate' record.stable_id %}" method="post">
+      {% csrf_token %}
+      <p><input name="extracted_value" value="{{ record.extracted_value }}"></p>
+      <p>
+        <select name="suggested_domain_type">
+          {% for domain_type in domain_types %}
+            <option value="{{ domain_type }}" {% if domain_type == record.suggested_domain_type %}selected{% endif %}>{{ domain_type }}</option>
+          {% endfor %}
+        </select>
+      </p>
+      <p><input name="fmea_stable_id" placeholder="FMEA stable_id"></p>
+      <p><input name="function_stable_id" placeholder="Function stable_id"></p>
+      <p><input name="requirement_stable_id" placeholder="Requirement stable_id"></p>
+      <p><input name="operation_stable_id" placeholder="Operation stable_id"></p>
+      <p><input name="cause_category_stable_id" placeholder="CauseCategory stable_id"></p>
+      <p><input name="failure_mode_stable_id" placeholder="FailureMode stable_id"></p>
+      <p><input name="failure_cause_stable_id" placeholder="FailureCause stable_id"></p>
+      <button class="button" type="submit">Modify</button>
+    </form>
+
+    <form class="form-block" action="{% url 'fmea_review:reject_candidate' record.stable_id %}" method="post">
+      {% csrf_token %}
+      <p><input name="reason" placeholder="Reason"></p>
+      <button class="button" type="submit">Reject</button>
+    </form>
+
+    <form class="form-block" action="{% url 'fmea_review:link_existing' record.stable_id %}" method="post">
+      {% csrf_token %}
+      <p><input name="existing_stable_id" placeholder="Existing object stable_id"></p>
+      <button class="button" type="submit">Link Existing</button>
+    </form>
+
+    <form action="{% url 'fmea_review:merge_candidate' record.stable_id %}" method="post">
+      {% csrf_token %}
+      <p><input name="target_candidate_stable_id" placeholder="Target candidate stable_id"></p>
+      <button class="button" type="submit">Merge</button>
+    </form>
+  </section>
+</div>
+{% endblock %}

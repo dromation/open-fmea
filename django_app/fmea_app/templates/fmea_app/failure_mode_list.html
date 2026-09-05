@@ -1,0 +1,56 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}Failure Modes - Open FMEA{% endblock %}
+{% block topbar_title %}Failure Modes{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>Failure Modes</h1>
+    <p class="muted">All Failure Modes across every FMEA. Edit from each FMEA's own worksheet.</p>
+  </div>
+</div>
+
+<section class="panel">
+  <div class="table-shell">
+    <table>
+      <thead>
+        <tr>
+          <th>FMEA</th>
+          <th>Function / Requirement</th>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Latest Risk Result</th>
+          <th>Effects</th>
+          <th>Causes</th>
+          <th>Actions (direct)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+        <tr>
+          <td><a href="{% url 'fmea:fmea_detail' row.failure_mode.fmea.stable_id %}">{{ row.failure_mode.fmea.name }}</a></td>
+          <td>{{ row.function_or_requirement }}</td>
+          <td>{{ row.failure_mode.name }}</td>
+          <td>{{ row.failure_mode.description|default:"" }}</td>
+          <td>
+            {% if row.risk.result %}
+              <span class="status status-{{ row.risk.result_class }}">{{ row.risk.result }}</span>
+            {% else %}
+              <span class="muted">Not evaluated</span>
+            {% endif %}
+          </td>
+          <td>{{ row.effects_count }}</td>
+          <td>{{ row.causes_count }}</td>
+          <td>{{ row.actions_count }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="8" class="muted">No failure modes yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

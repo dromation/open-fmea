@@ -1,0 +1,39 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Open FMEA{% endblock %}</title>
+  <link rel="icon" type="image/x-icon" href="{% static 'fmea_app/img/favicon.ico' %}">
+  <link rel="stylesheet" href="{% static 'fmea_app/css/theme.css' %}">
+  <script defer src="{% static 'fmea_app/js/app.js' %}"></script>
+</head>
+<body>
+  <div class="app-shell" data-app-shell>
+    {% include "fmea_app/_sidebar.html" %}
+    <div class="workspace">
+      <header class="topbar">
+        <button class="icon-button mobile-sidebar-toggle" type="button" data-sidebar-toggle aria-label="Toggle sidebar">
+          <span aria-hidden="true">Menu</span>
+        </button>
+        <div>
+          <div class="topbar-title">{% block topbar_title %}Failure Modes and Effects Analysis{% endblock %}</div>
+          <div class="topbar-subtitle">Local desktop PoC</div>
+        </div>
+        {% include "fmea_app/_header.html" %}
+      </header>
+      <main class="content-shell">
+        {% if messages %}
+          <div class="message-list" role="status" aria-live="polite">
+            {% for message in messages %}
+              <div class="message message-{{ message.tags|default:'info' }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+</body>
+</html>

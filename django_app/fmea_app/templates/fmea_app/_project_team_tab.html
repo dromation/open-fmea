@@ -1,0 +1,62 @@
+<section class="panel span-12" id="project-team">
+  <div class="toolbar">
+    <div>
+      <h2>Team Roster</h2>
+      <p class="muted">Project members and role assignments.</p>
+    </div>
+    <a class="button" href="{% url 'fmea:project_team' project.stable_id %}">Team Page</a>
+  </div>
+
+  <div class="table-shell section-block">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Stable ID</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for membership in memberships %}
+        <tr>
+          <td>
+            {{ membership.user.get_full_name|default:membership.user.email }}
+            <span class="cell-detail">{{ membership.user.username }}</span>
+          </td>
+          <td>{{ membership.user.email }}</td>
+          <td>{% include "fmea_app/_components/_status_badge.html" with label=membership.get_role_display status=membership.role %}</td>
+          <td><code>{{ membership.stable_id }}</code></td>
+          <td>
+            <form method="post" action="{% url 'fmea:project_team' project.stable_id %}">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="remove">
+              <input type="hidden" name="membership_id" value="{{ membership.stable_id }}">
+              <button class="button danger" type="submit">Remove</button>
+            </form>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" class="muted">No project team members yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <form class="compact" method="post" action="{% url 'fmea:project_team' project.stable_id %}">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="add">
+    <div class="field-grid">
+      <label>First Name {{ membership_form.first_name }}</label>
+      <label>Last Name {{ membership_form.last_name }}</label>
+      <label>Email {{ membership_form.email }}</label>
+      <label>Role {{ membership_form.role }}</label>
+      <div>
+        <button class="button primary" type="submit">Add Member</button>
+      </div>
+    </div>
+  </form>
+</section>

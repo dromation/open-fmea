@@ -1,0 +1,73 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}{{ change.title }} - Open FMEA{% endblock %}
+{% block topbar_title %}Change Impact{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>{{ change.title }}</h1>
+    <p class="muted">{{ change.get_change_type_display }} &middot; {{ change.get_impact_level_display }} impact</p>
+  </div>
+  <div class="button-row">
+    <a class="button" href="{% url 'fmea:change_list' %}">Change Log</a>
+    <a class="button primary" href="{% url 'fmea:edit_change' change.stable_id %}">Edit</a>
+  </div>
+</div>
+
+<div class="grid">
+  <section class="panel span-8">
+    <h2>Details</h2>
+    <table>
+      <tbody>
+        <tr><th>Type</th><td>{{ change.get_change_type_display }}</td></tr>
+        <tr><th>Source</th><td>{{ change.source|default:"" }}</td></tr>
+        <tr><th>Reason</th><td>{{ change.reason|default:"" }}</td></tr>
+        <tr><th>Description</th><td>{{ change.description|default:"" }}</td></tr>
+        <tr><th>Impact Level</th><td>{{ change.get_impact_level_display }}</td></tr>
+        <tr><th>Status</th><td><span class="status status-{{ change.status }}">{{ change.get_status_display }}</span></td></tr>
+        <tr><th>Owner</th><td>{{ change.owner|default:"" }}</td></tr>
+        <tr><th>Target Date</th><td>{{ change.target_date|default:"" }}</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <aside class="panel span-4">
+    <h2>Identity</h2>
+    <table>
+      <tbody>
+        <tr><th>Stable ID</th><td><code>{{ change.stable_id }}</code></td></tr>
+        <tr><th>Revision</th><td>{{ change.revision }}</td></tr>
+      </tbody>
+    </table>
+  </aside>
+</div>
+
+<section class="panel section-block">
+  <h2>Affected Failure Modes ({{ affected_count }})</h2>
+  <div class="table-shell">
+    <table>
+      <thead>
+        <tr>
+          <th>Failure Mode</th>
+          <th>FMEA</th>
+          <th>FMEA Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in affected_rows %}
+        <tr>
+          <td>{{ row.failure_mode.name }}</td>
+          <td><a href="{% url 'fmea:fmea_detail' row.failure_mode.fmea.stable_id %}">{{ row.failure_mode.fmea.name }}</a></td>
+          <td>{{ row.fmea_type_label }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="3" class="muted">No Failure Modes linked yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

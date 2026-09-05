@@ -1,0 +1,59 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}{{ failure_mode.name }} Trajectory - Open FMEA{% endblock %}
+{% block topbar_title %}Risk Trajectory & Propagation{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>{{ failure_mode.name }}</h1>
+    <p class="muted">Evaluation history, oldest to newest, as actually recorded at each lifecycle gate.</p>
+  </div>
+  <div class="button-row">
+    <a class="button" href="{% url 'fmea:risk_trajectory_index' %}">Risk Trajectory & Propagation</a>
+    <a class="button" href="{% url 'fmea:fmea_detail' failure_mode.fmea.stable_id %}">Back to FMEA</a>
+  </div>
+</div>
+
+<div class="table-shell">
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Lifecycle Gate</th>
+        <th>Method</th>
+        <th>Severity</th>
+        <th>Occurrence</th>
+        <th>Detection</th>
+        <th>Score / Band</th>
+        <th>Actor</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for evaluation in evaluations %}
+      <tr>
+        <td>{{ evaluation.evaluated_at }}</td>
+        <td>{{ evaluation.get_lifecycle_gate_display }}</td>
+        <td>{{ evaluation.method }}</td>
+        <td>{{ evaluation.severity }}</td>
+        <td>{{ evaluation.occurrence }}</td>
+        <td>{{ evaluation.detection }}</td>
+        <td>
+          {% if evaluation.result.score %}
+            <span>RPN {{ evaluation.result.score }}</span>
+            {% include "fmea_app/_components/_status_badge.html" with label=evaluation.result.classification|title status=evaluation.result.classification %}
+          {% else %}
+            {% include "fmea_app/_components/_status_badge.html" with label=evaluation.result.priority|title status=evaluation.result.priority %}
+          {% endif %}
+        </td>
+        <td>{{ evaluation.actor }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="8" class="muted">No evaluations recorded yet.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
