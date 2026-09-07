@@ -11,3 +11,8 @@ db.sqlite3-journal
 media/uploads/
 staticfiles/
 *.log
+*.spec
+build/
+dist/
+release/
+runtime-test-appdata-*/
