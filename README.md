@@ -60,9 +60,16 @@ python -B -m pytest
 
 ## Packaging Notes
 
-The application is designed to run locally from the Django project today. The historical prototype and architecture working notes are intentionally not part of the public app release branch.
+The GitHub Release provides a Windows desktop demo package. The cross-platform package is published as a container image through GitHub Container Registry:
 
-For a fresh local database, run `python manage.py migrate` and `python manage.py seed_demo` before starting the server.
+```powershell
+docker pull ghcr.io/dromation/open-fmea:latest
+docker run --rm -p 8000:8000 -v open-fmea-data:/data ghcr.io/dromation/open-fmea:latest
+```
+
+Open `http://127.0.0.1:8000/`. The container stores the local SQLite demo database in the `open-fmea-data` volume.
+
+The historical prototype and architecture working notes are intentionally not part of the public app release branch.
 
 ## License
 
