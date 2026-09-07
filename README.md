@@ -6,6 +6,12 @@
 
 Open FMEA is a local-first Django application for building, reviewing, and maintaining Failure Modes and Effects Analysis records. The current app combines a portable Python domain layer with Django persistence, workbook ingestion, review queues, risk evaluation, Ishikawa cause analysis, and focused FMEA workflow screens.
 
+## Preview
+
+<p align="center">
+  <img src="docs/screenshots/open-fmea-workspace.png" alt="Open FMEA workspace dashboard" width="960">
+</p>
+
 ## Development Context
 
 This public Django app release was prepared through a Claude + Codex workflow. Claude was used for architecture review and implementation guidance, Codex for repository work and verification, and Ollama is supported as the optional local AI provider for structured extraction experiments.
