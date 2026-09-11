@@ -64,6 +64,12 @@ python -B -m pytest
 - Ishikawa cause influence review
 - Workbook import and row-level review
 
+## Community and Security
+
+- See `CONTRIBUTING.md` for contribution guidelines.
+- See `CODE_OF_CONDUCT.md` for project conduct expectations.
+- See `SECURITY.md` for vulnerability reporting.
+
 ## Packaging Notes
 
 The GitHub Release provides a Windows desktop demo package. The cross-platform package is published as a container image through GitHub Container Registry:
