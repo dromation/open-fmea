@@ -1,0 +1,79 @@
+{
+  "date": "2026-09-13T10:48:41.758Z",
+  "pages": 34,
+  "layouts": [
+    {
+      "width": 320,
+      "bodyOverflow": false,
+      "mainOverflow": false,
+      "pageOverflow": false,
+      "sideVisible": true,
+      "mainWidth": 262
+    },
+    {
+      "width": 480,
+      "bodyOverflow": false,
+      "mainOverflow": false,
+      "pageOverflow": false,
+      "sideVisible": true,
+      "mainWidth": 422
+    },
+    {
+      "width": 768,
+      "bodyOverflow": false,
+      "mainOverflow": false,
+      "pageOverflow": false,
+      "sideVisible": true,
+      "mainWidth": 710
+    },
+    {
+      "width": 1024,
+      "bodyOverflow": false,
+      "mainOverflow": false,
+      "pageOverflow": false,
+      "sideVisible": true,
+      "mainWidth": 966
+    },
+    {
+      "width": 1366,
+      "bodyOverflow": false,
+      "mainOverflow": false,
+      "pageOverflow": false,
+      "sideVisible": true,
+      "mainWidth": 1308
+    },
+    {
+      "width": 1920,
+      "bodyOverflow": false,
+      "mainOverflow": false,
+      "pageOverflow": false,
+      "sideVisible": true,
+      "mainWidth": 1862
+    },
+    {
+      "width": 2560,
+      "bodyOverflow": false,
+      "mainOverflow": false,
+      "pageOverflow": false,
+      "sideVisible": true,
+      "mainWidth": 2502
+    }
+  ],
+  "errors": [],
+  "checks": [
+    "render all pages",
+    "same shared navigation",
+    "DFMEA filtering persists on selection",
+    "create and edit ratings",
+    "immutable audit",
+    "action completion preserves risk",
+    "persistence reload",
+    "project switch",
+    "alternate views",
+    "analysis learning draft"
+  ],
+  "limitations": [
+    "Legacy rating/link findings remain for human review",
+    "Visual acceptance against mockup not yet approved"
+  ]
+}

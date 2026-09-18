@@ -1,0 +1,44 @@
+# Open-FMEA — Mockup Documentation & Build-Readiness Tracker
+
+Status: tracking table, updated 2026-09-05 after independently re-verifying the "make them all ready for implementation" round's actual build state directly against the real repository (not from a status report — see `OpenFMEA_DNA_CoreReference.md` Section 0a for the full verification detail: 207/207 tests passing in both `open_fmea` and `open_fmea_training_set`, byte-identical across all 71 changed/new files, migration-by-migration content checks). This sits on top of two source documents — `OpenFMEA_MockupSpecifications_GUIWireframeArchitecture.md` (wireframe + features + architecture/data-logic, all 23) and `OpenFMEA_MockupGUICodingRequirements.md` (features + widget checklist + GUI coding requirements, all 23) — and the current build state from `OpenFMEA_DNA_CoreReference.md` Section 6.
+
+All 23 mockups have completed all three documentation passes. As of 2026-09-05, every mockup either has shipped, independently-verified code, or (Mockup 3 only) sits under a standing user hold. Nothing remains blocked on an open architecture question, and nothing remains merely "instructed" — the entire Slice D–M batch was built and independently re-confirmed the same day it was instructed.
+
+| # | Mockup | Wireframe | Features | GUI requirements | Ready to code? |
+|---|---|---|---|---|---|
+| 1 | Base App Shell | Done | Done | Done | **Built already** (base dashboard) — extra widgets (search, bell, project selector) not ready, no backend for them |
+| 2 | Engineering Context Panel | Done | Done | Done | **Built already** (Product/Process part) — System sub-panel now **built** (Slice E) |
+| 3 | Preventive FMEA (PM-FMEA) Tab | Done | Done | Done | **Not ready** — standing hold since 2026-09-01, reconfirmed 2026-09-04, deliberately excluded from the 2026-09-05 round — the only mockup not built, your call to lift it |
+| 4 | Consolidated Home | Done | Done | Done | **Built, independently verified** (Slice K): stat tiles, Actions summary, one Chart.js risk-trend chart, extending the existing `fmea:dashboard`. Operations module and any "health score" confirmed absent by direct grep, not built |
+| 5 | FMEA Projects List | Done | Done | Done | **Built already** — GUI-reqs pass flagged a row-grain mismatch (project vs. FMEA) worth resolving before touching it again |
+| 6 | FMEA Team | Done | Done | Done | **Built already** (roster) — RBAC part not ready, no user/login system exists |
+| 7 | System / Product / Process | Done | Done | Done | **Built, independently verified** (Slice E): `System` model, self-referential, `/systems/` list + detail. **Flagged finding:** no `Product`/`Process` create/edit GUI exists anywhere in this app (confirmed by grep) — the instruction assumed one existed and only the FK fields themselves got built |
+| 8 | System Characteristics Base | Done | Done | Done | **Built, independently verified** (Slice M): `ClassificationScheme`/`ClassificationTerm` combined with Slice E's `System`. Multi-org/tenancy, Importance, Monitoring-status confirmed absent. **Flagged finding:** this instruction independently re-specified building `System` from scratch — already built by Slice E the same day; the implementing session caught this itself and did not duplicate it (see the tracker's note below and DNA Section 0a) |
+| 9 | Characteristics Flow / Diagram | Done | Done | Done | **Built, independently verified for manual linking only** (Slice L): new `CharacteristicLink` entity, plain filterable list, confirmed via direct migration read (both ends FK'd to `ProductCharacteristic` only). AI auto-link and force-directed graph visualization confirmed absent by grep — each still needs its own dedicated future review |
+| 10 | Evidence & Tests | Done | Done | Done | **Built, independently verified** (Slice F): new `ValidationTest` model, list+detail pages, new "VALIDATION & CHANGE" sidebar group. `Evidence`/`EffectivenessVerification` confirmed byte-unchanged |
+| 11 | DFMEA | Done | Done | Done | **Built, independently verified** (Slice D). Richer widgets (charts, Structure Tree) still not built |
+| 12 | PFMEA | Done | Done | Done | **Built, independently verified** (Slice D, same instruction as #11) |
+| 13 | Change Impact | Done | Done | Done | **Built, independently verified** (Slice I): new `Change` model, M2M to `FailureMode`, Change Log list/create/edit/detail only — confirmed via direct migration read |
+| 14 | Validation Trajectory | Done | Done | Done | **Built, independently verified** — folded into Slice F (`ValidationTest.lifecycle_gate`), same instruction as #10 |
+| 15 | Failure Modes | Done | Done | Done | **Built, independently verified** (Slice G): standalone cross-cutting browse page. Error Catalog, Complaint Link, and AI similarity remain not built/not approved |
+| 16 | Causes | Done | Done | Done | **Built, independently verified** (Slice G): standalone browse page showing causes exactly as the real single-`failure_mode`-FK model has them — confirmed byte-unchanged, no many-to-many redesign attempted |
+| 17 | Risk Trajectory & Propagation | Done | Done | Done | **Built, independently verified for the lifecycle-gate/trajectory piece** (Slice J): one additive field on `RiskEvaluation`, confirmed via direct migration read, + a trajectory view reachable from the Risk Matrix drill-down. The propagation chain (Local→Next-Level→System→End Effect) confirmed absent by grep — still firmly deferred to its own future review |
+| 18 | Effects | Done | Done | Done | **Built, independently verified** (Slice G): standalone browse page. Sankey/propagation-chain widgets remain not built/not approved |
+| 19 | Preventive Controls | Done | Done | Done | **Built, independently verified** (Slice G) |
+| 20 | Detection Controls | Done | Done | Done | **Built, independently verified** (Slice G) |
+| 21 | Process Control Characteristics | Done | Done | Done | **Built, independently verified** (Slice H): nine ordinary additive fields on `ProcessCharacteristic`, confirmed via direct migration read (nine plain `AddField`s, nothing else). **Correction carried through and confirmed absent from the built code: this is NOT the Control Plan concept and is NOT gated by DNA rule 7** — an earlier characterization was wrong and is retracted; this is a plain, unguarded CRUD form like any other |
+| 22 | Actions | Done | Done | Done | **Built, independently verified** (Slice G): standalone cross-cutting list page. `ActionStatus.on_hold` confirmed present (additive, does not replace `verified`) |
+| 23 | Risk Matrix | Done | Done | Done | **Built already** (base grid) — richer page shape not built; GUI-reqs pass flagged a design conflict (per-FMEA selector) worth resolving first |
+
+## Summary
+
+- **Built already (pre-2026-09-05):** 1, 2 (partial), 5, 6 (partial), 23 (partial) — 5 mockups
+- **Built and independently re-verified 2026-09-05 (Slices D through M):** 4, 7, 8, 9 (manual linking only), 10, 11, 12, 13, 14, 15, 16, 17 (lifecycle-gate only), 18, 19, 20, 21, 22 — 17 mockups, across 10 slices, in both `open_fmea` and `open_fmea_training_set`, 207/207 tests passing, byte-identical
+- **Not ready — standing user hold, deliberately unaffected by this round:** 3 (PM-FMEA) — the only mockup in this project still without shipped code and without an open review
+
+## Two open findings from this build pass (not blocking anything already built, but need attention before the next slice in each area)
+
+1. **No `Product`, `Process`, or `ProductCharacteristic` create/edit GUI exists anywhere in this app.** Two instructions (Slice E for #7, Slice M for #8) assumed one existed and only needed a field added to it. Neither does. The FK-level parts of both slices were built correctly; the "add a dropdown to the existing form" clauses were correctly not built, since there's no form to add to. A future slice is needed if real Product/Process/ProductCharacteristic CRUD is wanted.
+2. **Slice E (#7) and Slice M (#8) independently specified building the identical `System` model, FKs, and `/systems/` routes** — both instructions were written the same day without being cross-checked against each other. The implementing session caught this before duplicating anything: `System` was built once (Slice E), and Slice M added only its own genuinely new piece (full parent-chain cycle detection). One unresolved sub-question: Slice M described `/systems/` as an indented tree; the already-built, already-tested page is a flat list with a Parent column. Needs a decision — keep the flat list as final, or write a follow-up instruction for the tree rendering.
+
+Full detail on both findings, plus everything checked to reach the "built, independently verified" status above (migrations read line-by-line, sidebar/routes confirmed, excluded-scope terms grepped, byte-parity swept across all 71 files, fresh 207/207 test run in both repos), is in `OpenFMEA_DNA_CoreReference.md` Section 0a.

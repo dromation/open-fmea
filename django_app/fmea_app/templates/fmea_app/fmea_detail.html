@@ -132,6 +132,7 @@
             <th class="wide">Function</th>
             <th class="wide">Requirement</th>
             <th class="wide">Product Characteristics</th>
+            <th class="wide">Classification</th>
             <th class="wide">Failure Mode</th>
             <th class="wide">Effects</th>
             <th class="wide">Cause</th>
@@ -158,8 +159,20 @@
               </span>
             </td>
             <td class="wide">
+              <span class="cell-list">
+                {% for characteristic in row.product_characteristics %}
+                  <span class="cell-item">{{ characteristic.primary_classification.name|default:"—" }}</span>
+                {% empty %}
+                  <span class="muted">&mdash;</span>
+                {% endfor %}
+              </span>
+            </td>
+            <td class="wide">
               <strong>{{ row.failure_mode.name }}</strong>
               <span class="cell-detail">{{ row.failure_mode.description }}</span>
+              {% if row.failure_mode.asset %}
+                <span class="cell-detail">Asset: <a href="{% url 'fmea:asset_detail' row.failure_mode.asset.stable_id %}">{{ row.failure_mode.asset.name }}</a></span>
+              {% endif %}
             </td>
             <td class="wide">
               <span class="cell-list">
@@ -225,6 +238,7 @@
         <label>Name {{ failure_mode_form.name }}</label>
         <label>Description {{ failure_mode_form.description }}</label>
         <label>Function {{ failure_mode_form.function }}</label>
+        <label>Asset (PM-FMEA) {{ failure_mode_form.asset }}</label>
         <div>
           <button class="button primary" type="submit">Add Failure Mode</button>
         </div>
@@ -309,11 +323,109 @@
             <label>Method {{ risk_form.definition }}</label>
             <div class="field-grid">
               <label>S {{ risk_form.severity }}</label>
-              <label>O {{ risk_form.occurrence }}</label>
-              <label>D {{ risk_form.detection }}</label>
+              <label>O / F {{ risk_form.occurrence }}</label>
+              <label>D / M {{ risk_form.detection }}</label>
             </div>
+            <label>Failure Scenario (FMEA-MSR only) {{ risk_form.failure_scenario }}</label>
             <button class="button" type="submit">Save Evaluation</button>
           </form>
+          <p class="muted">For method "AIAG &amp; VDA FMEA-MSR Action Priority", O/F is read as Frequency (F) and D/M is read as Monitoring (M) instead of Occurrence/Detection - see the FMEA-MSR criteria reference below.</p>
+          {% if aiag_vda_rating_scales %}
+          <details class="rating-reference">
+            <summary>AIAG &amp; VDA rating criteria ({{ aiag_vda_perspective|upper }})</summary>
+            <div class="rating-reference-body">
+              <h4>Severity</h4>
+              <table>
+                <tbody>
+                  {% for rank, band in aiag_vda_rating_scales.severity.bands.items %}
+                  <tr>
+                    <td>{{ rank }}</td>
+                    <td>
+                      <strong>{{ band.label }}</strong>
+                      {% if band.criteria %}<br>{{ band.criteria }}{% endif %}
+                      {% if band.your_plant %}<br><span class="muted">Your Plant: {{ band.your_plant }}</span>{% endif %}
+                      {% if band.ship_to_plant %}<br><span class="muted">Ship-to Plant: {{ band.ship_to_plant }}</span>{% endif %}
+                      {% if band.end_user %}<br><span class="muted">End User: {{ band.end_user }}</span>{% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              <h4>Occurrence</h4>
+              <table>
+                <tbody>
+                  {% for rank, band in aiag_vda_rating_scales.occurrence.bands.items %}
+                  <tr>
+                    <td>{{ rank }}</td>
+                    <td>
+                      <strong>{{ band.label }}</strong>{% if band.type_of_control %} ({{ band.type_of_control }}){% endif %}
+                      {% if band.criteria %}<br>{{ band.criteria }}{% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              <h4>Detection</h4>
+              <table>
+                <tbody>
+                  {% for rank, band in aiag_vda_rating_scales.detection.bands.items %}
+                  <tr>
+                    <td>{{ rank }}</td>
+                    <td>
+                      <strong>{{ band.label }}</strong>
+                      {% if band.maturity %}<br>{{ band.maturity }}{% endif %}
+                      {% if band.opportunity %}<br><span class="muted">{{ band.opportunity }}</span>{% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </details>
+          {% endif %}
+          {% if aiag_vda_msr_rating_scales %}
+          <details class="rating-reference">
+            <summary>AIAG &amp; VDA FMEA-MSR criteria (Frequency / Monitoring)</summary>
+            <div class="rating-reference-body">
+              <h4>Failure Scenario</h4>
+              <table>
+                <tbody>
+                  <tr><td><strong>Non-Hazardous</strong></td><td>{{ aiag_vda_msr_rating_scales.failure_scenario.non_hazardous }}</td></tr>
+                  <tr><td><strong>Hazardous</strong></td><td>{{ aiag_vda_msr_rating_scales.failure_scenario.hazardous }}</td></tr>
+                  <tr><td><strong>Mitigated (Effect)</strong></td><td>{{ aiag_vda_msr_rating_scales.failure_scenario.mitigated }}</td></tr>
+                </tbody>
+              </table>
+              <h4>Frequency (F)</h4>
+              <table>
+                <tbody>
+                  {% for rank, band in aiag_vda_msr_rating_scales.frequency.bands.items %}
+                  <tr>
+                    <td>{{ rank }}</td>
+                    <td><strong>{{ band.label }}</strong><br>{{ band.criteria }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              <p class="muted">F may be lowered by 1 if the relevant operating condition is &lt;10% of overall operating time, or by 2 if &lt;1%.</p>
+              <h4>Monitoring (M)</h4>
+              <p class="muted">{{ aiag_vda_msr_rating_scales.monitoring.combination_rule }}.</p>
+              <table>
+                <tbody>
+                  {% for rank, band in aiag_vda_msr_rating_scales.monitoring.bands.items %}
+                  <tr>
+                    <td>{{ rank }}</td>
+                    <td>
+                      <strong>{{ band.label }}</strong>
+                      <br>{{ band.diagnostic_monitoring }}
+                      <br><span class="muted">{{ band.system_response }}</span>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </details>
+          {% endif %}
         </section>
       </div>
 

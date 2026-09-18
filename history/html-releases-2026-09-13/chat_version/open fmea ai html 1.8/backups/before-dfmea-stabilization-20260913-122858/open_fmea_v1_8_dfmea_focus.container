@@ -1,0 +1,2987 @@
+{
+  "manifest": {
+    "format": "open_fmea.container",
+    "schemaVersion": "1.8.1-dfmea",
+    "name": "Open FMEA v1.8 DFMEA Focus",
+    "project": "New Headlamp X1",
+    "mode": "single-html",
+    "knowledgeVersion": 1,
+    "aiKnowledgeFormat": "JSONL",
+    "learningMode": "case-based + feedback weights",
+    "authoritativeAI": false,
+    "validationDrivenDevelopment": true,
+    "currentDevelopmentFocus": "DFMEA application module",
+    "dfmeaBaseline": "mockup-11-dfmea.png / supplied DFMEA mockup"
+  },
+  "settings": {
+    "riskMethod": "RPN",
+    "apEnabled": true,
+    "theme": "light",
+    "workspace": "Global"
+  },
+  "users": [
+    {
+      "id": "USR-JD",
+      "name": "Janez Demo",
+      "role": "Quality Engineer",
+      "authority": "Project Owner"
+    },
+    {
+      "id": "USR-MK",
+      "name": "Marko Kovac",
+      "role": "Design Engineer"
+    },
+    {
+      "id": "USR-AN",
+      "name": "Ana Novak",
+      "role": "Process Engineer"
+    },
+    {
+      "id": "USR-PT",
+      "name": "Peter Turk",
+      "role": "Quality Engineer"
+    },
+    {
+      "id": "USR-LS",
+      "name": "Luka Sterle",
+      "role": "Manufacturing Engineer"
+    }
+  ],
+  "projects": [
+    {
+      "id": "FMEA-2025-001",
+      "name": "New Headlamp X1",
+      "types": [
+        "DFMEA",
+        "PFMEA",
+        "System FMEA",
+        "PM-FMEA"
+      ],
+      "owner": "Janez Demo",
+      "start": "2025-01-15",
+      "updated": "2025-05-18",
+      "progress": 68,
+      "status": "In Progress",
+      "revision": "A"
+    },
+    {
+      "id": "FMEA-2025-002",
+      "name": "Rear Lamp Y2",
+      "types": [
+        "DFMEA",
+        "PFMEA"
+      ],
+      "owner": "Marko K.",
+      "start": "2025-02-10",
+      "updated": "2025-05-17",
+      "progress": 42,
+      "status": "In Progress",
+      "revision": "A"
+    },
+    {
+      "id": "FMEA-2025-003",
+      "name": "Housing Sealing Process",
+      "types": [
+        "PFMEA"
+      ],
+      "owner": "Sara P.",
+      "start": "2025-03-01",
+      "updated": "2025-05-15",
+      "progress": 85,
+      "status": "In Review",
+      "revision": "B"
+    },
+    {
+      "id": "FMEA-2025-004",
+      "name": "LED Module Platform",
+      "types": [
+        "System FMEA",
+        "DFMEA",
+        "PM-FMEA"
+      ],
+      "owner": "Luka S.",
+      "start": "2025-01-05",
+      "updated": "2025-05-12",
+      "progress": 100,
+      "status": "Completed",
+      "revision": "C"
+    },
+    {
+      "id": "FMEA-2025-005",
+      "name": "Prototype A3",
+      "types": [
+        "DFMEA",
+        "PFMEA"
+      ],
+      "owner": "Ana N.",
+      "start": "2025-04-18",
+      "updated": "2025-05-10",
+      "progress": 18,
+      "status": "Draft",
+      "revision": "A"
+    },
+    {
+      "id": "FMEA-2025-006",
+      "name": "Optical Adjustment Process",
+      "types": [
+        "PFMEA"
+      ],
+      "owner": "Janez Demo",
+      "start": "2025-04-30",
+      "updated": "2025-05-09",
+      "progress": 55,
+      "status": "In Progress",
+      "revision": "A"
+    },
+    {
+      "id": "FMEA-OPEN-APP-DFMEA",
+      "name": "Open FMEA Application – Design FMEA",
+      "types": [
+        "DFMEA"
+      ],
+      "owner": "Janez Demo",
+      "start": "2026-09-13",
+      "updated": "2026-09-13",
+      "progress": 35,
+      "status": "In Progress",
+      "revision": "A",
+      "scope": "Concept and product design of Open FMEA application: GUI, data model, features and interactions.",
+      "nextSystemFMEA": "Open FMEA application operation as a complete system"
+    }
+  ],
+  "dfmea": [
+    {
+      "id": "DF-001",
+      "element": "Housing (Lens)",
+      "function": "Provide light transmission",
+      "failure": "Lens crack",
+      "effect": "Reduced light output, water ingress",
+      "cause": "Impact, stress concentration",
+      "s": 8,
+      "o": 4,
+      "d": 4,
+      "p": 3,
+      "initial": 128,
+      "current": 48,
+      "actions": "2/1",
+      "status": "Open",
+      "owner": "Marko Kovac"
+    },
+    {
+      "id": "DF-002",
+      "element": "LED Module",
+      "function": "Generate light",
+      "failure": "LED failure (no light)",
+      "effect": "No illumination",
+      "cause": "Over current, thermal stress",
+      "s": 9,
+      "o": 3,
+      "d": 3,
+      "p": 4,
+      "initial": 108,
+      "current": 36,
+      "actions": "1/0",
+      "status": "Open",
+      "owner": "Janez Demo"
+    },
+    {
+      "id": "DF-003",
+      "element": "Heatsink",
+      "function": "Dissipate heat",
+      "failure": "Insufficient cooling",
+      "effect": "Shorter life, lumen drop",
+      "cause": "Design margin low, clogging",
+      "s": 7,
+      "o": 4,
+      "d": 4,
+      "p": 3,
+      "initial": 112,
+      "current": 56,
+      "actions": "2/1",
+      "status": "Open",
+      "owner": "Luka Sterle"
+    },
+    {
+      "id": "DF-004",
+      "element": "Driver PCB",
+      "function": "Supply stable current",
+      "failure": "Driver failure",
+      "effect": "Flicker, dimming, no light",
+      "cause": "Component failure, overload",
+      "s": 9,
+      "o": 3,
+      "d": 3,
+      "p": 4,
+      "initial": 108,
+      "current": 27,
+      "actions": "1/0",
+      "status": "In Progress",
+      "owner": "Peter Turk"
+    },
+    {
+      "id": "DF-005",
+      "element": "Connector",
+      "function": "Provide electrical connection",
+      "failure": "Loose connection",
+      "effect": "Intermittent light",
+      "cause": "Vibration, poor engagement",
+      "s": 6,
+      "o": 5,
+      "d": 5,
+      "p": 3,
+      "initial": 150,
+      "current": 75,
+      "actions": "2/1",
+      "status": "Open",
+      "owner": "Ana Novak"
+    },
+    {
+      "id": "DF-006",
+      "element": "Seal (Gasket)",
+      "function": "Prevent water ingress",
+      "failure": "Seal damage",
+      "effect": "Water ingress, corrosion",
+      "cause": "Assembly damage, ageing",
+      "s": 8,
+      "o": 4,
+      "d": 4,
+      "p": 3,
+      "initial": 128,
+      "current": 48,
+      "actions": "1/1",
+      "status": "In Progress",
+      "owner": "Marko Kovac"
+    },
+    {
+      "id": "DF-SW-001",
+      "projectId": "FMEA-OPEN-APP-DFMEA",
+      "element": "Responsive GUI Layout",
+      "function": "Present all FMEA functions correctly at different browser sizes",
+      "failure": "GUI layout deviates from approved mockup after feature changes",
+      "effect": "Widgets move, disappear, overlap or lose intended information hierarchy",
+      "cause": "Feature implementation changes shared CSS/layout without mockup regression validation",
+      "s": 8,
+      "o": 5,
+      "d": 5,
+      "p": 4,
+      "initial": 200,
+      "current": 120,
+      "actions": "3/1",
+      "status": "In Progress",
+      "owner": "Janez Demo",
+      "source": "GUI regression learning case",
+      "designClass": "Software / UX",
+      "requirementGap": "REQ-GAP-001",
+      "validationTest": "VAL-GUI-DFMEA-001"
+    },
+    {
+      "id": "DF-SW-002",
+      "projectId": "FMEA-OPEN-APP-DFMEA",
+      "element": "DFMEA View Runtime",
+      "function": "Render and operate complete DFMEA workspace",
+      "failure": "DFMEA page looks complete but one or more controls do not execute their function",
+      "effect": "User cannot create, edit, filter, trace, analyse or close DFMEA items reliably",
+      "cause": "Presentation layer implemented before command/data-flow wiring",
+      "s": 9,
+      "o": 4,
+      "d": 5,
+      "p": 4,
+      "initial": 180,
+      "current": 108,
+      "actions": "4/2",
+      "status": "In Progress",
+      "owner": "Janez Demo",
+      "source": "Historical functional regression",
+      "designClass": "Software / Functional",
+      "validationTest": "VAL-GUI-DFMEA-001"
+    },
+    {
+      "id": "DF-SW-003",
+      "projectId": "FMEA-OPEN-APP-DFMEA",
+      "element": "Container Schema / Browser State",
+      "function": "Load current application data safely across versions",
+      "failure": "Old snapshot or incompatible schema causes blank or incomplete workspace",
+      "effect": "Application appears broken or loses access to current functionality",
+      "cause": "Old browser state replaces newer embedded schema without migration/default merge",
+      "s": 9,
+      "o": 3,
+      "d": 4,
+      "p": 3,
+      "initial": 108,
+      "current": 54,
+      "actions": "3/2",
+      "status": "In Progress",
+      "owner": "Janez Demo",
+      "source": "CASE-HIST-001",
+      "designClass": "Software / Data Integrity",
+      "requirementGap": "REQ-GAP-002",
+      "validationTest": "VAL-GUI-HOME-001"
+    },
+    {
+      "id": "DF-SW-004",
+      "projectId": "FMEA-OPEN-APP-DFMEA",
+      "element": "DFMEA Analytics",
+      "function": "Provide traceable and correct risk analytics",
+      "failure": "KPI/chart/table values are static or inconsistent with DFMEA source records",
+      "effect": "Engineering decisions are based on misleading dashboard information",
+      "cause": "Visualization not computed from shared source-of-truth objects",
+      "s": 10,
+      "o": 3,
+      "d": 5,
+      "p": 4,
+      "initial": 150,
+      "current": 90,
+      "actions": "3/1",
+      "status": "Open",
+      "owner": "Janez Demo",
+      "source": "Risk/Change visualization lessons",
+      "designClass": "Software / Calculation",
+      "validationTest": "VAL-GUI-DFMEA-001"
+    },
+    {
+      "id": "DF-SW-005",
+      "projectId": "FMEA-OPEN-APP-DFMEA",
+      "element": "Object Traceability",
+      "function": "Reuse linked functions, failure modes, effects, causes, controls and actions",
+      "failure": "Changing view creates duplicate or broken engineering objects",
+      "effect": "Conflicting FMEA data, broken change impact and incorrect learning context",
+      "cause": "Page-local copies used instead of shared object identities",
+      "s": 9,
+      "o": 3,
+      "d": 6,
+      "p": 4,
+      "initial": 162,
+      "current": 108,
+      "actions": "4/2",
+      "status": "Open",
+      "owner": "Janez Demo",
+      "source": "SWC-008 / architecture rule",
+      "designClass": "Software / Data Integrity",
+      "validationTest": "VAL-GUI-DFMEA-001"
+    }
+  ],
+  "pfmea": [
+    {
+      "id": "PF-001",
+      "step": "10 - Incoming Insp.",
+      "function": "Verify material",
+      "failure": "Wrong material",
+      "effect": "Process stop, scrap",
+      "cause": "Supplier mix-up",
+      "s": 8,
+      "o": 4,
+      "d": 3,
+      "p": 2,
+      "initial": 96,
+      "current": 32,
+      "actions": "1/1",
+      "status": "Open",
+      "owner": "Ana Novak"
+    },
+    {
+      "id": "PF-002",
+      "step": "20 - Cutting",
+      "function": "Cut to length",
+      "failure": "Wrong length",
+      "effect": "Assembly issue",
+      "cause": "Wrong setup",
+      "s": 7,
+      "o": 5,
+      "d": 4,
+      "p": 3,
+      "initial": 140,
+      "current": 60,
+      "actions": "2/2",
+      "status": "In Progress",
+      "owner": "Luka Sterle"
+    },
+    {
+      "id": "PF-003",
+      "step": "30 - Bending",
+      "function": "Bend to angle",
+      "failure": "Wrong angle",
+      "effect": "Fit / function issue",
+      "cause": "Tool wear",
+      "s": 8,
+      "o": 4,
+      "d": 4,
+      "p": 3,
+      "initial": 128,
+      "current": 48,
+      "actions": "1/2",
+      "status": "Open",
+      "owner": "Marko Kovac"
+    },
+    {
+      "id": "PF-004",
+      "step": "40 - Welding / MIG Welding",
+      "function": "Join parts",
+      "failure": "Poor weld",
+      "effect": "Leakage, reduced strength",
+      "cause": "Parameter drift",
+      "s": 9,
+      "o": 4,
+      "d": 4,
+      "p": 2,
+      "initial": 144,
+      "current": 54,
+      "actions": "2/3",
+      "status": "In Progress",
+      "owner": "Luka Sterle"
+    },
+    {
+      "id": "PF-005",
+      "step": "50 - Cleaning",
+      "function": "Remove contaminants",
+      "failure": "Contamination left",
+      "effect": "Paint / coating defect",
+      "cause": "Cleaning bath condition",
+      "s": 6,
+      "o": 3,
+      "d": 3,
+      "p": 2,
+      "initial": 54,
+      "current": 18,
+      "actions": "1/1",
+      "status": "Closed",
+      "owner": "Peter Turk"
+    },
+    {
+      "id": "PF-006",
+      "step": "60 - Coating",
+      "function": "Apply coating",
+      "failure": "Thin coating",
+      "effect": "Corrosion / appearance",
+      "cause": "Flow / temperature drift",
+      "s": 7,
+      "o": 3,
+      "d": 3,
+      "p": 2,
+      "initial": 63,
+      "current": 21,
+      "actions": "1/1",
+      "status": "Open",
+      "owner": "Ana Novak"
+    },
+    {
+      "id": "PF-007",
+      "step": "70 - Assembly",
+      "function": "Assemble parts",
+      "failure": "Loose fit",
+      "effect": "Noise, rattle",
+      "cause": "Torque variation",
+      "s": 6,
+      "o": 5,
+      "d": 4,
+      "p": 3,
+      "initial": 120,
+      "current": 45,
+      "actions": "1/1",
+      "status": "In Progress",
+      "owner": "Marko Kovac"
+    }
+  ],
+  "failureModes": [
+    {
+      "id": "FM-001",
+      "name": "Lens crack",
+      "description": "Crack in outer lens leading to reduced light output",
+      "function": "Provide illumination / Housing",
+      "source": "Design + Compl.",
+      "catalog": "EC-1204",
+      "complaints": 7,
+      "s": 9,
+      "o": 5,
+      "d": 4,
+      "rpn": 180,
+      "trend": "↗",
+      "status": "Open"
+    },
+    {
+      "id": "FM-002",
+      "name": "Water ingress",
+      "description": "Water inside housing",
+      "function": "Protect components / Seal",
+      "source": "Catalog",
+      "catalog": "EC-1456",
+      "complaints": 12,
+      "s": 8,
+      "o": 6,
+      "d": 4,
+      "rpn": 192,
+      "trend": "↗",
+      "status": "Open"
+    },
+    {
+      "id": "FM-003",
+      "name": "LED not light",
+      "description": "LED no illumination",
+      "function": "Generate light / LED Module",
+      "source": "Complaints",
+      "catalog": "EC-0987",
+      "complaints": 24,
+      "s": 9,
+      "o": 4,
+      "d": 3,
+      "rpn": 108,
+      "trend": "↗",
+      "status": "Open"
+    },
+    {
+      "id": "FM-004",
+      "name": "Overheating",
+      "description": "Excess temperature",
+      "function": "Dissipate heat / Heatsink",
+      "source": "Design",
+      "catalog": "EC-0765",
+      "complaints": 3,
+      "s": 7,
+      "o": 5,
+      "d": 4,
+      "rpn": 140,
+      "trend": "↗",
+      "status": "In Progress"
+    },
+    {
+      "id": "FM-005",
+      "name": "Condensation",
+      "description": "Fogging on lens",
+      "function": "Protect components / Housing",
+      "source": "Catalog",
+      "catalog": "EC-1332",
+      "complaints": 15,
+      "s": 7,
+      "o": 6,
+      "d": 4,
+      "rpn": 168,
+      "trend": "↗",
+      "status": "Open"
+    },
+    {
+      "id": "FM-006",
+      "name": "Loose connector",
+      "description": "Connector loosen",
+      "function": "Provide electrical / Connector",
+      "source": "Complaints",
+      "catalog": "EC-2011",
+      "complaints": 18,
+      "s": 8,
+      "o": 5,
+      "d": 5,
+      "rpn": 200,
+      "trend": "↗",
+      "status": "Open"
+    }
+  ],
+  "causes": [
+    {
+      "id": "C-0001",
+      "name": "Wrong torque at screw connection",
+      "type": "Process",
+      "category": "Assembly",
+      "source": "Catalog",
+      "linked": "FM-004, FM-015",
+      "influence": 8,
+      "status": "Active"
+    },
+    {
+      "id": "C-0002",
+      "name": "Material out of specification",
+      "type": "Material",
+      "category": "Material",
+      "source": "Catalog",
+      "linked": "FM-007, FM-018",
+      "influence": 9,
+      "status": "Active"
+    },
+    {
+      "id": "C-0003",
+      "name": "Seal design not appropriate",
+      "type": "Design",
+      "category": "Design",
+      "source": "User",
+      "linked": "FM-002, FM-012",
+      "influence": 8,
+      "status": "Active"
+    },
+    {
+      "id": "C-0004",
+      "name": "Inadequate process parameters",
+      "type": "Process",
+      "category": "Process",
+      "source": "Catalog",
+      "linked": "FM-009",
+      "influence": 7,
+      "status": "Active"
+    },
+    {
+      "id": "C-0005",
+      "name": "Supplier quality issue",
+      "type": "External",
+      "category": "Supplier",
+      "source": "Catalog",
+      "linked": "FM-006, FM-011",
+      "influence": 9,
+      "status": "Under Review"
+    },
+    {
+      "id": "C-0006",
+      "name": "Operator not trained",
+      "type": "Human",
+      "category": "Human",
+      "source": "Catalog",
+      "linked": "FM-010, FM-016",
+      "influence": 7,
+      "status": "Active"
+    }
+  ],
+  "effects": [
+    {
+      "id": "E-001",
+      "name": "Loss of illumination",
+      "level": "End Effect",
+      "severity": 9,
+      "linked": 7,
+      "ap": "Medium",
+      "status": "Active"
+    },
+    {
+      "id": "E-002",
+      "name": "Reduced light output",
+      "level": "System Effect",
+      "severity": 8,
+      "linked": 6,
+      "ap": "Low",
+      "status": "Active"
+    },
+    {
+      "id": "E-003",
+      "name": "Reduced LED lifetime",
+      "level": "Subsequent L2",
+      "severity": 7,
+      "linked": 5,
+      "ap": "Medium",
+      "status": "Active"
+    },
+    {
+      "id": "E-004",
+      "name": "LED overheating",
+      "level": "Local Effect",
+      "severity": 8,
+      "linked": 7,
+      "ap": "Medium",
+      "status": "Active"
+    },
+    {
+      "id": "E-005",
+      "name": "Electrical failure",
+      "level": "System Effect",
+      "severity": 9,
+      "linked": 4,
+      "ap": "High",
+      "status": "Active"
+    }
+  ],
+  "preventionControls": [
+    {
+      "id": "PC-0234",
+      "name": "Poka-Yoke bracket presence sensor",
+      "category": "Process Controls",
+      "type": "Poka-Yoke",
+      "controlType": "Detection Prevention",
+      "linked": "FM-023, C-011",
+      "effectiveness": 85,
+      "operation": "OC-042 Assembly Verification",
+      "resource": "Vision Sensor Keyence IV3",
+      "status": "Active"
+    },
+    {
+      "id": "PC-0012",
+      "name": "Assembly fixture with locator pins",
+      "category": "Design Controls",
+      "type": "Mistake Proofing",
+      "controlType": "Physical Prevention",
+      "linked": "FM-023",
+      "effectiveness": 90,
+      "operation": "OC-015 Assembly Setup",
+      "resource": "Fixture F-23",
+      "status": "Active"
+    },
+    {
+      "id": "PC-0017",
+      "name": "Screw tightening torque control",
+      "category": "Process Controls",
+      "type": "Parameter Control",
+      "controlType": "Process Prevention",
+      "linked": "FM-017",
+      "effectiveness": 65,
+      "operation": "OC-031 Fastening",
+      "resource": "Torque Wrench",
+      "status": "Active"
+    },
+    {
+      "id": "PC-0021",
+      "name": "Incoming material inspection",
+      "category": "Supplier Controls",
+      "type": "Inspection",
+      "controlType": "Inspection Prevention",
+      "linked": "C-005",
+      "effectiveness": 80,
+      "operation": "OC-006 Receiving",
+      "resource": "Digital Caliper",
+      "status": "Active"
+    }
+  ],
+  "detectionControls": [
+    {
+      "id": "DC-0234",
+      "name": "AOI – Solder joint inspection",
+      "category": "Inspection Controls",
+      "type": "Automated",
+      "method": "Optical inspection",
+      "linked": "FM-023, C-011",
+      "effectiveness": 90,
+      "resource": "AOI Machine Model X500",
+      "operation": "OC-041 Soldering Line Inspection",
+      "status": "Active"
+    },
+    {
+      "id": "DC-0017",
+      "name": "Electrical continuity test",
+      "category": "Test Controls",
+      "type": "Manual",
+      "method": "Electrical test",
+      "linked": "FM-017",
+      "effectiveness": 85,
+      "resource": "Multimeter Fluke 117",
+      "operation": "OC-023 Electrical Test Station",
+      "status": "Active"
+    },
+    {
+      "id": "DC-0031",
+      "name": "Temperature cycling test",
+      "category": "Test Controls",
+      "type": "Automated",
+      "method": "Environmental test",
+      "linked": "FM-031",
+      "effectiveness": 65,
+      "resource": "Temp Chamber ESPEC SH-642",
+      "operation": "OC-051 Environmental Lab",
+      "status": "Active"
+    },
+    {
+      "id": "DC-0008",
+      "name": "Microscopic visual inspection",
+      "category": "Inspection Controls",
+      "type": "Manual",
+      "method": "Visual inspection",
+      "linked": "FM-008",
+      "effectiveness": 60,
+      "resource": "Stereo Microscope",
+      "operation": "OC-015 Assembly Verification",
+      "status": "Active"
+    }
+  ],
+  "processControls": [
+    {
+      "id": "PCC-001",
+      "step": "10 - Incoming Material",
+      "name": "Material ID / Lot Verification",
+      "type": "Administrative",
+      "method": "Barcode Scan",
+      "resource": "Handheld Scanner",
+      "frequency": "Each lot / Before use",
+      "links": 3,
+      "status": "Active",
+      "effectiveness": "Effective"
+    },
+    {
+      "id": "PCC-002",
+      "step": "20 - Cutting",
+      "name": "Cut Length Check",
+      "type": "Measurement",
+      "method": "Digital Caliper",
+      "resource": "Mitutoyo CD-15CPX",
+      "frequency": "Each piece / In-process",
+      "links": 2,
+      "status": "Active",
+      "effectiveness": "Effective"
+    },
+    {
+      "id": "PCC-003",
+      "step": "30 - Drilling",
+      "name": "Hole Position Check",
+      "type": "Measurement",
+      "method": "Go / No-Go Gauge",
+      "resource": "Custom Gauge",
+      "frequency": "Each piece / In-process",
+      "links": 2,
+      "status": "Active",
+      "effectiveness": "Effective"
+    },
+    {
+      "id": "PCC-004",
+      "step": "40 - Welding",
+      "name": "Weld Presence",
+      "type": "Detection",
+      "method": "Vision Sensor",
+      "resource": "Keyence IV3",
+      "frequency": "Each cycle / End",
+      "links": 3,
+      "status": "Active",
+      "effectiveness": "Effective"
+    },
+    {
+      "id": "PCC-006",
+      "step": "50 - Assembly",
+      "name": "Component Presence",
+      "type": "Poka-Yoke",
+      "method": "Presence Sensor",
+      "resource": "Banner QS18",
+      "frequency": "Before cycle release",
+      "links": 4,
+      "status": "Active",
+      "effectiveness": "Effective"
+    }
+  ],
+  "actions": [
+    {
+      "id": "A-2025-014",
+      "title": "Add bracket to protect presence sensor",
+      "linked": "FM-023",
+      "type": "Design Action",
+      "priority": "High",
+      "responsible": "Marko K.",
+      "start": "20.03.2025",
+      "due": "30.04.2025",
+      "status": "In Progress",
+      "complete": 65,
+      "reduction": 130
+    },
+    {
+      "id": "A-2025-018",
+      "title": "Increase torque specification for screw",
+      "linked": "FM-017",
+      "type": "Process Action",
+      "priority": "High",
+      "responsible": "Sara P.",
+      "start": "25.03.2025",
+      "due": "15.04.2025",
+      "status": "In Progress",
+      "complete": 40,
+      "reduction": 90
+    },
+    {
+      "id": "A-2025-022",
+      "title": "Add functional test at end of line",
+      "linked": "FM-031",
+      "type": "Detection Action",
+      "priority": "Medium",
+      "responsible": "Janez D.",
+      "start": "10.04.2025",
+      "due": "30.05.2025",
+      "status": "Open",
+      "complete": 0,
+      "reduction": 80
+    },
+    {
+      "id": "A-2025-025",
+      "title": "Supplier quality improvement plan",
+      "linked": "C-005",
+      "type": "Supplier Action",
+      "priority": "Medium",
+      "responsible": "Luka G.",
+      "start": "15.04.2025",
+      "due": "15.06.2025",
+      "status": "Open",
+      "complete": 0,
+      "reduction": 70
+    }
+  ],
+  "evidence": [
+    {
+      "id": "EVT-001",
+      "name": "Luminous Flux Verification",
+      "link": "F-01 / FM-01",
+      "type": "Validation",
+      "method": "Photometric Test Lab",
+      "status": "Completed",
+      "priority": "High",
+      "date": "08 May 2025",
+      "owner": "MK"
+    },
+    {
+      "id": "EVT-002",
+      "name": "Color Temperature Check",
+      "link": "F-01 / FM-01",
+      "type": "Validation",
+      "method": "Colorimeter Lab",
+      "status": "In Execution",
+      "priority": "Medium",
+      "date": "14 May 2025",
+      "owner": "AN"
+    },
+    {
+      "id": "EVT-003",
+      "name": "Vibration Durability Test",
+      "link": "F-02 / FM-03",
+      "type": "Reliability",
+      "method": "Vibration Test Lab",
+      "status": "Planned",
+      "priority": "High",
+      "date": "20 May 2025",
+      "owner": "PT"
+    },
+    {
+      "id": "EVT-004",
+      "name": "Ingress Protection Verification",
+      "link": "F-02 / FM-04",
+      "type": "Validation",
+      "method": "IP Test (IP67) Lab",
+      "status": "Planned",
+      "priority": "High",
+      "date": "22 May 2025",
+      "owner": "LK"
+    }
+  ],
+  "validations": [
+    {
+      "id": "VAL-001",
+      "name": "Optical Performance Test",
+      "linked": "DF-001, DF-002",
+      "stages": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "status": "Completed"
+    },
+    {
+      "id": "VAL-002",
+      "name": "Thermal Cycling Test",
+      "linked": "DF-003, PF-004",
+      "stages": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        0
+      ],
+      "status": "In Execution"
+    },
+    {
+      "id": "VAL-003",
+      "name": "Vibration Durability Test",
+      "linked": "DF-001",
+      "stages": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        0
+      ],
+      "status": "In Execution"
+    },
+    {
+      "id": "VAL-004",
+      "name": "Ingress Protection Test",
+      "linked": "DF-004, PF-005",
+      "stages": [
+        1,
+        1,
+        1,
+        1,
+        3,
+        0
+      ],
+      "status": "Overdue"
+    }
+  ],
+  "changes": [
+    {
+      "id": "CHG-024",
+      "title": "Lens material change PC → PC+ASA",
+      "type": "Design",
+      "source": "Engineering",
+      "reason": "Controlled engineering change",
+      "impact": "High",
+      "dfmea": 12,
+      "pfmea": 9,
+      "status": "Under Analysis",
+      "owner": "MK",
+      "date": "2025-05-12"
+    },
+    {
+      "id": "CHG-023",
+      "title": "LED supplier change",
+      "type": "Supplier",
+      "source": "Procurement",
+      "reason": "Controlled engineering change",
+      "impact": "Medium",
+      "dfmea": 12,
+      "pfmea": 9,
+      "status": "In Progress",
+      "owner": "AN",
+      "date": "2025-05-08"
+    },
+    {
+      "id": "CHG-022",
+      "title": "Lens geometry update",
+      "type": "Design",
+      "source": "Engineering",
+      "reason": "Controlled engineering change",
+      "impact": "High",
+      "dfmea": 11,
+      "pfmea": 9,
+      "status": "In Progress",
+      "owner": "LS",
+      "date": "2025-05-06"
+    },
+    {
+      "id": "CHG-021",
+      "title": "Assembly torque update",
+      "type": "Process",
+      "source": "Manufacturing",
+      "reason": "Controlled engineering change",
+      "impact": "Medium",
+      "dfmea": 11,
+      "pfmea": 8,
+      "status": "Under Analysis",
+      "owner": "SP",
+      "date": "2025-05-02"
+    },
+    {
+      "id": "CHG-020",
+      "title": "Ingress test method revision",
+      "type": "Test",
+      "source": "Quality",
+      "reason": "Controlled engineering change",
+      "impact": "Low",
+      "dfmea": 10,
+      "pfmea": 8,
+      "status": "In Progress",
+      "owner": "JD",
+      "date": "2025-04-29"
+    },
+    {
+      "id": "CHG-019",
+      "title": "Seal supplier tolerance update",
+      "type": "Supplier",
+      "source": "Procurement",
+      "reason": "Controlled engineering change",
+      "impact": "High",
+      "dfmea": 10,
+      "pfmea": 8,
+      "status": "In Progress",
+      "owner": "MK",
+      "date": "2025-04-24"
+    },
+    {
+      "id": "CHG-018",
+      "title": "Connector retention redesign",
+      "type": "Design",
+      "source": "Engineering",
+      "reason": "Controlled engineering change",
+      "impact": "Critical",
+      "dfmea": 9,
+      "pfmea": 7,
+      "status": "Under Analysis",
+      "owner": "LS",
+      "date": "2025-04-21"
+    },
+    {
+      "id": "CHG-017",
+      "title": "Weld recipe update",
+      "type": "Process",
+      "source": "Manufacturing",
+      "reason": "Controlled engineering change",
+      "impact": "Medium",
+      "dfmea": 9,
+      "pfmea": 7,
+      "status": "In Progress",
+      "owner": "SP",
+      "date": "2025-04-17"
+    },
+    {
+      "id": "CHG-016",
+      "title": "Photometry acceptance criteria",
+      "type": "Requirement",
+      "source": "Customer",
+      "reason": "Controlled engineering change",
+      "impact": "High",
+      "dfmea": 8,
+      "pfmea": 7,
+      "status": "Closed",
+      "owner": "JD",
+      "date": "2025-04-14"
+    },
+    {
+      "id": "CHG-015",
+      "title": "End-of-line test addition",
+      "type": "Test",
+      "source": "Quality",
+      "reason": "Controlled engineering change",
+      "impact": "Medium",
+      "dfmea": 8,
+      "pfmea": 6,
+      "status": "Closed",
+      "owner": "AN",
+      "date": "2025-04-10"
+    },
+    {
+      "id": "CHG-014",
+      "title": "Vent membrane change",
+      "type": "Design",
+      "source": "Engineering",
+      "reason": "Controlled engineering change",
+      "impact": "Low",
+      "dfmea": 7,
+      "pfmea": 6,
+      "status": "Closed",
+      "owner": "MK",
+      "date": "2025-04-07"
+    },
+    {
+      "id": "CHG-013",
+      "title": "Packaging protection update",
+      "type": "Process",
+      "source": "Logistics",
+      "reason": "Controlled engineering change",
+      "impact": "Low",
+      "dfmea": 7,
+      "pfmea": 6,
+      "status": "Closed",
+      "owner": "RH",
+      "date": "2025-04-03"
+    }
+  ],
+  "characteristics": [
+    {
+      "id": "CR-001",
+      "name": "Luminous flux",
+      "type": "Product",
+      "classification": "Special",
+      "unit": "lm",
+      "target": "≥ 1200",
+      "linkedObject": "PRD-002",
+      "source": "Customer requirement",
+      "owner": "Luka Sterle",
+      "status": "Active"
+    },
+    {
+      "id": "CR-002",
+      "name": "Housing wall thickness",
+      "type": "Product",
+      "classification": "Critical",
+      "unit": "mm",
+      "target": "2.5 ± 0.2",
+      "linkedObject": "PRD-003",
+      "source": "Drawing",
+      "owner": "Marko Kovac",
+      "status": "Active"
+    },
+    {
+      "id": "CR-003",
+      "name": "Seal compression",
+      "type": "Process",
+      "classification": "Special",
+      "unit": "%",
+      "target": "20–30",
+      "linkedObject": "STP-002",
+      "source": "PFMEA",
+      "owner": "Sara Pirc",
+      "status": "Active"
+    },
+    {
+      "id": "CR-004",
+      "name": "Ingress resistance",
+      "type": "Product",
+      "classification": "Critical",
+      "unit": "IP",
+      "target": "IP67",
+      "linkedObject": "SYS-001",
+      "source": "Specification",
+      "owner": "Janez Demo",
+      "status": "Active"
+    },
+    {
+      "id": "CR-005",
+      "name": "Assembly torque",
+      "type": "Process",
+      "classification": "Key",
+      "unit": "Nm",
+      "target": "4.5 ± 0.3",
+      "linkedObject": "STP-003",
+      "source": "Work instruction",
+      "owner": "Robert Hribar",
+      "status": "Active"
+    },
+    {
+      "id": "CR-006",
+      "name": "Aim angle",
+      "type": "Process",
+      "classification": "Special",
+      "unit": "deg",
+      "target": "0 ± 0.4",
+      "linkedObject": "STP-004",
+      "source": "Test specification",
+      "owner": "Ana Novak",
+      "status": "Active"
+    },
+    {
+      "id": "CR-007",
+      "name": "Lens transmittance",
+      "type": "Product",
+      "classification": "Key",
+      "unit": "%",
+      "target": "≥ 88",
+      "linkedObject": "PRD-002",
+      "source": "Material specification",
+      "owner": "Luka Sterle",
+      "status": "Review"
+    },
+    {
+      "id": "CR-008",
+      "name": "Weld energy",
+      "type": "Process",
+      "classification": "Critical",
+      "unit": "J",
+      "target": "Defined recipe",
+      "linkedObject": "PRC-001",
+      "source": "PFMEA",
+      "owner": "Sara Pirc",
+      "status": "Active"
+    }
+  ],
+  "transactions": [],
+  "knowledge": [],
+  "rootCauseAnalyses": [
+    {
+      "id": "RCA-2025-009",
+      "title": "Water ingress / seal failure investigation",
+      "method": "Ishikawa + 5 Why",
+      "linkedFailure": "FM-002",
+      "status": "In Progress",
+      "owner": "Marko Kovac",
+      "problem": "Water ingress detected during environmental testing.",
+      "categories": {
+        "Man": [
+          "Seal installation technique varies by operator"
+        ],
+        "Machine": [
+          "Fixture does not positively locate seal"
+        ],
+        "Method": [
+          "No explicit visual confirmation before release"
+        ],
+        "Material": [
+          "Seal compression variation between lots"
+        ],
+        "Measurement": [
+          "No in-line compression-height check"
+        ],
+        "Environment": [
+          "Temperature cycling increases dimensional variation"
+        ]
+      },
+      "whyChain": [
+        "Why did water enter the housing? — Seal did not provide full contact.",
+        "Why was full contact missing? — Seal was locally under-compressed.",
+        "Why was compression insufficient? — Assembly position varied.",
+        "Why could position vary? — Fixture permits positional tolerance.",
+        "Why was this not detected? — No poka-yoke / in-line verification existed."
+      ]
+    },
+    {
+      "id": "RCA-2025-011",
+      "title": "Incorrect weld / reduced joint strength",
+      "method": "3 Why",
+      "linkedFailure": "PF-004",
+      "status": "Open",
+      "owner": "Luka Sterle",
+      "problem": "Weld strength below requirement.",
+      "whyChain": [
+        "Why was weld strength low? — Heat input was below target.",
+        "Why was heat input below target? — Parameter set was incorrect.",
+        "Why was the wrong set used? — Recipe selection was not interlocked to product variant."
+      ]
+    }
+  ],
+  "eightD": [
+    {
+      "id": "8D-2025-006",
+      "title": "Recurring water ingress — Headlamp X1",
+      "linkedFailure": "FM-002",
+      "status": "In Progress",
+      "owner": "Janez Demo",
+      "team": "Quality + Design + Process",
+      "steps": {
+        "D0": "Emergency response initiated; affected stock blocked.",
+        "D1": "Cross-functional team formed.",
+        "D2": "Problem described using test, lot, date and affected configuration.",
+        "D3": "Containment: 100% leak test and quarantine suspect lots.",
+        "D4": "Root cause linked to RCA-2025-009.",
+        "D5": "Permanent corrective action: locator + seal-presence poka-yoke.",
+        "D6": "Validation planned through thermal cycling and ingress test.",
+        "D7": "Update PFMEA, controls, work instruction and lessons learned.",
+        "D8": "Closure pending effectiveness verification."
+      }
+    }
+  ],
+  "pokaYoke": [
+    {
+      "id": "PY-001",
+      "name": "Seal presence and seating verification",
+      "type": "Prevention + Detection",
+      "linkedFailure": "FM-002",
+      "linkedCause": "C-0003",
+      "process": "Housing Assembly",
+      "mechanism": "Presence sensor + fixture locator",
+      "reaction": "Block cycle and create deviation",
+      "status": "Proposed",
+      "effectivenessTarget": 90
+    },
+    {
+      "id": "PY-002",
+      "name": "Recipe-product interlock",
+      "type": "Prevention",
+      "linkedFailure": "PF-004",
+      "process": "Welding",
+      "mechanism": "Barcode selects locked weld recipe",
+      "reaction": "Prevent cycle on mismatch",
+      "status": "Planned",
+      "effectivenessTarget": 95
+    }
+  ],
+  "analysisMethods": {
+    "ishikawaCategories": [
+      "Man",
+      "Machine",
+      "Method",
+      "Material",
+      "Measurement",
+      "Environment"
+    ],
+    "fiveM": [
+      "Man",
+      "Machine",
+      "Method",
+      "Material",
+      "Measurement"
+    ],
+    "sixM": [
+      "Man",
+      "Machine",
+      "Method",
+      "Material",
+      "Measurement",
+      "Environment"
+    ],
+    "whyMethods": [
+      "3 Why",
+      "5 Why"
+    ],
+    "pokaYokePrinciples": [
+      "Prevention",
+      "Detection",
+      "Source inspection",
+      "100% check",
+      "Immediate reaction"
+    ]
+  },
+  "riskHistory": [
+    {
+      "objectId": "DF-001",
+      "phase": "Concept",
+      "date": "2025-01-15",
+      "rpn": 128,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "DF-001",
+      "phase": "Design",
+      "date": "2025-02-12",
+      "rpn": 112,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "DF-001",
+      "phase": "Prototype",
+      "date": "2025-03-10",
+      "rpn": 96,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "DF-001",
+      "phase": "Verification",
+      "date": "2025-04-08",
+      "rpn": 80,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "DF-001",
+      "phase": "Validation",
+      "date": "2025-05-12",
+      "rpn": 64,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "DF-001",
+      "phase": "Release",
+      "date": "2025-06-10",
+      "rpn": 48,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "DF-002",
+      "phase": "Concept",
+      "date": "2025-01-15",
+      "rpn": 108,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "DF-002",
+      "phase": "Design",
+      "date": "2025-02-12",
+      "rpn": 90,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "DF-002",
+      "phase": "Prototype",
+      "date": "2025-03-10",
+      "rpn": 72,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "DF-002",
+      "phase": "Verification",
+      "date": "2025-04-08",
+      "rpn": 54,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "DF-002",
+      "phase": "Validation",
+      "date": "2025-05-12",
+      "rpn": 45,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "DF-002",
+      "phase": "Release",
+      "date": "2025-06-10",
+      "rpn": 36,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "DF-003",
+      "phase": "Concept",
+      "date": "2025-01-15",
+      "rpn": 112,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "DF-003",
+      "phase": "Design",
+      "date": "2025-02-12",
+      "rpn": 104,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "DF-003",
+      "phase": "Prototype",
+      "date": "2025-03-10",
+      "rpn": 88,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "DF-003",
+      "phase": "Verification",
+      "date": "2025-04-08",
+      "rpn": 72,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "DF-003",
+      "phase": "Validation",
+      "date": "2025-05-12",
+      "rpn": 64,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "DF-003",
+      "phase": "Release",
+      "date": "2025-06-10",
+      "rpn": 56,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "PF-002",
+      "phase": "Concept",
+      "date": "2025-01-15",
+      "rpn": 140,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "PF-002",
+      "phase": "Design",
+      "date": "2025-02-12",
+      "rpn": 120,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "PF-002",
+      "phase": "Prototype",
+      "date": "2025-03-10",
+      "rpn": 100,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "PF-002",
+      "phase": "Verification",
+      "date": "2025-04-08",
+      "rpn": 85,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "PF-002",
+      "phase": "Validation",
+      "date": "2025-05-12",
+      "rpn": 72,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "PF-002",
+      "phase": "Release",
+      "date": "2025-06-10",
+      "rpn": 60,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "PF-004",
+      "phase": "Concept",
+      "date": "2025-01-15",
+      "rpn": 144,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "PF-004",
+      "phase": "Design",
+      "date": "2025-02-12",
+      "rpn": 120,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "PF-004",
+      "phase": "Prototype",
+      "date": "2025-03-10",
+      "rpn": 96,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "PF-004",
+      "phase": "Verification",
+      "date": "2025-04-08",
+      "rpn": 78,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "PF-004",
+      "phase": "Validation",
+      "date": "2025-05-12",
+      "rpn": 66,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "PF-004",
+      "phase": "Release",
+      "date": "2025-06-10",
+      "rpn": 54,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "PF-007",
+      "phase": "Concept",
+      "date": "2025-01-15",
+      "rpn": 120,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "PF-007",
+      "phase": "Design",
+      "date": "2025-02-12",
+      "rpn": 105,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "PF-007",
+      "phase": "Prototype",
+      "date": "2025-03-10",
+      "rpn": 90,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "PF-007",
+      "phase": "Verification",
+      "date": "2025-04-08",
+      "rpn": 72,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "PF-007",
+      "phase": "Validation",
+      "date": "2025-05-12",
+      "rpn": 60,
+      "source": "Demo baseline"
+    },
+    {
+      "objectId": "PF-007",
+      "phase": "Release",
+      "date": "2025-06-10",
+      "rpn": 45,
+      "source": "Demo baseline"
+    }
+  ],
+  "team": [
+    {
+      "id": "USR-JD",
+      "name": "Janez Demo",
+      "initials": "JD",
+      "role": "FMEA Lead",
+      "department": "Quality",
+      "status": "Active",
+      "email": "janez.demo@open-fmea.local",
+      "openTasks": 6,
+      "overdue": 1,
+      "workload": 78,
+      "authority": "Lead / Approve"
+    },
+    {
+      "id": "USR-MK",
+      "name": "Marko Kovac",
+      "initials": "MK",
+      "role": "Design Engineer",
+      "department": "Engineering",
+      "status": "Active",
+      "email": "marko.kovac@open-fmea.local",
+      "openTasks": 4,
+      "overdue": 0,
+      "workload": 64,
+      "authority": "Edit / Review"
+    },
+    {
+      "id": "USR-SP",
+      "name": "Sara Pirc",
+      "initials": "SP",
+      "role": "Process Engineer",
+      "department": "Manufacturing",
+      "status": "Active",
+      "email": "sara.pirc@open-fmea.local",
+      "openTasks": 5,
+      "overdue": 2,
+      "workload": 82,
+      "authority": "Edit / Review"
+    },
+    {
+      "id": "USR-LS",
+      "name": "Luka Sterle",
+      "initials": "LS",
+      "role": "Quality Engineer",
+      "department": "Quality",
+      "status": "Active",
+      "email": "luka.sterle@open-fmea.local",
+      "openTasks": 3,
+      "overdue": 0,
+      "workload": 58,
+      "authority": "Review"
+    },
+    {
+      "id": "USR-AN",
+      "name": "Ana Novak",
+      "initials": "AN",
+      "role": "Test Engineer",
+      "department": "Validation",
+      "status": "Away",
+      "email": "ana.novak@open-fmea.local",
+      "openTasks": 2,
+      "overdue": 0,
+      "workload": 42,
+      "authority": "Evidence / Review"
+    },
+    {
+      "id": "USR-RH",
+      "name": "Robert Hribar",
+      "initials": "RH",
+      "role": "Manufacturing Engineer",
+      "department": "Manufacturing",
+      "status": "Active",
+      "email": "robert.hribar@open-fmea.local",
+      "openTasks": 3,
+      "overdue": 1,
+      "workload": 70,
+      "authority": "Edit"
+    }
+  ],
+  "systemTree": [
+    {
+      "id": "SYS-001",
+      "type": "System",
+      "name": "Headlamp X1",
+      "parentId": null,
+      "status": "Active",
+      "revision": "A",
+      "owner": "Janez Demo",
+      "description": "Complete headlamp system"
+    },
+    {
+      "id": "PRD-001",
+      "type": "Product",
+      "name": "Headlamp Assembly",
+      "parentId": "SYS-001",
+      "status": "Active",
+      "revision": "A",
+      "owner": "Marko Kovac",
+      "description": "Main product structure"
+    },
+    {
+      "id": "PRD-002",
+      "type": "Product",
+      "name": "Optical Module",
+      "parentId": "PRD-001",
+      "status": "Active",
+      "revision": "B",
+      "owner": "Luka Sterle",
+      "description": "Lens, reflector and LED optics"
+    },
+    {
+      "id": "PRD-003",
+      "type": "Product",
+      "name": "Housing & Cover",
+      "parentId": "PRD-001",
+      "status": "Active",
+      "revision": "A",
+      "owner": "Marko Kovac",
+      "description": "Housing and sealing structure"
+    },
+    {
+      "id": "PRC-001",
+      "type": "Process",
+      "name": "Housing Production",
+      "parentId": "PRD-003",
+      "status": "Active",
+      "revision": "A",
+      "owner": "Sara Pirc",
+      "description": "Housing manufacturing process"
+    },
+    {
+      "id": "STP-001",
+      "type": "Process Step",
+      "name": "Injection Moulding",
+      "parentId": "PRC-001",
+      "status": "Active",
+      "revision": "A",
+      "owner": "Sara Pirc",
+      "description": "Injection moulding of housing"
+    },
+    {
+      "id": "STP-002",
+      "type": "Process Step",
+      "name": "Seal Installation",
+      "parentId": "PRC-001",
+      "status": "Active",
+      "revision": "A",
+      "owner": "Robert Hribar",
+      "description": "Seal installation and seating verification"
+    },
+    {
+      "id": "STP-003",
+      "type": "Process Step",
+      "name": "Final Assembly",
+      "parentId": "PRC-001",
+      "status": "Active",
+      "revision": "A",
+      "owner": "Robert Hribar",
+      "description": "Final mechanical assembly"
+    },
+    {
+      "id": "PRC-002",
+      "type": "Process",
+      "name": "Optical Adjustment",
+      "parentId": "PRD-002",
+      "status": "Active",
+      "revision": "A",
+      "owner": "Sara Pirc",
+      "description": "Photometry adjustment process"
+    },
+    {
+      "id": "STP-004",
+      "type": "Process Step",
+      "name": "Aim Adjustment",
+      "parentId": "PRC-002",
+      "status": "Active",
+      "revision": "A",
+      "owner": "Ana Novak",
+      "description": "Beam aiming and verification"
+    }
+  ],
+  "characteristicsBase": [
+    {
+      "id": "CR-001",
+      "name": "Luminous flux",
+      "type": "Product",
+      "classification": "Special",
+      "unit": "lm",
+      "target": "≥ 1200",
+      "linkedObject": "PRD-002",
+      "source": "Customer requirement",
+      "owner": "Luka Sterle",
+      "status": "Active"
+    },
+    {
+      "id": "CR-002",
+      "name": "Housing wall thickness",
+      "type": "Product",
+      "classification": "Critical",
+      "unit": "mm",
+      "target": "2.5 ± 0.2",
+      "linkedObject": "PRD-003",
+      "source": "Drawing",
+      "owner": "Marko Kovac",
+      "status": "Active"
+    },
+    {
+      "id": "CR-003",
+      "name": "Seal compression",
+      "type": "Process",
+      "classification": "Special",
+      "unit": "%",
+      "target": "20–30",
+      "linkedObject": "STP-002",
+      "source": "PFMEA",
+      "owner": "Sara Pirc",
+      "status": "Active"
+    },
+    {
+      "id": "CR-004",
+      "name": "Ingress resistance",
+      "type": "Product",
+      "classification": "Critical",
+      "unit": "IP",
+      "target": "IP67",
+      "linkedObject": "SYS-001",
+      "source": "Specification",
+      "owner": "Janez Demo",
+      "status": "Active"
+    },
+    {
+      "id": "CR-005",
+      "name": "Assembly torque",
+      "type": "Process",
+      "classification": "Key",
+      "unit": "Nm",
+      "target": "4.5 ± 0.3",
+      "linkedObject": "STP-003",
+      "source": "Work instruction",
+      "owner": "Robert Hribar",
+      "status": "Active"
+    },
+    {
+      "id": "CR-006",
+      "name": "Aim angle",
+      "type": "Process",
+      "classification": "Special",
+      "unit": "deg",
+      "target": "0 ± 0.4",
+      "linkedObject": "STP-004",
+      "source": "Test specification",
+      "owner": "Ana Novak",
+      "status": "Active"
+    },
+    {
+      "id": "CR-007",
+      "name": "Lens transmittance",
+      "type": "Product",
+      "classification": "Key",
+      "unit": "%",
+      "target": "≥ 88",
+      "linkedObject": "PRD-002",
+      "source": "Material specification",
+      "owner": "Luka Sterle",
+      "status": "Review"
+    },
+    {
+      "id": "CR-008",
+      "name": "Weld energy",
+      "type": "Process",
+      "classification": "Critical",
+      "unit": "J",
+      "target": "Defined recipe",
+      "linkedObject": "PRC-001",
+      "source": "PFMEA",
+      "owner": "Sara Pirc",
+      "status": "Active"
+    }
+  ],
+  "softwareCharacteristics": [
+    {
+      "id": "SWC-001",
+      "name": "Responsive browser layout",
+      "category": "Usability",
+      "requirement": "All widgets adapt to browser size and resize without loss of function.",
+      "target": "No clipped primary controls; local scroll only where necessary.",
+      "verification": "Resize test 320–2560 px",
+      "status": "Active",
+      "criticality": "High",
+      "source": "Open FMEA development"
+    },
+    {
+      "id": "SWC-002",
+      "name": "Container backward compatibility",
+      "category": "Reliability",
+      "requirement": "Older local snapshots shall not break rendering after schema upgrades.",
+      "target": "Graceful migration or fallback to embedded defaults.",
+      "verification": "Migration regression test",
+      "status": "Active",
+      "criticality": "Critical",
+      "source": "Open FMEA development"
+    },
+    {
+      "id": "SWC-003",
+      "name": "Risk Matrix drill-down",
+      "category": "Functional",
+      "requirement": "Matrix cells shall display risk counts and open risks belonging to the selected S/O cell.",
+      "target": "Count equals filtered DFMEA/PFMEA records.",
+      "verification": "Matrix count/filter consistency test",
+      "status": "Active",
+      "criticality": "High",
+      "source": "Open FMEA development"
+    },
+    {
+      "id": "SWC-004",
+      "name": "Time-based risk trajectory",
+      "category": "Functional",
+      "requirement": "Risk trajectory shall support lifecycle and calendar time with selectable ranges.",
+      "target": "Lifecycle, day/week/month range and From/To filtering.",
+      "verification": "Trajectory range test",
+      "status": "Active",
+      "criticality": "High",
+      "source": "Open FMEA development"
+    },
+    {
+      "id": "SWC-005",
+      "name": "Traceable AI recommendations",
+      "category": "AI / Governance",
+      "requirement": "Every AI recommendation shall identify source records and be user-confirmed before authoritative changes.",
+      "target": "FACT/CALCULATION/INFERENCE/RECOMMENDATION + source IDs.",
+      "verification": "AI provenance test",
+      "status": "Active",
+      "criticality": "Critical",
+      "source": "Open-EQMS architecture"
+    },
+    {
+      "id": "SWC-006",
+      "name": "Offline single-file runtime",
+      "category": "Deployment",
+      "requirement": "Core FMEA functionality shall remain usable without an AI service or internet connection.",
+      "target": "HTML + container works locally.",
+      "verification": "Offline browser test",
+      "status": "Active",
+      "criticality": "High",
+      "source": "Open-EQMS architecture"
+    },
+    {
+      "id": "SWC-007",
+      "name": "Change Impact temporal analysis",
+      "category": "Functional",
+      "requirement": "Change Impact shall provide legends and day/week time views.",
+      "target": "Legend values and selectable temporal buckets.",
+      "verification": "Change Impact visual/data test",
+      "status": "Active",
+      "criticality": "Medium",
+      "source": "Open FMEA development"
+    },
+    {
+      "id": "SWC-008",
+      "name": "Cross-module object identity",
+      "category": "Data Integrity",
+      "requirement": "A single characteristic/failure/cause/control object shall be reused across all views.",
+      "target": "No duplicate source-of-truth objects.",
+      "verification": "Referential integrity diagnostics",
+      "status": "Active",
+      "criticality": "Critical",
+      "source": "Open-EQMS architecture"
+    }
+  ],
+  "requirementGaps": [
+    {
+      "id": "REQ-GAP-001",
+      "text": "Browser behavior at very narrow widths was initially undefined.",
+      "area": "GUI",
+      "gapType": "Ambiguous / Missing acceptance criteria",
+      "potentialFailureMode": "Widgets clipped, controls inaccessible or layout broken after window resize.",
+      "severity": 7,
+      "status": "Converted to software characteristic",
+      "linkedCharacteristic": "SWC-001",
+      "source": "Development lesson"
+    },
+    {
+      "id": "REQ-GAP-002",
+      "text": "Behavior with older localStorage/container schemas was initially undefined.",
+      "area": "Data migration",
+      "gapType": "Missing compatibility requirement",
+      "potentialFailureMode": "Application renders only shell/blank content after upgrade.",
+      "severity": 9,
+      "status": "Converted to software characteristic",
+      "linkedCharacteristic": "SWC-002",
+      "source": "Observed failure"
+    },
+    {
+      "id": "REQ-GAP-003",
+      "text": "Risk Matrix did not define how multiple risks in one S/O position should be represented.",
+      "area": "Risk analysis",
+      "gapType": "Incomplete interaction requirement",
+      "potentialFailureMode": "User cannot identify which risks are represented by a matrix position.",
+      "severity": 7,
+      "status": "Converted to software characteristic",
+      "linkedCharacteristic": "SWC-003",
+      "source": "User review"
+    },
+    {
+      "id": "REQ-GAP-004",
+      "text": "Trajectory mockup did not define selectable calendar period.",
+      "area": "Risk analysis",
+      "gapType": "Incomplete time requirement",
+      "potentialFailureMode": "Risk development cannot be analysed for a chosen time window.",
+      "severity": 6,
+      "status": "Converted to software characteristic",
+      "linkedCharacteristic": "SWC-004",
+      "source": "User review"
+    },
+    {
+      "id": "REQ-GAP-005",
+      "text": "AI 'learning' was not distinguished from uncontrolled model training.",
+      "area": "AI governance",
+      "gapType": "Ambiguous AI requirement",
+      "potentialFailureMode": "AI could silently alter authoritative FMEA knowledge or produce untraceable decisions.",
+      "severity": 10,
+      "status": "Controlled",
+      "linkedCharacteristic": "SWC-005",
+      "source": "Architecture review"
+    }
+  ],
+  "learningCases": [
+    {
+      "id": "CASE-001",
+      "title": "Blank GUI after schema extension",
+      "domain": "Software FMEA",
+      "failureMode": "Only static shell renders; dashboard/navigation content missing.",
+      "cause": "Older browser snapshot overwrote newer embedded data structure; required arrays were absent.",
+      "detection": "Browser showed header/sidebar shell and empty workspace.",
+      "methods": [
+        "5WHY",
+        "Change Impact",
+        "Migration Test"
+      ],
+      "action": "Schema merge/migration with default fallback and render error boundary.",
+      "result": "Newer versions tolerate older snapshots and surface diagnostics instead of white screen.",
+      "lessons": [
+        "Never replace new schema wholesale with old local snapshot.",
+        "Validate and migrate before render.",
+        "Keep reset/recovery path."
+      ],
+      "sources": [
+        "Open FMEA development history"
+      ],
+      "approved": true,
+      "qualityScore": 0.98
+    },
+    {
+      "id": "CASE-002",
+      "title": "Risk Matrix lacked traceable contents",
+      "domain": "Software FMEA",
+      "failureMode": "Risk matrix visualized risk zones but did not show how many risks were in a cell or which risks they were.",
+      "cause": "Mockup-focused rendering without data-driven bucket aggregation.",
+      "detection": "User review of Risk Matrix.",
+      "methods": [
+        "5WHY",
+        "Data Traceability"
+      ],
+      "action": "Aggregate DFMEA/PFMEA by S/O, show count badge, drill down to filtered records.",
+      "result": "Matrix is now a live view of FMEA data rather than a decorative heatmap.",
+      "lessons": [
+        "Every visualization must drill down to source objects.",
+        "Count widgets must be computed from live data."
+      ],
+      "sources": [
+        "Open FMEA development history"
+      ],
+      "approved": true,
+      "qualityScore": 0.97
+    },
+    {
+      "id": "CASE-003",
+      "title": "Risk trajectory had no selectable time basis",
+      "domain": "Software FMEA",
+      "failureMode": "Trajectory showed lifecycle progression but could not answer time-window questions.",
+      "cause": "Lifecycle mockup implemented without calendar query controls.",
+      "detection": "User requested days/weeks and selectable interval.",
+      "methods": [
+        "Requirement Gap",
+        "Change Impact"
+      ],
+      "action": "Add lifecycle/calendar mode, period selection and From/To dates.",
+      "result": "Trajectory can support both development phase and calendar analysis.",
+      "lessons": [
+        "Every trend needs an explicit time basis.",
+        "Timeline controls belong to the data query, not only to chart styling."
+      ],
+      "sources": [
+        "Open FMEA development history"
+      ],
+      "approved": true,
+      "qualityScore": 0.96
+    },
+    {
+      "id": "CASE-004",
+      "title": "Fixed-size widgets failed browser resizing",
+      "domain": "Software FMEA",
+      "failureMode": "Widgets/matrices/tables do not fit when the browser is resized.",
+      "cause": "Fixed grid widths and minimum sizes inherited from static mockups.",
+      "detection": "Manual resize review.",
+      "methods": [
+        "6M",
+        "Usability Review"
+      ],
+      "action": "Responsive auto-fit grids, minmax(0,1fr), local overflow for dense data, breakpoints.",
+      "result": "Primary UI adapts; dense tables/matrices use local scrolling where needed.",
+      "lessons": [
+        "Mockup pixels are reference, not runtime constraints.",
+        "Responsive behavior is a software characteristic and testable requirement."
+      ],
+      "sources": [
+        "Open FMEA development history"
+      ],
+      "approved": true,
+      "qualityScore": 0.95
+    },
+    {
+      "id": "CASE-005",
+      "title": "Change Impact charts lacked explanatory legends/time granularity",
+      "domain": "Software FMEA",
+      "failureMode": "Charts were visually present but decision context was incomplete.",
+      "cause": "Dashboard chart decoration implemented before explicit interpretation requirements.",
+      "detection": "User review.",
+      "methods": [
+        "Requirement Gap",
+        "5WHY"
+      ],
+      "action": "Add legend with values/percentages and day/week temporal buckets.",
+      "result": "Change Impact supports interpretation and temporal investigation.",
+      "lessons": [
+        "A chart without legend/time basis can be misleading.",
+        "Dashboard acceptance criteria must include decision usability."
+      ],
+      "sources": [
+        "Open FMEA development history"
+      ],
+      "approved": true,
+      "qualityScore": 0.94
+    },
+    {
+      "id": "CASE-006",
+      "title": "Mockup pages existed without complete functional behavior",
+      "domain": "Software FMEA",
+      "failureMode": "Buttons/widgets look complete but actions do not modify or query shared data.",
+      "cause": "Presentation layer developed ahead of universal action/transaction wiring.",
+      "detection": "Feature-by-feature functional review.",
+      "methods": [
+        "8D",
+        "5WHY",
+        "Systemic corrective action"
+      ],
+      "action": "Introduce shared CRUD, filters, transaction log, autosave, import/export and cross-module object links.",
+      "result": "Open FMEA moves from dashboard prototype toward functional engineering application.",
+      "lessons": [
+        "No dead controls.",
+        "All meaningful UI actions should map to commands/transactions.",
+        "Use shared engines instead of page-specific scripts."
+      ],
+      "sources": [
+        "Open FMEA development history"
+      ],
+      "approved": true,
+      "qualityScore": 0.99
+    },
+    {
+      "id": "CASE-HIST-001",
+      "title": "GUI shell visible but workspace blank",
+      "domain": "Open FMEA Software / GUI",
+      "failureMode": "Static shell renders while main application content fails to render.",
+      "cause": "Version/schema/runtime integration regression; older state may override newer expected data shape.",
+      "detection": "Observed functional regression in historical Open FMEA builds.",
+      "methods": [
+        "Validation Test",
+        "Change Impact",
+        "Regression Analysis"
+      ],
+      "action": "Add migration/default merge, diagnostics and render error boundary.",
+      "result": "Requires/feeds regression validation",
+      "lessons": [
+        "Mockup is a controlled validation baseline.",
+        "GUI regression is a software failure mode.",
+        "Do not accept feature work without regression validation."
+      ],
+      "sources": [
+        "open_fmea_v1_1.html",
+        "open_fmea_v1_1_fixed.html"
+      ],
+      "approved": true,
+      "qualityScore": 0.99
+    },
+    {
+      "id": "CASE-HIST-002",
+      "title": "Feature-complete appearance without feature-complete behavior",
+      "domain": "Open FMEA Software / GUI",
+      "failureMode": "Widgets/buttons are visible but do not execute the expected data operation.",
+      "cause": "Presentation implementation progressed faster than shared command/data-flow wiring.",
+      "detection": "Functional review across v1.2/v1.3 evolution.",
+      "methods": [
+        "Validation Test",
+        "Change Impact",
+        "Regression Analysis"
+      ],
+      "action": "Shared CRUD/import/export/history/transaction runtime.",
+      "result": "Requires/feeds regression validation",
+      "lessons": [
+        "Mockup is a controlled validation baseline.",
+        "GUI regression is a software failure mode.",
+        "Do not accept feature work without regression validation."
+      ],
+      "sources": [
+        "open_fmea_v1_2.html",
+        "open_fmea_v1_3_functional.html"
+      ],
+      "approved": true,
+      "qualityScore": 0.99
+    },
+    {
+      "id": "CASE-HIST-003",
+      "title": "GUI regression after adding new functionality",
+      "domain": "Open FMEA Software / GUI",
+      "failureMode": "A later build introduces features but moves away from supplied mockup layout or breaks previously accepted GUI behavior.",
+      "cause": "No immutable per-page mockup baseline and no mandatory regression gate before release.",
+      "detection": "Current user review of later Open FMEA builds.",
+      "methods": [
+        "Validation Test",
+        "Change Impact",
+        "Regression Analysis"
+      ],
+      "action": "Treat every mockup as a validation baseline; every GUI change requires mockup parity + functional + responsive regression.",
+      "result": "Requires/feeds regression validation",
+      "lessons": [
+        "Mockup is a controlled validation baseline.",
+        "GUI regression is a software failure mode.",
+        "Do not accept feature work without regression validation."
+      ],
+      "sources": [
+        "open_fmea_v1_4_stable.html",
+        "open_fmea_v1_7_learning.html"
+      ],
+      "approved": true,
+      "qualityScore": 0.99
+    },
+    {
+      "id": "CASE-HIST-004",
+      "title": "Visualization not connected to decision drill-down",
+      "domain": "Open FMEA Software / GUI",
+      "failureMode": "Risk matrix or chart exists visually but does not expose the underlying records or correct time interpretation.",
+      "cause": "Visualization built as dashboard element rather than query over source-of-truth objects.",
+      "detection": "User review and subsequent risk/timeline requirements.",
+      "methods": [
+        "Validation Test",
+        "Change Impact",
+        "Regression Analysis"
+      ],
+      "action": "All visual widgets must be reversible to their source record set and explicit time basis.",
+      "result": "Requires/feeds regression validation",
+      "lessons": [
+        "Mockup is a controlled validation baseline.",
+        "GUI regression is a software failure mode.",
+        "Do not accept feature work without regression validation."
+      ],
+      "sources": [
+        "open_fmea_v1_4_stable.html"
+      ],
+      "approved": true,
+      "qualityScore": 0.99
+    },
+    {
+      "id": "CASE-DFMEA-BASELINE-001",
+      "title": "DFMEA view must remain aligned with controlled mockup while functionality evolves",
+      "domain": "Open FMEA Software / DFMEA module",
+      "failureMode": "Feature additions alter DFMEA layout or remove expected mockup widgets/functions.",
+      "cause": "No page-specific controlled baseline gate during implementation.",
+      "detection": "User comparison against supplied DFMEA mockup.",
+      "methods": [
+        "Validation Test",
+        "Change Impact",
+        "Regression Analysis"
+      ],
+      "action": "Lock DFMEA mockup as validation baseline and implement alternate DFMEA functions over the same shared records.",
+      "result": "DFMEA development now requires visual + functional + responsive regression validation.",
+      "lessons": [
+        "Do not trade mockup parity for new feature work.",
+        "Tabs are alternate views, not duplicate data stores.",
+        "Every DFMEA chart must derive from current source records."
+      ],
+      "sources": [
+        "Supplied DFMEA mockup",
+        "VAL-GUI-DFMEA-001"
+      ],
+      "approved": true,
+      "qualityScore": 1.0
+    }
+  ],
+  "decisionLearningModel": {
+    "id": "DLM-001",
+    "modelType": "Case-based reasoning + adaptive scoring",
+    "version": "1.0",
+    "authoritative": false,
+    "features": {
+      "similarFailureMode": 1.0,
+      "sameDomain": 0.7,
+      "sameMethod": 0.5,
+      "approvedCase": 0.8,
+      "sourceTraceability": 0.9,
+      "userAccepted": 1.1,
+      "userRejected": -0.8,
+      "criticalRequirementGap": 0.7
+    },
+    "feedback": {
+      "accepted": 0,
+      "rejected": 0,
+      "modified": 0
+    },
+    "notes": "Weights are transparent, local, versioned and auditable. They rank suggestions; they do not approve FMEA records."
+  },
+  "fmeaCreationProjects": [
+    {
+      "id": "FCP-001",
+      "name": "Open FMEA Software Creation Project",
+      "scope": "Open FMEA application itself",
+      "status": "Active",
+      "owner": "Janez Demo",
+      "created": "2026-09-13",
+      "inputs": [
+        "softwareCharacteristics",
+        "requirementGaps",
+        "learningCases",
+        "transactions",
+        "rootCauseAnalyses",
+        "eightD",
+        "pokaYoke"
+      ],
+      "methods": [
+        "Requirement Gap Analysis",
+        "Software FMEA",
+        "Ishikawa / 6M",
+        "3WHY",
+        "5WHY",
+        "8D",
+        "Poka-Yoke",
+        "Change Impact"
+      ],
+      "candidateCount": 5,
+      "description": "Continuously converts undefined or ambiguous requirements and observed software issues into traceable candidate failure modes and improvement knowledge."
+    }
+  ],
+  "aiKnowledgeSources": [
+    {
+      "id": "SRC-ARCH-001",
+      "type": "Architecture",
+      "name": "Open-EQMS Architecture",
+      "format": "PDF-derived structured context",
+      "status": "Indexed",
+      "authority": "Reference"
+    },
+    {
+      "id": "SRC-DEV-001",
+      "type": "Development History",
+      "name": "Open FMEA development lessons",
+      "format": "Structured cases",
+      "status": "Indexed",
+      "authority": "Approved learning cases"
+    },
+    {
+      "id": "SRC-TXT-001",
+      "type": "File Knowledge",
+      "name": "User TXT/MD/JSON/JSONL knowledge",
+      "format": "External import",
+      "status": "Ready",
+      "authority": "User supplied"
+    }
+  ],
+  "releaseHistory": [
+    {
+      "file": "open_fmea.html",
+      "sha256": "3e6adf28864e41bdce682406c169295979dc88faa4dfe23182489ab6e163016d",
+      "bytes": 76130,
+      "features": {
+        "risk_matrix": true,
+        "risk_trajectory": true,
+        "change_impact": true,
+        "projects": true,
+        "team": true,
+        "system_product_process": true,
+        "characteristics": true,
+        "ishikawa": false,
+        "fivewhy": false,
+        "eightd": true,
+        "pokayoke": true,
+        "learning": false,
+        "software_characteristics": false
+      },
+      "js_syntax_checked": true,
+      "role": "historical development baseline"
+    },
+    {
+      "file": "open_fmea_v1_1.html",
+      "sha256": "b85d4bdb96398e709a2883f6e21003c390afe9743623ce750b7aeb0e527555ae",
+      "bytes": 102704,
+      "features": {
+        "risk_matrix": true,
+        "risk_trajectory": true,
+        "change_impact": true,
+        "projects": true,
+        "team": true,
+        "system_product_process": true,
+        "characteristics": true,
+        "ishikawa": true,
+        "fivewhy": true,
+        "eightd": true,
+        "pokayoke": true,
+        "learning": false,
+        "software_characteristics": false
+      },
+      "js_syntax_checked": true,
+      "role": "historical development baseline"
+    },
+    {
+      "file": "open_fmea_v1_1_fixed.html",
+      "sha256": "3c17d9a0b6fc5e2d5f67633108b9c6bb2bf69c29b83cc24eabcad790446d99ba",
+      "bytes": 104876,
+      "features": {
+        "risk_matrix": true,
+        "risk_trajectory": true,
+        "change_impact": true,
+        "projects": true,
+        "team": true,
+        "system_product_process": true,
+        "characteristics": true,
+        "ishikawa": true,
+        "fivewhy": true,
+        "eightd": true,
+        "pokayoke": true,
+        "learning": false,
+        "software_characteristics": false
+      },
+      "js_syntax_checked": true,
+      "role": "historical development baseline"
+    },
+    {
+      "file": "open_fmea_v1_2.html",
+      "sha256": "8c970fc58894eae7415be963fd53eabf664383a04bf327f67aa782dd76c2fc6c",
+      "bytes": 96203,
+      "features": {
+        "risk_matrix": true,
+        "risk_trajectory": true,
+        "change_impact": true,
+        "projects": true,
+        "team": true,
+        "system_product_process": true,
+        "characteristics": true,
+        "ishikawa": true,
+        "fivewhy": true,
+        "eightd": true,
+        "pokayoke": true,
+        "learning": false,
+        "software_characteristics": false
+      },
+      "js_syntax_checked": true,
+      "role": "historical development baseline"
+    },
+    {
+      "file": "open_fmea_v1_3_functional.html",
+      "sha256": "2cb8bc26b327598760ad5cbd98ebeb4c98deaf724849d139d3459ff468aa13f8",
+      "bytes": 121710,
+      "features": {
+        "risk_matrix": true,
+        "risk_trajectory": true,
+        "change_impact": true,
+        "projects": true,
+        "team": true,
+        "system_product_process": true,
+        "characteristics": true,
+        "ishikawa": true,
+        "fivewhy": true,
+        "eightd": true,
+        "pokayoke": true,
+        "learning": false,
+        "software_characteristics": false
+      },
+      "js_syntax_checked": true,
+      "role": "historical development baseline"
+    },
+    {
+      "file": "open_fmea_v1_4_stable.html",
+      "sha256": "aa3904939704232b6a889f391c18bfb99511f2d3dfed4dea9e667a826732c707",
+      "bytes": 130383,
+      "features": {
+        "risk_matrix": true,
+        "risk_trajectory": true,
+        "change_impact": true,
+        "projects": true,
+        "team": true,
+        "system_product_process": true,
+        "characteristics": true,
+        "ishikawa": true,
+        "fivewhy": true,
+        "eightd": true,
+        "pokayoke": true,
+        "learning": false,
+        "software_characteristics": false
+      },
+      "js_syntax_checked": true,
+      "role": "historical development baseline"
+    },
+    {
+      "file": "open_fmea_v1_7_learning.html",
+      "sha256": "7af6a9c68053390e90f64d116f0aab18d9629d1c467bccd933cdde140535dade",
+      "bytes": 223890,
+      "features": {
+        "risk_matrix": true,
+        "risk_trajectory": true,
+        "change_impact": true,
+        "projects": true,
+        "team": true,
+        "system_product_process": true,
+        "characteristics": true,
+        "ishikawa": true,
+        "fivewhy": true,
+        "eightd": true,
+        "pokayoke": true,
+        "learning": true,
+        "software_characteristics": true
+      },
+      "js_syntax_checked": true,
+      "role": "historical development baseline"
+    }
+  ],
+  "mockupBaselines": [
+    {
+      "id": "MOCK-GUI-HOME-001",
+      "page": "Home",
+      "baseline": "Home mockup",
+      "status": "Reference baseline"
+    },
+    {
+      "id": "MOCK-GUI-PROJ-001",
+      "page": "FMEA Projects",
+      "baseline": "FMEA Projects mockup",
+      "status": "Reference baseline"
+    },
+    {
+      "id": "MOCK-GUI-TEAM-001",
+      "page": "FMEA Team",
+      "baseline": "FMEA Team mockup",
+      "status": "Reference baseline"
+    },
+    {
+      "id": "MOCK-GUI-SPP-001",
+      "page": "System / Product / Process",
+      "baseline": "System / Product / Process mockup",
+      "status": "Reference baseline"
+    },
+    {
+      "id": "MOCK-GUI-CHAR-001",
+      "page": "System Characteristics Base",
+      "baseline": "System Characteristics Base mockup",
+      "status": "Reference baseline"
+    },
+    {
+      "id": "MOCK-GUI-RISK-001",
+      "page": "Risk Matrix",
+      "baseline": "Risk Matrix mockup + later corrections",
+      "status": "Reference baseline"
+    },
+    {
+      "id": "MOCK-GUI-TRAJ-001",
+      "page": "Risk Trajectory",
+      "baseline": "Risk Trajectory mockup + time-selection correction",
+      "status": "Reference baseline"
+    },
+    {
+      "id": "MOCK-GUI-CHANGE-001",
+      "page": "Change Impact",
+      "baseline": "Change Impact mockup + legend/time corrections",
+      "status": "Reference baseline"
+    },
+    {
+      "id": "MOCK-GUI-DFMEA-001",
+      "page": "DFMEA",
+      "baseline": "DFMEA mockup",
+      "status": "Reference baseline"
+    },
+    {
+      "id": "MOCK-GUI-PFMEA-001",
+      "page": "PFMEA",
+      "baseline": "PFMEA mockup",
+      "status": "Reference baseline"
+    },
+    {
+      "id": "MOCK-GUI-PS-001",
+      "page": "Problem Solving",
+      "baseline": "Ishikawa / WHY / 8D / Poka-Yoke design",
+      "status": "Reference baseline"
+    },
+    {
+      "id": "MOCK-GUI-RESP-001",
+      "page": "All pages",
+      "baseline": "All supplied mockups",
+      "status": "Reference baseline"
+    },
+    {
+      "id": "MOCK-DFMEA-CURRENT",
+      "page": "DFMEA",
+      "baseline": "Supplied DFMEA mockup",
+      "status": "Controlled baseline",
+      "purpose": "Visual/functional/regression validation, not a runtime image."
+    }
+  ],
+  "validationTests": [
+    {
+      "id": "VAL-GUI-HOME-001",
+      "page": "Home",
+      "baseline": "Home mockup",
+      "validationType": "Mockup parity + functional smoke",
+      "acceptance": [
+        "Left navigation, topbar, KPI cards, risk overview, validation trajectory, high-risk panel and engineering context remain visible in intended hierarchy.",
+        "Widgets resize with browser width without overlapping or disappearing.",
+        "Primary controls remain clickable after browser resize.",
+        "All displayed KPI values are computed or traceable to container records."
+      ]
+    },
+    {
+      "id": "VAL-GUI-PROJ-001",
+      "page": "FMEA Projects",
+      "baseline": "FMEA Projects mockup",
+      "validationType": "Mockup parity + CRUD",
+      "acceptance": [
+        "Project KPI cards, project table/list, type/status/progress/owner/updated/actions match mockup information architecture.",
+        "New/Open/Edit/Duplicate/Delete/Search/Filter actions work.",
+        "Project selection changes active project context without corrupting other pages.",
+        "Responsive layout preserves all project actions."
+      ]
+    },
+    {
+      "id": "VAL-GUI-TEAM-001",
+      "page": "FMEA Team",
+      "baseline": "FMEA Team mockup",
+      "validationType": "Mockup parity + authority workflow",
+      "acceptance": [
+        "Team KPIs, members, roles and role description panel are represented.",
+        "Add/Edit/Assign/Delegate/Remove are functional and audited.",
+        "Role/authority changes propagate to team context and transaction log.",
+        "Responsive layout does not hide member actions."
+      ]
+    },
+    {
+      "id": "VAL-GUI-SPP-001",
+      "page": "System / Product / Process",
+      "baseline": "System / Product / Process mockup",
+      "validationType": "Hierarchy + linkage",
+      "acceptance": [
+        "Systems/Products/Processes are navigable as a hierarchy.",
+        "Selected item shows details and linked characteristics/FMEA context.",
+        "Create/Edit/Duplicate/Delete preserve parent-child integrity.",
+        "Broken links are detected instead of silently ignored."
+      ]
+    },
+    {
+      "id": "VAL-GUI-CHAR-001",
+      "page": "System Characteristics Base",
+      "baseline": "System Characteristics Base mockup",
+      "validationType": "Mockup parity + characteristic traceability",
+      "acceptance": [
+        "Characteristic KPI cards, tabs/filters/table/detail panel and bottom summaries follow mockup hierarchy.",
+        "New/Edit/Duplicate/Delete/Filter/Search work.",
+        "Characteristic links resolve to System/Product/Process and FMEA objects.",
+        "Critical/Special/Key classifications remain visually and semantically distinct."
+      ]
+    },
+    {
+      "id": "VAL-GUI-RISK-001",
+      "page": "Risk Matrix",
+      "baseline": "Risk Matrix mockup + later corrections",
+      "validationType": "Data-driven visual validation",
+      "acceptance": [
+        "Matrix fills available browser width at normal widths and uses local scroll only at narrow widths.",
+        "Each S/O cell shows the number of risks in that bucket.",
+        "Clicking a cell/count lists only risks belonging to that S/O combination.",
+        "Counts equal live DFMEA/PFMEA source records.",
+        "Changing S/O/D updates RPN and re-buckets the risk."
+      ]
+    },
+    {
+      "id": "VAL-GUI-TRAJ-001",
+      "page": "Risk Trajectory",
+      "baseline": "Risk Trajectory mockup + time-selection correction",
+      "validationType": "Temporal analysis",
+      "acceptance": [
+        "Lifecycle and calendar time bases are selectable.",
+        "User can select day/week/month/range or From/To where supported.",
+        "Trajectory points link back to source risk.",
+        "Time filtering does not alter authoritative source records."
+      ]
+    },
+    {
+      "id": "VAL-GUI-CHANGE-001",
+      "page": "Change Impact",
+      "baseline": "Change Impact mockup + legend/time corrections",
+      "validationType": "Chart interpretation + temporal change analysis",
+      "acceptance": [
+        "Both donut/pie charts have legends with values and percentages.",
+        "Changes Over Time provides day/week view, a selectable range and a legend.",
+        "Chart counts equal change records in the selected period.",
+        "Change records link affected FMEA items and validation evidence."
+      ]
+    },
+    {
+      "id": "VAL-GUI-DFMEA-001",
+      "page": "DFMEA",
+      "baseline": "Supplied DFMEA mockup (current controlled baseline)",
+      "validationType": "FMEA workflow",
+      "acceptance": [
+        "Header, KPI cards, toolbar, DFMEA tabs, filters, main DFMEA table, right item detail panel, RPN summary, RPN trend, Top 5 current RPN, Actions by Status and DFMEA Progress follow the supplied mockup information hierarchy.",
+        "New DFMEA Item, Import, Export, Reports, View Options, Filters, row selection and detail editing are functional.",
+        "DFMEA table exposes Element/Part, Function, Failure Mode, Effects, Severity, Causes, Occurrence, Prevention/Detection controls, RPN, Actions and Status.",
+        "S/O/D updates recalculate risk and create an auditable transaction.",
+        "All charts and counters are derived from live DFMEA/action data rather than fixed demo values.",
+        "Structure Tree, Interface Matrix, Parameter Diagram, RPN Overview and Action Tracker are functional alternate views over the same DFMEA objects.",
+        "Browser resize preserves the mockup hierarchy; dense DFMEA table uses local horizontal scrolling without breaking the page.",
+        "Any later GUI drift from this controlled baseline creates a validation finding / software failure mode."
+      ]
+    },
+    {
+      "id": "VAL-GUI-PFMEA-001",
+      "page": "PFMEA",
+      "baseline": "PFMEA mockup",
+      "validationType": "FMEA workflow",
+      "acceptance": [
+        "PFMEA process-step/function/failure/effect/cause/control structure follows mockup.",
+        "Risk changes propagate to matrix, trajectory and action views.",
+        "Process control and Poka-Yoke links are resolvable.",
+        "Changes are audited."
+      ]
+    },
+    {
+      "id": "VAL-GUI-PS-001",
+      "page": "Problem Solving",
+      "baseline": "Ishikawa / WHY / 8D / Poka-Yoke design",
+      "validationType": "Method workflow",
+      "acceptance": [
+        "Ishikawa supports 5M/6M categories and links causes.",
+        "3WHY/5WHY chain is editable and traceable.",
+        "8D D0-D8 data persists and links containment/root cause/action/validation.",
+        "Poka-Yoke links prevention/detection/reaction/evidence.",
+        "Method outputs can become learning cases only after user confirmation."
+      ]
+    },
+    {
+      "id": "VAL-GUI-RESP-001",
+      "page": "All pages",
+      "baseline": "All supplied mockups",
+      "validationType": "Responsive regression",
+      "acceptance": [
+        "No primary widget disappears because of viewport resizing.",
+        "No global horizontal overflow caused by a single widget.",
+        "Dense tables/graphs use local overflow where necessary.",
+        "Layout remains usable across 320, 480, 768, 1024, 1366, 1920 and 2560 px widths."
+      ]
+    }
+  ],
+  "dataFlowPipeline": {
+    "schema": "open-fmea-pipeline/1.0",
+    "name": "Open FMEA Data Flow & Validation Pipeline",
+    "principles": {
+      "authoritative_state": "open_fmea.container",
+      "ui_baseline": "mockup validation registry",
+      "learning_corpus": "open_fmea_ai_knowledge.jsonl",
+      "human_context": [
+        ".md",
+        ".txt"
+      ],
+      "relational_companion": "SQLite",
+      "rule": "AI suggestions and validation findings never directly overwrite authoritative FMEA data."
+    },
+    "flows": [
+      {
+        "id": "FLOW-REQ-FMEA",
+        "name": "Requirement to FMEA",
+        "stages": [
+          "Source Requirement",
+          "Requirement Gap Detection",
+          "Candidate Failure Mode",
+          "Human Review",
+          "Approved FMEA Object",
+          "Controls & Actions",
+          "Validation",
+          "Residual Risk",
+          "Learning Case"
+        ],
+        "failure_conditions": [
+          "untraceable source",
+          "automatic approval",
+          "duplicate object",
+          "broken link"
+        ]
+      },
+      {
+        "id": "FLOW-MOCKUP-VALIDATION",
+        "name": "Mockup to validation to change",
+        "stages": [
+          "Mockup Baseline",
+          "Rendered Page",
+          "Visual/Functional Validation",
+          "Failure Finding",
+          "Change Impact",
+          "Corrective Change",
+          "Regression Validation",
+          "Approved Learning Case"
+        ],
+        "failure_conditions": [
+          "GUI drift",
+          "missing widget",
+          "dead control",
+          "wrong layout",
+          "wrong computed value",
+          "broken responsiveness",
+          "missing data linkage"
+        ]
+      },
+      {
+        "id": "FLOW-CHANGE-RISK",
+        "name": "Change impact propagation",
+        "stages": [
+          "Change Record",
+          "Affected Objects",
+          "DFMEA/PFMEA Re-evaluation",
+          "Controls/Actions",
+          "Validation Evidence",
+          "Risk Matrix",
+          "Risk Trajectory",
+          "Closure"
+        ],
+        "failure_conditions": [
+          "change not propagated",
+          "stale risk",
+          "missing validation",
+          "unresolved affected object"
+        ]
+      },
+      {
+        "id": "FLOW-PROBLEM-SOLVING",
+        "name": "Problem-solving learning loop",
+        "stages": [
+          "Failure/Issue",
+          "Ishikawa 5M/6M",
+          "3WHY/5WHY",
+          "8D",
+          "Poka-Yoke/Controls",
+          "Action",
+          "Evidence",
+          "Effectiveness Review",
+          "Learning Case"
+        ],
+        "failure_conditions": [
+          "root cause without evidence",
+          "action without verification",
+          "lesson learned without provenance"
+        ]
+      },
+      {
+        "id": "FLOW-AI-DECISION",
+        "name": "AI-assisted decision flow",
+        "stages": [
+          "User Question / Current Object",
+          "Retrieve Authoritative Data",
+          "Retrieve Mockup/Validation History",
+          "Retrieve Similar Learning Cases",
+          "Apply Deterministic Calculators/Rules",
+          "Rank Recommendations",
+          "Show Provenance",
+          "User Accept/Modify/Reject",
+          "Store Feedback"
+        ],
+        "failure_conditions": [
+          "AI invents authoritative state",
+          "missing provenance",
+          "feedback not recorded",
+          "model overwrites business rule"
+        ]
+      }
+    ],
+    "artifacts": [
+      {
+        "name": "open_fmea.html",
+        "role": "runtime/UI"
+      },
+      {
+        "name": "open_fmea.container",
+        "role": "portable authoritative application state"
+      },
+      {
+        "name": "open_fmea_ai_knowledge.jsonl",
+        "role": "AI/case learning corpus"
+      },
+      {
+        "name": "open_fmea_validation_tests.jsonl",
+        "role": "mockup + functional validation registry"
+      },
+      {
+        "name": "open_fmea_dataflow_pipeline.json",
+        "role": "machine-readable flow/pipeline contract"
+      },
+      {
+        "name": "open_fmea_dataflow_pipeline.md",
+        "role": "human-readable architecture and validation workflow"
+      },
+      {
+        "name": "open_fmea.sqlite",
+        "role": "relational desktop/backend companion"
+      },
+      {
+        "name": "open_fmea.sql",
+        "role": "schema/export/migration representation"
+      }
+    ]
+  },
+  "validationPolicy": {
+    "releaseGate": "No page is accepted until its mockup parity, functional and responsive validation tests pass.",
+    "onFailure": [
+      "create validation finding",
+      "create/attach software failure mode",
+      "run change impact",
+      "implement corrective change",
+      "rerun affected + regression tests",
+      "store approved learning case"
+    ],
+    "mockupBaselineIsControlled": true
+  }
+}

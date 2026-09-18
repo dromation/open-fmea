@@ -1,0 +1,12 @@
+{
+  "originalPath": "D:/Dromation/org/apps/open_fmea/open_fmea_html_version/open_fmea_html_demo.html",
+  "sha256": "73fa431cd49f23ea8f10941de7d03d61bd6cf714c6cf8364b8606ec7ffabc9ef",
+  "checksumScope": "English-adapted source copy included in this solution",
+  "originalSha256": "b0fa4590c9379eff550f17aa2b9d5f9ccf0dfd3fa80b7300f829890868bc6651",
+  "sourceChanges": [
+    "Translated three embedded development request phrases from Slovenian into English."
+  ],
+  "sourceVersion": "1.8.3",
+  "conversion": "SPFx hosted demo; browser snapshots; no SharePoint Lists integration",
+  "generator": "@microsoft/generator-sharepoint@1.23.2"
+}

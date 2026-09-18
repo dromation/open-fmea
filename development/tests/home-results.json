@@ -1,0 +1,540 @@
+{
+  "at": "2026-09-13T21:56:29.232Z",
+  "taskId": "DEV-TASK-HOME-001",
+  "page": "Home",
+  "baseline": "architecture/mockups/mockup-04-consolidated-home.png",
+  "status": "Functional checks passed; controlled visual acceptance pending",
+  "results": [
+    {
+      "criterion": "HOME-01",
+      "description": "Required Home hierarchy present; controlled visual approval remains pending",
+      "status": "PASS"
+    },
+    {
+      "criterion": "HOME-03",
+      "description": "All six KPI values drill down to exactly their source IDs without mutation",
+      "status": "PASS"
+    },
+    {
+      "criterion": "HOME-04",
+      "description": "Nonempty paired S/O cells resolve exact analysis records and conserve the analysis count",
+      "status": "PASS"
+    },
+    {
+      "criterion": "HOME-05",
+      "description": "Adding a completed PFMEA validation recalculates coverage; Operation/Monitor/PM remain unknown without explicit source records",
+      "status": "PASS"
+    },
+    {
+      "criterion": "HOME-06",
+      "description": "High risks sort by edited current RPN; source detail opens; recent activity has recorded IDs/dates",
+      "status": "PASS"
+    },
+    {
+      "criterion": "HOME-07",
+      "description": "Context tabs and process selection change linked characteristics and persist after reload",
+      "status": "PASS"
+    },
+    {
+      "criterion": "HOME-08",
+      "description": "PM/operations/maintenance empty states transition to source-driven results after records are loaded; health exposes formula and sources",
+      "status": "PASS"
+    },
+    {
+      "criterion": "HOME-02",
+      "description": "New FMEA validates name and creates a draft shared project; Open Project changes context; templates set type without sample risk approval",
+      "status": "PASS"
+    },
+    {
+      "criterion": "HOME-09",
+      "description": "Reports and JSONL download contain actual records; Home assistant identifies source records",
+      "status": "PASS"
+    },
+    {
+      "criterion": "HOME-11",
+      "description": "Home-created project and context survive portable export/import and reload",
+      "status": "PASS"
+    },
+    {
+      "criterion": "HOME-13",
+      "description": "Missing/manual criteria prevent PASS; invalid reviews are atomic; wrong-page/external-file changes create a scope-drift finding and persist",
+      "status": "PASS"
+    },
+    {
+      "criterion": "HOME-03",
+      "description": "In-browser Home-only product checks pass separately from development-process acceptance",
+      "status": "PASS",
+      "detail": {
+        "id": "RUN-0002",
+        "type": "Product validation",
+        "scope": [
+          "home"
+        ],
+        "at": "2026-09-13T21:56:26.579Z",
+        "version": "1.8.3",
+        "checks": [
+          {
+            "id": "HOME-KPI-projects",
+            "name": "Home projects source count",
+            "status": "PASS",
+            "detail": "7 displayed / 7 source records",
+            "pages": [
+              "home"
+            ],
+            "affectedObjects": [
+              "FMEA-2025-001",
+              "FMEA-2025-002",
+              "FMEA-2025-003",
+              "FMEA-2025-005",
+              "FMEA-2025-006",
+              "FMEA-OPEN-APP-DFMEA",
+              "FMEA-0001"
+            ]
+          },
+          {
+            "id": "HOME-KPI-active",
+            "name": "Home active source count",
+            "status": "PASS",
+            "detail": "18 displayed / 18 source records",
+            "pages": [
+              "home"
+            ],
+            "affectedObjects": [
+              "DF-001",
+              "DF-002",
+              "DF-003",
+              "DF-004",
+              "DF-005",
+              "DF-006",
+              "DF-SW-001",
+              "DF-SW-002",
+              "DF-SW-003",
+              "DF-SW-004",
+              "DF-SW-005",
+              "PF-001",
+              "PF-002",
+              "PF-003",
+              "PF-004",
+              "PF-006",
+              "PF-007",
+              "PM-HOME-TEST"
+            ]
+          },
+          {
+            "id": "HOME-KPI-high",
+            "name": "Home high source count",
+            "status": "PASS",
+            "detail": "4 displayed / 4 source records",
+            "pages": [
+              "home"
+            ],
+            "affectedObjects": [
+              "DF-001",
+              "DF-SW-001",
+              "DF-SW-002",
+              "DF-SW-005"
+            ]
+          },
+          {
+            "id": "HOME-KPI-overdue",
+            "name": "Home overdue source count",
+            "status": "PASS",
+            "detail": "4 displayed / 4 source records",
+            "pages": [
+              "home"
+            ],
+            "affectedObjects": [
+              "A-2025-014",
+              "A-2025-018",
+              "A-2025-022",
+              "A-2025-025"
+            ]
+          },
+          {
+            "id": "HOME-KPI-reviews",
+            "name": "Home reviews source count",
+            "status": "PASS",
+            "detail": "1 displayed / 1 source records",
+            "pages": [
+              "home"
+            ],
+            "affectedObjects": [
+              "REV-HOME-TEST"
+            ]
+          },
+          {
+            "id": "HOME-KPI-unlinked",
+            "name": "Home unlinked source count",
+            "status": "PASS",
+            "detail": "22 displayed / 22 source records",
+            "pages": [
+              "home"
+            ],
+            "affectedObjects": [
+              "C-0001",
+              "C-0002",
+              "C-0003",
+              "C-0004",
+              "C-0005",
+              "C-0006",
+              "PC-0234",
+              "PC-0012",
+              "PC-0017",
+              "PC-0021",
+              "DC-0234",
+              "DC-0017",
+              "DC-0031",
+              "DC-0008",
+              "A-2025-014",
+              "A-2025-018",
+              "A-2025-022",
+              "A-2025-025",
+              "EVT-001",
+              "EVT-002",
+              "EVT-003",
+              "EVT-004"
+            ]
+          },
+          {
+            "id": "HOME-MATRIX",
+            "name": "Paired S/O bands retain every rated analysis",
+            "status": "PASS",
+            "detail": "Counts use explicit paired 1–10 rating bands.",
+            "pages": [
+              "home"
+            ],
+            "affectedObjects": [
+              "DF-001",
+              "DF-002",
+              "DF-003",
+              "DF-004",
+              "DF-005",
+              "DF-006",
+              "DF-SW-001",
+              "DF-SW-002",
+              "DF-SW-003",
+              "DF-SW-004",
+              "DF-SW-005",
+              "PF-001",
+              "PF-002",
+              "PF-003",
+              "PF-004",
+              "PF-005",
+              "PF-006",
+              "PF-007",
+              "PM-HOME-TEST"
+            ]
+          },
+          {
+            "id": "HOME-STRUCTURE",
+            "name": "Controlled Home panels",
+            "status": "PASS",
+            "detail": "All required content regions exist; visual acceptance is separate.",
+            "pages": [
+              "home"
+            ],
+            "affectedObjects": []
+          },
+          {
+            "id": "HOME-HANDLERS",
+            "name": "Home controls are wired",
+            "status": "PASS",
+            "detail": "All Home controls have handlers. Interaction tests are recorded separately.",
+            "pages": [
+              "home"
+            ],
+            "affectedObjects": []
+          },
+          {
+            "id": "HOME-OVERFLOW",
+            "name": "Home layout at current width",
+            "status": "PASS",
+            "detail": "1536 px; tables can scroll locally.",
+            "pages": [
+              "home"
+            ],
+            "affectedObjects": []
+          },
+          {
+            "id": "HOME-READ-ONLY",
+            "name": "Home rendering preserves source data",
+            "status": "PASS",
+            "detail": "Rendering and queries must not change engineering records.",
+            "pages": [
+              "home"
+            ],
+            "affectedObjects": []
+          }
+        ],
+        "summary": {
+          "passed": 11,
+          "failed": 0
+        },
+        "visualReview": "Pending controlled human acceptance"
+      }
+    },
+    {
+      "criterion": "HOME-12",
+      "description": "Existing DFMEA rating edit recalculates 8×2×3=48, records history and updates Home high-risk results; common navigation stays unchanged",
+      "status": "PASS"
+    },
+    {
+      "criterion": "HOME-10",
+      "description": "Home panels and handlers remain present without page overflow at required widths",
+      "status": "PASS",
+      "detail": [
+        {
+          "width": 320,
+          "overflow": false,
+          "panels": 9,
+          "unwired": []
+        },
+        {
+          "width": 480,
+          "overflow": false,
+          "panels": 9,
+          "unwired": []
+        },
+        {
+          "width": 768,
+          "overflow": false,
+          "panels": 9,
+          "unwired": []
+        },
+        {
+          "width": 1024,
+          "overflow": false,
+          "panels": 9,
+          "unwired": []
+        },
+        {
+          "width": 1366,
+          "overflow": false,
+          "panels": 9,
+          "unwired": []
+        },
+        {
+          "width": 1920,
+          "overflow": false,
+          "panels": 9,
+          "unwired": []
+        },
+        {
+          "width": 2560,
+          "overflow": false,
+          "panels": 9,
+          "unwired": []
+        }
+      ]
+    }
+  ],
+  "visualReview": "Required hierarchy inspected; human baseline approval remains open",
+  "productChecks": {
+    "id": "RUN-0002",
+    "type": "Product validation",
+    "scope": [
+      "home"
+    ],
+    "at": "2026-09-13T21:56:26.579Z",
+    "version": "1.8.3",
+    "checks": [
+      {
+        "id": "HOME-KPI-projects",
+        "name": "Home projects source count",
+        "status": "PASS",
+        "detail": "7 displayed / 7 source records",
+        "pages": [
+          "home"
+        ],
+        "affectedObjects": [
+          "FMEA-2025-001",
+          "FMEA-2025-002",
+          "FMEA-2025-003",
+          "FMEA-2025-005",
+          "FMEA-2025-006",
+          "FMEA-OPEN-APP-DFMEA",
+          "FMEA-0001"
+        ]
+      },
+      {
+        "id": "HOME-KPI-active",
+        "name": "Home active source count",
+        "status": "PASS",
+        "detail": "18 displayed / 18 source records",
+        "pages": [
+          "home"
+        ],
+        "affectedObjects": [
+          "DF-001",
+          "DF-002",
+          "DF-003",
+          "DF-004",
+          "DF-005",
+          "DF-006",
+          "DF-SW-001",
+          "DF-SW-002",
+          "DF-SW-003",
+          "DF-SW-004",
+          "DF-SW-005",
+          "PF-001",
+          "PF-002",
+          "PF-003",
+          "PF-004",
+          "PF-006",
+          "PF-007",
+          "PM-HOME-TEST"
+        ]
+      },
+      {
+        "id": "HOME-KPI-high",
+        "name": "Home high source count",
+        "status": "PASS",
+        "detail": "4 displayed / 4 source records",
+        "pages": [
+          "home"
+        ],
+        "affectedObjects": [
+          "DF-001",
+          "DF-SW-001",
+          "DF-SW-002",
+          "DF-SW-005"
+        ]
+      },
+      {
+        "id": "HOME-KPI-overdue",
+        "name": "Home overdue source count",
+        "status": "PASS",
+        "detail": "4 displayed / 4 source records",
+        "pages": [
+          "home"
+        ],
+        "affectedObjects": [
+          "A-2025-014",
+          "A-2025-018",
+          "A-2025-022",
+          "A-2025-025"
+        ]
+      },
+      {
+        "id": "HOME-KPI-reviews",
+        "name": "Home reviews source count",
+        "status": "PASS",
+        "detail": "1 displayed / 1 source records",
+        "pages": [
+          "home"
+        ],
+        "affectedObjects": [
+          "REV-HOME-TEST"
+        ]
+      },
+      {
+        "id": "HOME-KPI-unlinked",
+        "name": "Home unlinked source count",
+        "status": "PASS",
+        "detail": "22 displayed / 22 source records",
+        "pages": [
+          "home"
+        ],
+        "affectedObjects": [
+          "C-0001",
+          "C-0002",
+          "C-0003",
+          "C-0004",
+          "C-0005",
+          "C-0006",
+          "PC-0234",
+          "PC-0012",
+          "PC-0017",
+          "PC-0021",
+          "DC-0234",
+          "DC-0017",
+          "DC-0031",
+          "DC-0008",
+          "A-2025-014",
+          "A-2025-018",
+          "A-2025-022",
+          "A-2025-025",
+          "EVT-001",
+          "EVT-002",
+          "EVT-003",
+          "EVT-004"
+        ]
+      },
+      {
+        "id": "HOME-MATRIX",
+        "name": "Paired S/O bands retain every rated analysis",
+        "status": "PASS",
+        "detail": "Counts use explicit paired 1–10 rating bands.",
+        "pages": [
+          "home"
+        ],
+        "affectedObjects": [
+          "DF-001",
+          "DF-002",
+          "DF-003",
+          "DF-004",
+          "DF-005",
+          "DF-006",
+          "DF-SW-001",
+          "DF-SW-002",
+          "DF-SW-003",
+          "DF-SW-004",
+          "DF-SW-005",
+          "PF-001",
+          "PF-002",
+          "PF-003",
+          "PF-004",
+          "PF-005",
+          "PF-006",
+          "PF-007",
+          "PM-HOME-TEST"
+        ]
+      },
+      {
+        "id": "HOME-STRUCTURE",
+        "name": "Controlled Home panels",
+        "status": "PASS",
+        "detail": "All required content regions exist; visual acceptance is separate.",
+        "pages": [
+          "home"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "HOME-HANDLERS",
+        "name": "Home controls are wired",
+        "status": "PASS",
+        "detail": "All Home controls have handlers. Interaction tests are recorded separately.",
+        "pages": [
+          "home"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "HOME-OVERFLOW",
+        "name": "Home layout at current width",
+        "status": "PASS",
+        "detail": "1536 px; tables can scroll locally.",
+        "pages": [
+          "home"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "HOME-READ-ONLY",
+        "name": "Home rendering preserves source data",
+        "status": "PASS",
+        "detail": "Rendering and queries must not change engineering records.",
+        "pages": [
+          "home"
+        ],
+        "affectedObjects": []
+      }
+    ],
+    "summary": {
+      "passed": 11,
+      "failed": 0
+    },
+    "visualReview": "Pending controlled human acceptance"
+  }
+}

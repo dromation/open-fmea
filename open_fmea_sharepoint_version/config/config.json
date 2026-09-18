@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "open-fmea-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/openFmea/OpenFmeaWebPart.js",
+          "manifest": "./src/webparts/openFmea/OpenFmeaWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "OpenFmeaWebPartStrings": "lib/webparts/openFmea/loc/{locale}.js"
+  }
+}

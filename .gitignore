@@ -5,8 +5,27 @@ __pycache__/
 db.sqlite3
 db.sqlite3-journal
 *.sqlite3-journal
+*.~lock*
+.~lock*
+~$*
 media/uploads/
 staticfiles/
 *.log
 _to_delete/
 architecture/mockups/
+Claude outputs/
+
+# GitLab import: local/generated data and workstation files
+*.sqlite
+*.sqlite3
+*.db
+desktop.ini
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.key
+*.pfx
+*.p12
+/aiag_vda_fmea_prva_izdaja_2019_ang.pdf

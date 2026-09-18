@@ -7,6 +7,7 @@ from django.utils import timezone
 
 from fmea_domain import (
     ActionStatus,
+    Asset as DomainAsset,
     CauseCategory as DomainCauseCategory,
     CauseCategoryScheme as DomainCauseCategoryScheme,
     CauseInfluence as DomainCauseInfluence,
@@ -24,9 +25,11 @@ from fmea_domain import (
     FailureMechanism as DomainFailureMechanism,
     FailureMode as DomainFailureMode,
     Function as DomainFunction,
+    LifecycleGate,
     MeasurementMethod as DomainMeasurementMethod,
     Operation as DomainOperation,
     PreventionControl as DomainPreventionControl,
+    Priority,
     Process as DomainProcess,
     ProcessCharacteristic as DomainProcessCharacteristic,
     Product as DomainProduct,
@@ -37,6 +40,10 @@ from fmea_domain import (
     ResponsibleRole as DomainResponsibleRole,
     RiskEvaluation as DomainRiskEvaluation,
     RiskRating,
+    TestType,
+    ValidationResultStatus,
+    ValidationTest as DomainValidationTest,
+    ValidationTestStatus,
     new_stable_id,
 )
 
@@ -59,7 +66,16 @@ class StableModel(models.Model):
 
 
 class FMEAProject(StableModel):
+    PROJECT_STATUS_CHOICES = [
+        ("active", "Active"),
+        ("on_hold", "On Hold"),
+        ("completed", "Completed"),
+        ("archived", "Archived"),
+    ]
+
     name = models.CharField(max_length=255)
+    project_code = models.CharField(max_length=64, blank=True)
+    status = models.CharField(max_length=32, choices=PROJECT_STATUS_CHOICES, default="active")
     description = models.TextField(blank=True)
 
     def __str__(self) -> str:
@@ -75,6 +91,31 @@ class FMEAProject(StableModel):
         )
 
 
+class ProjectMembership(StableModel):
+    ROLE_CHOICES = [
+        ("administrator", "Administrator"),
+        ("fmea_leader", "FMEA Leader"),
+        ("pm_fmea_responsible", "PM-FMEA Responsible"),
+        ("contributor", "Contributor"),
+        ("viewer", "Viewer"),
+    ]
+
+    project = models.ForeignKey(FMEAProject, related_name="memberships", on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="project_memberships",
+        on_delete=models.CASCADE,
+    )
+    role = models.CharField(max_length=32, choices=ROLE_CHOICES)
+
+    class Meta:
+        ordering = ["project__name", "role", "user__email", "user__last_name", "user__first_name"]
+        unique_together = [("project", "user")]
+
+    def __str__(self) -> str:
+        return f"{self.user} - {self.get_role_display()}"
+
+
 class FMEA(StableModel):
     FMEA_TYPE_CHOICES = [
         ("design", "Design"),
@@ -82,6 +123,7 @@ class FMEA(StableModel):
         ("product", "Product"),
         ("software", "Software"),
         ("system", "System"),
+        ("preventive", "Preventive FMEA (PM-FMEA)"),
     ]
 
     LIFECYCLE_CHOICES = [(state.value, state.name.replace("_", " ").title()) for state in FMEALifecycle]
@@ -125,11 +167,93 @@ class FMEA(StableModel):
         return RiskEvaluation.objects.filter(failure_mode__fmea=self).select_related("definition", "failure_mode")
 
 
+class System(StableModel):
+    STATUS_CHOICES = [
+        ("active", "Active"),
+        ("inactive", "Inactive"),
+    ]
+
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True, default="")
+    code = models.CharField(max_length=128, blank=True)
+    parent = models.ForeignKey(
+        "self",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="children",
+    )
+    status = models.CharField(max_length=32, choices=STATUS_CHOICES, default="active")
+
+    def __str__(self) -> str:
+        return self.name
+
+    def clean(self) -> None:
+        super().clean()
+        if self.parent_id is None:
+            return
+        visited_ids: set = set()
+        current = self.parent
+        while current is not None:
+            if self.pk is not None and current.pk == self.pk:
+                raise ValidationError({"parent": "A System cannot be its own ancestor."})
+            if current.pk in visited_ids:
+                break
+            visited_ids.add(current.pk)
+            current = current.parent
+
+
+class AssetStatus(models.TextChoices):
+    OPERATIONAL = "operational", "Operational"
+    DOWN = "down", "Down"
+    UNDER_MAINTENANCE = "under_maintenance", "Under Maintenance"
+
+
+class Asset(StableModel):
+    """A physical machine/equipment identifier for PM-FMEA (Mockup 3).
+
+    First increment only: a plain master-data record a FailureMode can link
+    to when its FMEA is fmea_type="preventive". Maintenance-module concepts
+    the mockup also depicts (WorkOrder, MaintenancePlan, PM Compliance,
+    Baseline/History, Reviews, Open-EQMS deep links) have no backing entity
+    here and are explicitly out of scope for this increment - see the
+    architecture decision doc for the full boundary.
+    """
+
+    name = models.CharField(max_length=200)
+    asset_code = models.CharField(max_length=64, blank=True)
+    location = models.CharField(max_length=200, blank=True)
+    status = models.CharField(max_length=32, choices=AssetStatus.choices, default=AssetStatus.OPERATIONAL)
+    notes = models.TextField(blank=True)
+
+    def __str__(self) -> str:
+        return self.name
+
+    def to_domain(self) -> "DomainAsset":
+        return DomainAsset(
+            stable_id=self.stable_id,
+            schema_version=self.schema_version,
+            revision=self.revision,
+            name=self.name,
+            asset_code=self.asset_code,
+            location=self.location,
+            status=self.status,
+            notes=self.notes,
+        )
+
+
 class Product(StableModel):
     fmea = models.ForeignKey(FMEA, related_name="products", on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     part_number = models.CharField(max_length=128, blank=True)
+    system = models.ForeignKey(
+        "System",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="products",
+    )
 
     def __str__(self) -> str:
         return self.name
@@ -150,6 +274,13 @@ class Process(StableModel):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     process_code = models.CharField(max_length=128, blank=True)
+    system = models.ForeignKey(
+        "System",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="processes",
+    )
 
     def __str__(self) -> str:
         return self.name
@@ -254,7 +385,13 @@ class ProductCharacteristic(StableModel):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     is_special = models.BooleanField(default=False)
-    primary_classification_id = models.CharField(max_length=128, blank=True, null=True)
+    primary_classification = models.ForeignKey(
+        "ClassificationTerm",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="classified_characteristics",
+    )
 
     def __str__(self) -> str:
         return self.name
@@ -268,8 +405,67 @@ class ProductCharacteristic(StableModel):
             description=self.description,
             requirement_id=self.requirement.stable_id if self.requirement else None,
             is_special=self.is_special,
-            primary_classification_id=self.primary_classification_id,
+            primary_classification_id=(
+                self.primary_classification.stable_id if self.primary_classification_id else None
+            ),
         )
+
+
+class CharacteristicLink(StableModel):
+    RELATIONSHIP_TYPE_CHOICES = [
+        ("drives", "Drives"),
+        ("influences", "Influences"),
+        ("affected_by", "Affected By"),
+        ("constrained_by", "Constrained By"),
+        ("supports", "Supports"),
+        ("required_by", "Required By"),
+    ]
+    STRENGTH_CHOICES = [
+        ("critical", "Critical"),
+        ("high", "High"),
+        ("medium", "Medium"),
+        ("low", "Low"),
+        ("none", "None"),
+    ]
+
+    from_characteristic = models.ForeignKey(
+        ProductCharacteristic,
+        related_name="outgoing_links",
+        on_delete=models.CASCADE,
+    )
+    to_characteristic = models.ForeignKey(
+        ProductCharacteristic,
+        related_name="incoming_links",
+        on_delete=models.CASCADE,
+    )
+    relationship_type = models.CharField(max_length=32, choices=RELATIONSHIP_TYPE_CHOICES)
+    strength = models.CharField(max_length=16, choices=STRENGTH_CHOICES)
+    created_by = models.CharField(max_length=255, blank=True)
+
+    def __str__(self) -> str:
+        return f"{self.from_characteristic} -> {self.to_characteristic}"
+
+
+class ControlType(models.TextChoices):
+    ADMINISTRATIVE = "administrative", "Administrative"
+    MEASUREMENT = "measurement", "Measurement"
+    DETECTION = "detection", "Detection"
+    MONITORING = "monitoring", "Monitoring"
+    POKA_YOKE = "poka_yoke", "Poka-Yoke"
+    TEST = "test", "Test"
+
+
+class ControlStatus(models.TextChoices):
+    ACTIVE = "active", "Active"
+    REVIEW = "review", "Review"
+    INACTIVE = "inactive", "Inactive"
+
+
+class ControlEffectiveness(models.TextChoices):
+    EFFECTIVE = "effective", "Effective"
+    PARTIALLY_EFFECTIVE = "partially_effective", "Partially Effective"
+    NOT_EFFECTIVE = "not_effective", "Not Effective"
+    UNKNOWN = "unknown", "Unknown"
 
 
 class ProcessCharacteristic(StableModel):
@@ -282,6 +478,36 @@ class ProcessCharacteristic(StableModel):
     description = models.TextField(blank=True)
     cause_category_id = models.CharField(max_length=128, blank=True, null=True, db_index=True)
     attributes = models.JSONField(default=dict, blank=True)
+    control_type = models.CharField(max_length=32, choices=ControlType.choices, blank=True)
+    method = models.CharField(max_length=255, blank=True)
+    resource_equipment = models.CharField(max_length=255, blank=True)
+    frequency_trigger = models.CharField(max_length=255, blank=True)
+    status = models.CharField(max_length=16, choices=ControlStatus.choices, default=ControlStatus.ACTIVE)
+    effectiveness = models.CharField(
+        max_length=32, choices=ControlEffectiveness.choices, default=ControlEffectiveness.UNKNOWN
+    )
+    owner = models.ForeignKey(
+        "ResponsibleRole",
+        null=True,
+        blank=True,
+        related_name="owned_process_characteristics",
+        on_delete=models.SET_NULL,
+    )
+    review_due = models.DateField(null=True, blank=True)
+    reaction_plan = models.TextField(blank=True)
+    special_classification = models.ForeignKey(
+        "ClassificationTerm",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="classified_process_characteristics",
+        help_text=(
+            "PFMEA-side Classification (AIAG & VDA Handbook): whether this "
+            "process characteristic is sensitive to manufacturing/assembly "
+            "variation. Independently set - not inherited from any related "
+            "ProductCharacteristic.primary_classification."
+        ),
+    )
 
     class Meta:
         ordering = ["operation", "name"]
@@ -306,6 +532,9 @@ class ProcessCharacteristic(StableModel):
             operation_id=self.operation.stable_id,
             cause_category_id=self.cause_category_id or None,
             attributes=self.attributes or {},
+            special_classification_id=(
+                self.special_classification.stable_id if self.special_classification_id else None
+            ),
         )
 
 
@@ -325,6 +554,14 @@ class FailureMode(StableModel):
         related_name="failure_modes",
         on_delete=models.SET_NULL,
     )
+    asset = models.ForeignKey(
+        "Asset",
+        null=True,
+        blank=True,
+        related_name="failure_modes",
+        on_delete=models.SET_NULL,
+        help_text="PM-FMEA concept (Mockup 3): the machine/equipment this maintenance failure mode is against. Meaningless outside fmea_type='preventive'; optional for every other FMEA type.",
+    )
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
 
@@ -341,6 +578,7 @@ class FailureMode(StableModel):
             fmea_id=self.fmea.stable_id,
             function_id=self.function.stable_id if self.function else None,
             requirement_id=self.requirement.stable_id if self.requirement else None,
+            asset_id=self.asset.stable_id if self.asset else None,
         )
 
 
@@ -528,6 +766,145 @@ class RecommendedAction(StableModel):
         )
 
 
+class ValidationTest(StableModel):
+    TEST_TYPE_CHOICES = [
+        (TestType.VALIDATION.value, "Validation"),
+        (TestType.VERIFICATION.value, "Verification"),
+        (TestType.RELIABILITY.value, "Reliability"),
+        (TestType.ACCEPTANCE.value, "Acceptance"),
+    ]
+    RESULT_STATUS_CHOICES = [
+        (ValidationResultStatus.PASS.value, "Pass"),
+        (ValidationResultStatus.FAIL.value, "Fail"),
+        (ValidationResultStatus.PENDING.value, "Pending"),
+    ]
+    PRIORITY_CHOICES = [
+        (Priority.HIGH.value, "High"),
+        (Priority.MEDIUM.value, "Medium"),
+        (Priority.LOW.value, "Low"),
+    ]
+    LIFECYCLE_GATE_CHOICES = [
+        (LifecycleGate.CONCEPT_DESIGN.value, "Concept/Design"),
+        (LifecycleGate.DESIGN_VERIFICATION.value, "Design Verification"),
+        (LifecycleGate.PROCESS_VALIDATION.value, "Process Validation"),
+        (LifecycleGate.PRE_PRODUCTION.value, "Pre-Production"),
+        (LifecycleGate.SERIAL_PRODUCTION.value, "Serial Production"),
+        (LifecycleGate.CURRENT.value, "Current"),
+    ]
+    STATUS_CHOICES = [
+        (ValidationTestStatus.PLANNED.value, "Planned"),
+        (ValidationTestStatus.IN_EXECUTION.value, "In Execution"),
+        (ValidationTestStatus.COMPLETED.value, "Completed"),
+        (ValidationTestStatus.ON_HOLD.value, "On Hold"),
+        (ValidationTestStatus.CANCELLED.value, "Cancelled"),
+    ]
+
+    failure_mode = models.ForeignKey(
+        FailureMode,
+        related_name="validation_tests",
+        on_delete=models.CASCADE,
+    )
+    recommended_action = models.ForeignKey(
+        RecommendedAction,
+        null=True,
+        blank=True,
+        related_name="validation_tests",
+        on_delete=models.SET_NULL,
+    )
+    name = models.CharField(max_length=255)
+    test_type = models.CharField(max_length=32, choices=TEST_TYPE_CHOICES)
+    method = models.CharField(max_length=255, blank=True)
+    objective = models.TextField(blank=True)
+    nominal_target = models.CharField(max_length=255, blank=True)
+    acceptance_criteria = models.TextField(blank=True)
+    result_status = models.CharField(
+        max_length=32, choices=RESULT_STATUS_CHOICES, default=ValidationResultStatus.PENDING.value
+    )
+    planned_date = models.DateField(null=True, blank=True)
+    executed_date = models.DateField(null=True, blank=True)
+    priority = models.CharField(max_length=32, choices=PRIORITY_CHOICES, default=Priority.MEDIUM.value)
+    owner = models.ForeignKey(
+        ResponsibleRole,
+        null=True,
+        blank=True,
+        related_name="validation_tests",
+        on_delete=models.SET_NULL,
+    )
+    lifecycle_gate = models.CharField(max_length=32, choices=LIFECYCLE_GATE_CHOICES)
+    status = models.CharField(max_length=32, choices=STATUS_CHOICES, default=ValidationTestStatus.PLANNED.value)
+
+    def __str__(self) -> str:
+        return self.name
+
+    def to_domain(self) -> DomainValidationTest:
+        return DomainValidationTest(
+            stable_id=self.stable_id,
+            schema_version=self.schema_version,
+            revision=self.revision,
+            name=self.name,
+            failure_mode_id=self.failure_mode.stable_id,
+            recommended_action_id=self.recommended_action.stable_id if self.recommended_action else None,
+            test_type=TestType(self.test_type),
+            method=self.method,
+            objective=self.objective,
+            nominal_target=self.nominal_target,
+            acceptance_criteria=self.acceptance_criteria,
+            result_status=ValidationResultStatus(self.result_status),
+            planned_date=self.planned_date,
+            executed_date=self.executed_date,
+            priority=Priority(self.priority),
+            owner_id=self.owner.stable_id if self.owner else None,
+            lifecycle_gate=LifecycleGate(self.lifecycle_gate),
+            status=ValidationTestStatus(self.status),
+        )
+
+
+class Change(StableModel):
+    CHANGE_TYPE_CHOICES = [
+        ("design", "Design"),
+        ("supplier", "Supplier"),
+        ("regulatory", "Regulatory"),
+        ("process", "Process"),
+        ("material", "Material"),
+    ]
+    IMPACT_LEVEL_CHOICES = [
+        ("critical", "Critical"),
+        ("high", "High"),
+        ("medium", "Medium"),
+        ("low", "Low"),
+    ]
+    STATUS_CHOICES = [
+        ("under_analysis", "Under Analysis"),
+        ("in_progress", "In Progress"),
+        ("open", "Open"),
+        ("closed", "Closed"),
+    ]
+
+    title = models.CharField(max_length=255)
+    change_type = models.CharField(max_length=32, choices=CHANGE_TYPE_CHOICES)
+    source = models.CharField(max_length=255, blank=True)
+    reason = models.TextField(blank=True)
+    description = models.TextField(blank=True)
+    impact_level = models.CharField(max_length=16, choices=IMPACT_LEVEL_CHOICES)
+    status = models.CharField(max_length=32, choices=STATUS_CHOICES, default="under_analysis")
+    owner = models.ForeignKey(
+        ResponsibleRole,
+        null=True,
+        blank=True,
+        related_name="changes",
+        on_delete=models.SET_NULL,
+    )
+    target_date = models.DateField(null=True, blank=True)
+    affected_failure_modes = models.ManyToManyField(
+        FailureMode,
+        blank=True,
+        related_name="affecting_changes",
+    )
+
+    def __str__(self) -> str:
+        return self.title
+
+
 class Evidence(StableModel):
     action = models.ForeignKey(RecommendedAction, related_name="evidence", on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
@@ -656,6 +1033,27 @@ class CauseCategory(StableModel):
         )
 
 
+class ClassificationScheme(StableModel):
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class ClassificationTerm(StableModel):
+    scheme = models.ForeignKey(ClassificationScheme, related_name="terms", on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["scheme_id", "order", "name"]
+
+    def __str__(self) -> str:
+        return self.name
+
+
 class CauseInfluence(StableModel):
     SOURCE_TYPE_CHOICES = [
         ("FailureCause", "Failure Cause"),
@@ -737,6 +1135,21 @@ class CauseInfluence(StableModel):
 
 
 class RiskEvaluation(StableModel):
+    LIFECYCLE_GATE_CHOICES = [
+        ("concept_design", "Concept/Design"),
+        ("design_verification", "Design Verification"),
+        ("process_validation", "Process Validation"),
+        ("pre_production", "Pre-Production (PPAP)"),
+        ("serial_production", "Serial Production (SOP)"),
+        ("current", "Current"),
+    ]
+
+    FAILURE_SCENARIO_CHOICES = [
+        ("non_hazardous", "Non-Hazardous"),
+        ("hazardous", "Hazardous"),
+        ("mitigated", "Mitigated (Effect)"),
+    ]
+
     failure_mode = models.ForeignKey(FailureMode, related_name="risk_evaluations", on_delete=models.CASCADE)
     definition = models.ForeignKey(EvaluationDefinition, related_name="risk_evaluations", on_delete=models.PROTECT)
     method = models.CharField(max_length=64)
@@ -747,6 +1160,18 @@ class RiskEvaluation(StableModel):
     evaluated_at = models.DateTimeField(default=timezone.now)
     actor = models.CharField(max_length=255, default="system")
     trigger = models.CharField(max_length=64, default="manual")
+    lifecycle_gate = models.CharField(max_length=32, choices=LIFECYCLE_GATE_CHOICES, default="current")
+    failure_scenario = models.CharField(
+        max_length=16,
+        choices=FAILURE_SCENARIO_CHOICES,
+        blank=True,
+        help_text=(
+            "FMEA-MSR concept (AIAG & VDA Handbook, Ch. 4): whether this evaluation's failure "
+            "scenario is Non-Hazardous, Hazardous, or Mitigated (system/driver detects and "
+            "responds before the hazard). Meaningless outside method='aiag-vda-msr'; blank for "
+            "every other evaluation."
+        ),
+    )
 
     class Meta:
         ordering = ["-evaluated_at", "-id"]

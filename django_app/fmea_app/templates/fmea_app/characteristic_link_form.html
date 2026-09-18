@@ -1,0 +1,26 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}New Characteristic Link - Open FMEA{% endblock %}
+{% block topbar_title %}Characteristics Flow{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>New Characteristic Link</h1>
+    <p class="muted">Record a relationship between two Product Characteristics.</p>
+  </div>
+  <a class="button" href="{% url 'fmea:characteristic_link_list' %}">Characteristics Flow</a>
+</div>
+
+<form class="panel compact" method="post" action="{% url 'fmea:characteristic_link_create' %}">
+  {% csrf_token %}
+  <div class="field-grid">
+    <label>From Characteristic {{ form.from_characteristic }}</label>
+    <label>To Characteristic {{ form.to_characteristic }}</label>
+    <label>Relationship Type {{ form.relationship_type }}</label>
+    <label>Strength {{ form.strength }}</label>
+    <label>Created By {{ form.created_by }}</label>
+  </div>
+  <button class="button primary" type="submit">Create Link</button>
+</form>
+{% endblock %}

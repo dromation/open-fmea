@@ -3,7 +3,8 @@ from __future__ import annotations
 from django.test import TestCase
 
 from fmea_app import models
-from fmea_evaluation import CLASSIC_RPN_METHOD
+from fmea_app.management.commands.seed_demo import _aiag_vda_msr_rating_scales, _aiag_vda_rating_scales
+from fmea_evaluation import AIAG_VDA_AP_METHOD, AIAG_VDA_MSR_METHOD, CLASSIC_RPN_METHOD
 
 
 class AppWorkflowTests(TestCase):
@@ -129,3 +130,142 @@ class AppWorkflowTests(TestCase):
         self.assertContains(response, "Seal leaks")
         self.assertContains(response, "Seal nicked")
         self.assertContains(response, "RPN 180")
+
+    def test_fmea_detail_offers_the_real_aiag_vda_ap_method_alongside_existing_methods(self):
+        models.EvaluationDefinition.objects.create(
+            stable_id="eval:aiag-vda-ap-form-option",
+            method=AIAG_VDA_AP_METHOD,
+            name="AIAG & VDA Action Priority (Table AP)",
+        )
+        fmea = models.FMEA.objects.create(stable_id="fmea:ap-form-option", name="Form Option PFMEA")
+        models.FailureMode.objects.create(stable_id="fm:ap-form-option", fmea=fmea, name="Seal leaks")
+
+        response = self.client.get(f"/fmea/{fmea.stable_id}/")
+
+        # The pre-existing classic-rpn/aiag-vda-ap-poc options are untouched;
+        # the new real method is just another selectable <option>, not a
+        # replacement.
+        self.assertContains(response, "AIAG &amp; VDA Action Priority (Table AP)")
+
+    def test_fmea_detail_shows_pfmea_rating_reference_for_a_process_type_fmea(self):
+        models.EvaluationDefinition.objects.create(
+            stable_id="eval:aiag-vda-ap-reference-pfmea",
+            method=AIAG_VDA_AP_METHOD,
+            name="AIAG & VDA Action Priority (Table AP)",
+            rating_scales=_aiag_vda_rating_scales(),
+        )
+        fmea = models.FMEA.objects.create(
+            stable_id="fmea:ap-reference-pfmea", name="Reference PFMEA", fmea_type="process"
+        )
+        models.FailureMode.objects.create(stable_id="fm:ap-reference-pfmea", fmea=fmea, name="Seal leaks")
+
+        response = self.client.get(f"/fmea/{fmea.stable_id}/")
+
+        self.assertContains(response, "AIAG &amp; VDA rating criteria (PFMEA)")
+        self.assertContains(response, "Your Plant:")
+        self.assertContains(response, "Ship-to Plant:")
+        self.assertContains(response, "End User:")
+
+    def test_fmea_detail_shows_dfmea_rating_reference_for_a_design_type_fmea(self):
+        models.EvaluationDefinition.objects.create(
+            stable_id="eval:aiag-vda-ap-reference-dfmea",
+            method=AIAG_VDA_AP_METHOD,
+            name="AIAG & VDA Action Priority (Table AP)",
+            rating_scales=_aiag_vda_rating_scales(),
+        )
+        fmea = models.FMEA.objects.create(
+            stable_id="fmea:ap-reference-dfmea", name="Reference DFMEA", fmea_type="design"
+        )
+        models.FailureMode.objects.create(stable_id="fm:ap-reference-dfmea", fmea=fmea, name="Seal leaks")
+
+        response = self.client.get(f"/fmea/{fmea.stable_id}/")
+
+        self.assertContains(response, "AIAG &amp; VDA rating criteria (DFMEA)")
+        self.assertNotContains(response, "Your Plant:")
+        self.assertContains(response, "Affects safe operation of the vehicle")
+
+    def test_fmea_detail_offers_the_aiag_vda_msr_method_and_failure_scenario_field(self):
+        models.EvaluationDefinition.objects.create(
+            stable_id="eval:aiag-vda-msr-form-option",
+            method=AIAG_VDA_MSR_METHOD,
+            name="AIAG & VDA FMEA-MSR Action Priority (Frequency / Monitoring)",
+        )
+        fmea = models.FMEA.objects.create(stable_id="fmea:msr-form-option", name="MSR Form Option DFMEA")
+        models.FailureMode.objects.create(stable_id="fm:msr-form-option", fmea=fmea, name="Seal leaks")
+
+        response = self.client.get(f"/fmea/{fmea.stable_id}/")
+
+        self.assertContains(response, "AIAG &amp; VDA FMEA-MSR Action Priority (Frequency / Monitoring)")
+        self.assertContains(response, "Failure Scenario")
+        self.assertContains(response, "Non-Hazardous")
+        self.assertContains(response, "Mitigated (Effect)")
+
+    def test_fmea_detail_shows_msr_criteria_reference_when_msr_definition_exists(self):
+        models.EvaluationDefinition.objects.create(
+            stable_id="eval:aiag-vda-msr-reference",
+            method=AIAG_VDA_MSR_METHOD,
+            name="AIAG & VDA FMEA-MSR Action Priority (Frequency / Monitoring)",
+            rating_scales=_aiag_vda_msr_rating_scales(),
+        )
+        fmea = models.FMEA.objects.create(stable_id="fmea:msr-reference", name="MSR Reference DFMEA")
+        models.FailureMode.objects.create(stable_id="fm:msr-reference", fmea=fmea, name="Seal leaks")
+
+        response = self.client.get(f"/fmea/{fmea.stable_id}/")
+
+        self.assertContains(response, "AIAG &amp; VDA FMEA-MSR criteria (Frequency / Monitoring)")
+        self.assertContains(response, "Use the rating number that corresponds with the least effective")
+        self.assertContains(response, "Fault Handling Time Interval")
+
+    def test_fmea_detail_omits_msr_reference_when_no_msr_definition_exists(self):
+        fmea = models.FMEA.objects.create(stable_id="fmea:no-msr-reference", name="No MSR Reference DFMEA")
+        models.FailureMode.objects.create(stable_id="fm:no-msr-reference", fmea=fmea, name="Seal leaks")
+
+        response = self.client.get(f"/fmea/{fmea.stable_id}/")
+
+        self.assertNotContains(response, "AIAG &amp; VDA FMEA-MSR criteria")
+
+    def test_evaluate_failure_saves_failure_scenario_only_for_msr_evaluations(self):
+        msr_definition = models.EvaluationDefinition.objects.create(
+            stable_id="eval:aiag-vda-msr-save",
+            method=AIAG_VDA_MSR_METHOD,
+            name="AIAG & VDA FMEA-MSR Action Priority (Frequency / Monitoring)",
+        )
+        fmea = models.FMEA.objects.create(stable_id="fmea:msr-save", name="MSR Save DFMEA")
+        failure_mode = models.FailureMode.objects.create(stable_id="fm:msr-save", fmea=fmea, name="Seal leaks")
+
+        self.client.post(
+            f"/failure-mode/{failure_mode.stable_id}/evaluate/",
+            {
+                "definition": msr_definition.pk,
+                "severity": 9,
+                "occurrence": 4,  # Frequency
+                "detection": 5,  # Monitoring
+                "failure_scenario": "hazardous",
+            },
+        )
+
+        evaluation = models.RiskEvaluation.objects.get()
+        self.assertEqual(evaluation.failure_scenario, "hazardous")
+        self.assertEqual(evaluation.result["priority"], "high")
+
+    def test_evaluate_failure_leaves_failure_scenario_blank_when_not_submitted(self):
+        classic_definition = models.EvaluationDefinition.objects.create(
+            stable_id="eval:classic-rpn-no-scenario",
+            method=CLASSIC_RPN_METHOD,
+            name="Classic RPN",
+        )
+        fmea = models.FMEA.objects.create(stable_id="fmea:no-scenario", name="No Scenario PFMEA")
+        failure_mode = models.FailureMode.objects.create(stable_id="fm:no-scenario", fmea=fmea, name="Seal leaks")
+
+        self.client.post(
+            f"/failure-mode/{failure_mode.stable_id}/evaluate/",
+            {
+                "definition": classic_definition.pk,
+                "severity": 9,
+                "occurrence": 4,
+                "detection": 5,
+            },
+        )
+
+        evaluation = models.RiskEvaluation.objects.get()
+        self.assertEqual(evaluation.failure_scenario, "")

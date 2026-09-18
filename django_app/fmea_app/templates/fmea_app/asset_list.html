@@ -1,0 +1,45 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}Assets - Open FMEA{% endblock %}
+{% block topbar_title %}Assets & Equipment{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>Assets & Equipment</h1>
+    <p class="muted">Machine/equipment master data for PM-FMEA (Preventive FMEA). Link a Failure Mode to an Asset from the "Add Failure Mode" form on a Preventive FMEA's worksheet.</p>
+  </div>
+  <a class="button primary" href="{% url 'fmea:asset_create' %}">New Asset</a>
+</div>
+
+<section class="panel">
+  <div class="table-shell">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Asset Code</th>
+          <th>Location</th>
+          <th>Status</th>
+          <th>Linked Failure Modes</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for asset in assets %}
+        <tr>
+          <td><a href="{% url 'fmea:asset_detail' asset.stable_id %}">{{ asset.name }}</a></td>
+          <td>{{ asset.asset_code|default:"—" }}</td>
+          <td>{{ asset.location|default:"—" }}</td>
+          <td><span class="status">{{ asset.get_status_display }}</span></td>
+          <td>{{ asset.failure_mode_count }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" class="muted">No assets yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

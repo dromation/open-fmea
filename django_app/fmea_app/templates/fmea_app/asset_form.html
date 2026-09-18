@@ -1,0 +1,26 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}{% if asset %}Edit Asset{% else %}New Asset{% endif %} - Open FMEA{% endblock %}
+{% block topbar_title %}{% if asset %}Edit Asset{% else %}New Asset{% endif %}{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>{% if asset %}Edit {{ asset.name }}{% else %}New Asset{% endif %}</h1>
+    <p class="muted">A machine/equipment identifier a Preventive FMEA's failure modes can link to.</p>
+  </div>
+  <a class="button" href="{% url 'fmea:asset_list' %}">Assets</a>
+</div>
+
+<form class="panel compact" method="post" action="{% if asset %}{% url 'fmea:asset_edit' asset.stable_id %}{% else %}{% url 'fmea:asset_create' %}{% endif %}">
+  {% csrf_token %}
+  <div class="field-grid">
+    <label>Name {{ form.name }}</label>
+    <label>Asset Code {{ form.asset_code }}</label>
+    <label>Location {{ form.location }}</label>
+    <label>Status {{ form.status }}</label>
+  </div>
+  <label>Notes {{ form.notes }}</label>
+  <button class="button primary" type="submit">{% if asset %}Save Changes{% else %}Create Asset{% endif %}</button>
+</form>
+{% endblock %}

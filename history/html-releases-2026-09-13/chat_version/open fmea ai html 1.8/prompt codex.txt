@@ -1,0 +1,1176 @@
+# OPEN FMEA — CODEX MASTER IMPLEMENTATION PROMPT
+## Current focus: DFMEA module and validation-driven development
+
+You are working on an existing Open FMEA application.
+
+DO NOT rebuild the application from scratch.
+DO NOT create a new mockup.
+DO NOT redesign the GUI according to your own preferences.
+DO NOT replace the current architecture with React/Vue/Angular or another framework.
+DO NOT split the application into many frontend files unless explicitly instructed later.
+
+The existing application is the product under development.
+
+Your first responsibility is to inspect and understand the existing project files before making ANY implementation change.
+
+============================================================
+1. FILES THAT MUST BE INSPECTED FIRST
+============================================================
+
+Inspect these files before editing:
+
+1. open_fmea_v1_8_dfmea_focus.html
+   - current runtime application
+   - single HTML application
+   - contains HTML + CSS + JavaScript + embedded container
+   - this is currently the primary executable UI/runtime baseline
+
+2. open_fmea_v1_8_dfmea_focus.container
+   - authoritative portable Open FMEA application state for the current build
+   - contains DFMEA/PFMEA/controls/actions/validation/change/learning data
+
+3. open_fmea_v1_8_validation_seed.container
+   - validation-driven development seed
+   - contains validation policy, mockup baseline registry, historical learning context
+
+4. open_fmea_validation_tests.jsonl
+   - validation registry
+   - currently contains page-level validation tests
+   - mockups are controlled validation baselines
+
+5. open_fmea_dataflow_pipeline.json
+   - machine-readable data-flow and validation pipeline contract
+
+6. open_fmea_dataflow_pipeline.md
+   - human-readable description of the intended architecture and release loop
+
+7. open_fmea_ai_knowledge_v2.jsonl
+   - learning/case/validation corpus
+   - contains historical Open FMEA software failures, corrections and validation knowledge
+
+8. open_fmea_release_history.json
+   - historical versions and development lineage
+
+Before editing, create an internal project assessment containing:
+
+- current file architecture
+- current schema
+- current navigation/pages
+- current DFMEA implementation
+- existing event handlers
+- existing persistence mechanism
+- container loading mechanism
+- embedded-container vs external-container differences
+- CRUD functions
+- transaction/audit functions
+- import/export functions
+- current validation functions
+- current responsive CSS
+- current learning functions
+- known duplicate or conflicting implementations
+- dead buttons
+- undefined functions
+- orphan data
+- broken references
+- hard-coded values that should be data-driven
+
+Do NOT begin feature development until this assessment is complete.
+
+============================================================
+2. DEVELOPMENT PHILOSOPHY
+============================================================
+
+Open FMEA is not merely a dashboard.
+
+It is evolving into a functional engineering FMEA application and later a subsystem of Open EQMS.
+
+The development model is:
+
+REQUIREMENT
+    ↓
+FUNCTION / CHARACTERISTIC
+    ↓
+POTENTIAL FAILURE MODE
+    ↓
+EFFECT
+    ↓
+CAUSE
+    ↓
+PREVENTION CONTROL
+    ↓
+DETECTION CONTROL
+    ↓
+S / O / D
+    ↓
+RISK
+    ↓
+ACTION
+    ↓
+VALIDATION
+    ↓
+RESIDUAL RISK
+    ↓
+CHANGE IMPACT
+    ↓
+LESSON LEARNED
+    ↓
+REUSABLE KNOWLEDGE
+
+The software development of Open FMEA itself follows the same logic.
+
+A software bug, broken GUI, broken calculation, broken link or missing function is itself a possible SOFTWARE FAILURE MODE.
+
+============================================================
+3. MOCKUPS ARE CONTROLLED VALIDATION BASELINES
+============================================================
+
+The supplied GUI mockups are NOT images to copy blindly and NOT suggestions.
+
+They are controlled validation references.
+
+For each page:
+
+MOCKUP BASELINE
+    ↓
+IMPLEMENTED PAGE
+    ↓
+VISUAL VALIDATION
++ FUNCTIONAL VALIDATION
++ DATA VALIDATION
++ RESPONSIVE VALIDATION
+    ↓
+PASS → accepted
+FAIL
+    ↓
+VALIDATION FINDING
+    ↓
+SOFTWARE FAILURE MODE
+    ↓
+CHANGE IMPACT
+    ↓
+CORRECTIVE CHANGE
+    ↓
+REGRESSION TEST
+    ↓
+LEARNING CASE
+
+Never improve one page by accidentally breaking another accepted page.
+
+Any such regression is itself a failure mode.
+
+============================================================
+4. CURRENT PRIMARY FOCUS: DFMEA
+============================================================
+
+Do NOT currently redesign the entire application.
+
+Focus first on DFMEA.
+
+The current supplied DFMEA mockup is the controlled DFMEA baseline.
+
+The DFMEA page must retain the information architecture represented by that baseline:
+
+HEADER
+- DFMEA title
+- Design FMEA indicator
+- project selector
+- search
+- notifications/help/user
+- New DFMEA Item
+- Import
+- Export
+- Reports
+- View Options
+- Filters
+
+TOP KPI AREA
+- DFMEA Items
+- High Risk
+- Actions Open
+- Actions Overdue
+- Avg. Initial RPN
+- Avg. Current RPN
+- Last Updated
+
+DFMEA SUBVIEWS
+- DFMEA Table
+- Structure Tree
+- Interface Matrix
+- Parameter Diagram
+- RPN Overview
+- Action Tracker
+
+FILTERS
+- Search
+- Element
+- Function
+- Status
+- RPN
+- Type / classification where applicable
+- additional filters where useful
+
+PRIMARY DFMEA TABLE
+
+The table must represent at minimum:
+
+ID
+Element / Part
+Function
+Failure Mode
+Effects
+Severity
+Cause
+Occurrence
+Current Controls
+    Prevention
+    Detection
+Detection rating
+Initial RPN
+Current RPN
+Actions
+Status
+
+RIGHT-SIDE DETAILS
+- selected DFMEA item
+- ID
+- status
+- element/part
+- function
+- failure mode
+- effect(s)
+- cause(s)
+- S
+- O
+- D
+- initial RPN
+- current RPN
+- responsible person
+- last update
+- links/history/actions
+
+RPN SUMMARY
+- risk distribution
+- must be calculated from actual current DFMEA records
+
+BOTTOM ANALYTICS
+- RPN Trend
+- Top 5 Highest Current RPN
+- Actions by Status
+- DFMEA Progress
+
+These must NOT be decorative static charts.
+
+Every number must come from source records.
+
+============================================================
+5. DFMEA MUST USE SHARED OBJECTS
+============================================================
+
+Avoid page-local duplicate engineering objects.
+
+Long-term Open FMEA object model should support shared:
+
+Function
+Failure Mode
+Effect
+Cause
+Characteristic
+Requirement
+Prevention Control
+Detection Control
+Action
+Evidence
+Validation
+Change
+User
+Project
+System/Product/Process object
+
+DFMEA records should reference reusable objects where possible.
+
+Do not create separate copies merely because another page needs the same entity.
+
+Object identity must be stable.
+
+Example:
+
+Cause C-001
+
+must represent the same logical cause when accessed from:
+
+DFMEA
+Failure Modes
+Causes
+Ishikawa
+5WHY
+8D
+Risk Propagation
+Change Impact
+
+============================================================
+6. DESIGN FMEA OF OPEN FMEA ITSELF
+============================================================
+
+The Open FMEA application itself is currently being analysed as a DESIGN FMEA project.
+
+Project:
+
+FMEA-OPEN-APP-DFMEA
+Open FMEA Application – Design FMEA
+
+Interpretation:
+
+DESIGN FMEA currently covers:
+- application concept
+- GUI design
+- application features
+- data model
+- software characteristics
+- user interactions
+- calculations
+- browser behavior
+- persistence
+- data integrity
+- functional design
+
+Later:
+
+SYSTEM FMEA will cover operation of the complete Open FMEA system:
+
+HTML runtime
++
+container
++
+SQLite/SQL
++
+AI
++
+data flows
++
+pipelines
++
+import/export
++
+synchronization
++
+external application connections
++
+permissions
++
+offline/online execution
+
+Do NOT collapse Design FMEA and System FMEA into the same concept.
+
+============================================================
+7. SOFTWARE FAILURE MODES ARE REAL FMEA INPUT
+============================================================
+
+Historical application failures are training/engineering knowledge.
+
+Examples already identified:
+
+- GUI renders only shell and workspace remains blank
+- old browser/local state breaks newer schema
+- visible buttons are not functionally wired
+- GUI drifts from accepted mockup after new features
+- responsive resizing breaks widgets
+- Risk Matrix exists visually but cannot drill into source risks
+- Risk Trajectory lacks useful time selection
+- Change Impact chart lacks legend or correct time basis
+- dashboard KPI is hard-coded instead of derived
+- data objects become duplicated between pages
+- broken links are silently ignored
+- feature implementation breaks previously accepted page
+
+Preserve these as learning cases.
+
+When Codex finds another real software failure:
+
+1. create validation finding
+2. classify failure mode
+3. identify effect
+4. identify cause
+5. identify affected objects/pages
+6. create Change Impact
+7. implement correction
+8. execute regression validation
+9. store lesson learned
+
+Do not simply fix bugs silently.
+
+============================================================
+8. UNDEFINED REQUIREMENTS
+============================================================
+
+Undefined, missing or ambiguous requirements are potential risk inputs.
+
+They must NOT automatically become approved official FMEA failure modes.
+
+Pipeline:
+
+Undefined Requirement
+    ↓
+Requirement Gap
+    ↓
+Candidate Failure Mode
+    ↓
+Analysis
+    ↓
+Human Review
+    ↓
+Approved / Modified / Rejected
+    ↓
+official FMEA object if approved
+
+Potential analysis methods:
+
+3WHY
+5WHY
+Ishikawa
+5M
+6M
+8D
+Poka-Yoke review
+Change Impact
+historical similarity
+software characteristic review
+
+============================================================
+9. LEARNING SYSTEM
+============================================================
+
+The application must learn from ENGINEERING CASES, not silently retrain itself as an uncontrolled AI model.
+
+Current learning architecture:
+
+open_fmea.container
+    = authoritative operational state
+
+open_fmea_ai_knowledge_v2.jsonl
+    = portable learning / case / validation corpus
+
+TXT / MD
+    = human-authored knowledge sources
+
+JSON
+    = interchange
+
+SQLite
+    = relational desktop/backend companion
+
+SQL
+    = migration/reporting/backend representation
+
+The local learning layer should support:
+
+- retrieve similar historical cases
+- compare failure modes
+- compare causes
+- compare controls
+- compare actions
+- compare validation outcomes
+- rank suggestions
+- explain why a suggestion is being shown
+- cite source IDs
+- accept / modify / reject user feedback
+
+Feedback must influence future ranking.
+
+AI or learning output must NEVER silently overwrite authoritative FMEA data.
+
+Human approval is required.
+
+============================================================
+10. AI OUTPUT TYPES
+============================================================
+
+Where AI assistance exists, distinguish:
+
+FACT
+CALCULATION
+INFERENCE
+RECOMMENDATION
+
+FACT:
+directly supported by stored source record.
+
+CALCULATION:
+deterministic value calculated by the system.
+
+INFERENCE:
+derived interpretation.
+
+RECOMMENDATION:
+proposed engineering decision.
+
+Example:
+
+FACT:
+DF-SW-001 has S=8, O=5, D=3.
+
+CALCULATION:
+RPN = 8 × 5 × 3 = 120.
+
+INFERENCE:
+GUI regression remains a relatively important development risk.
+
+RECOMMENDATION:
+run responsive regression validation before closing the action.
+
+Do not present recommendations as facts.
+
+============================================================
+11. CALCULATIONS
+============================================================
+
+Deterministic engineering calculations are NOT AI decisions.
+
+Examples:
+
+RPN = S × O × D
+
+aggregation
+percentages
+risk counts
+validation coverage
+action completion
+trend calculations
+matrix bucketing
+
+must be implemented by deterministic code.
+
+AI may interpret results, but must not replace deterministic calculators.
+
+============================================================
+12. RISK MATRIX
+============================================================
+
+Risk Matrix must operate on live data.
+
+Each S/O cell:
+
+- represents Severity / Occurrence combination
+- contains count of source risks
+- clicking count/cell opens exactly those risks
+- changing S/O/D must move the risk to the correct bucket
+- no static risk marker values
+- current and initial risk must remain distinguishable
+
+Responsive requirements:
+
+- matrix should use available width
+- at narrow viewport use local horizontal scrolling if necessary
+- never break entire application width
+
+============================================================
+13. RISK TRAJECTORY
+============================================================
+
+Risk trajectory must support at least:
+
+LIFECYCLE VIEW
+Concept
+Design
+Prototype
+Verification
+Validation
+Release
+
+and
+
+CALENDAR VIEW
+
+with:
+- days where useful
+- weeks
+- larger ranges
+- From / To
+
+Every trajectory point must link back to a source risk/history object.
+
+Time basis must be explicit.
+
+Never invent timeline values only for visualization.
+
+============================================================
+14. CHANGE IMPACT
+============================================================
+
+Change Impact must be connected to real change records.
+
+Charts require legends.
+
+Changes Over Time must support explicit temporal grouping:
+
+day
+week
+range
+
+Change Impact should eventually answer:
+
+What changed?
+Why?
+Which objects are affected?
+Which DFMEA/PFMEA records?
+Which functions?
+Which characteristics?
+Which controls?
+Which validations?
+Which risks?
+Which actions?
+Which mockup validation tests?
+
+============================================================
+15. ACTIONS
+============================================================
+
+Actions are real engineering objects.
+
+They require:
+
+ID
+title
+linked object(s)
+owner/responsible
+priority
+status
+planned start
+due date
+completion
+evidence
+expected risk effect
+actual risk effect
+history
+
+Closing an action must NOT automatically reduce risk unless:
+
+- new rating is explicitly provided/approved
+or
+- an approved deterministic business rule applies.
+
+============================================================
+16. DFMEA ALTERNATE VIEWS
+============================================================
+
+The following are alternate views of the SAME data:
+
+DFMEA Table
+Structure Tree
+Interface Matrix
+Parameter Diagram
+RPN Overview
+Action Tracker
+
+They must never create separate databases.
+
+If one DFMEA record changes in the Table, all views must immediately reflect it.
+
+============================================================
+17. STRUCTURE TREE
+============================================================
+
+Structure Tree should progressively support:
+
+System/Product
+    ↓
+Element
+    ↓
+Function
+    ↓
+Failure Mode
+    ↓
+Effect / Cause
+    ↓
+Controls / Actions
+
+Clicking nodes should open the corresponding source object.
+
+============================================================
+18. INTERFACE MATRIX
+============================================================
+
+Interface Matrix must not be decorative.
+
+It should represent relationships between elements / subsystems / functions.
+
+Eventually support:
+
+physical interface
+energy interface
+material interface
+information interface
+software interface
+human interface
+
+Every marked interface should be traceable to relationship objects.
+
+============================================================
+19. PARAMETER DIAGRAM
+============================================================
+
+Parameter Diagram should evolve into a proper engineering P-Diagram structure:
+
+Input Signals
+Control Factors
+Noise Factors
+Ideal Function
+Error States
+Output / Response
+
+These should link to:
+
+characteristics
+requirements
+functions
+failure modes
+causes
+
+Do not keep the P-Diagram as isolated text cards.
+
+============================================================
+20. RESPONSIVE BEHAVIOR
+============================================================
+
+All pages must work when browser window is resized.
+
+Validation widths:
+
+320
+480
+768
+1024
+1366
+1920
+2560 px
+
+Rules:
+
+- no primary control disappears
+- no overlap of primary widgets
+- page must not create unnecessary global horizontal scroll
+- tables may use LOCAL horizontal scroll
+- dense matrices may use LOCAL horizontal scroll
+- cards should reflow
+- right side panels move below primary content when needed
+- layout hierarchy must remain recognizable
+
+Responsive regressions are software failure modes.
+
+============================================================
+21. PERSISTENCE
+============================================================
+
+The system must remain compatible with:
+
+single HTML runtime
++
+open_fmea.container
+
+Current browser persistence may remain available, but it must not override newer schemas blindly.
+
+Required load policy:
+
+embedded defaults
+    ↓
+external container if explicitly loaded
+    ↓
+compatible local browser state
+    ↓
+schema migration/merge
+    ↓
+validation
+    ↓
+runtime state
+
+If state cannot be migrated:
+
+DO NOT render blank page.
+
+Use:
+- diagnostics
+- warning
+- safe fallback
+- reset/recovery option
+
+============================================================
+22. TRANSACTION / AUDIT MODEL
+============================================================
+
+Meaningful changes should create transactions.
+
+At minimum record:
+
+timestamp
+user
+action
+object type
+object ID
+field/change
+before
+after
+source/view
+
+Examples:
+
+DFMEA_CREATE
+DFMEA_UPDATE
+ACTION_CREATE
+ACTION_CLOSE
+RISK_RECALCULATE
+CONTROL_LINK
+VALIDATION_RESULT
+CHANGE_CREATE
+REQUIREMENT_GAP_CREATE
+LEARNING_FEEDBACK
+
+History is not optional for engineering data.
+
+============================================================
+23. DATA FLOW PIPELINE
+============================================================
+
+Follow open_fmea_dataflow_pipeline.json.
+
+Major flows include:
+
+FLOW-REQ-FMEA
+
+Requirement
+→ Gap Detection
+→ Candidate Failure Mode
+→ Human Review
+→ Approved FMEA
+→ Controls
+→ Actions
+→ Validation
+→ Residual Risk
+→ Learning
+
+FLOW-MOCKUP-VALIDATION
+
+Mockup
+→ Rendered Page
+→ Validation
+→ Failure Finding
+→ Change Impact
+→ Corrective Change
+→ Regression
+→ Learning
+
+FLOW-CHANGE-RISK
+
+Change
+→ affected objects
+→ FMEA re-evaluation
+→ controls/actions
+→ validation
+→ matrix
+→ trajectory
+→ closure
+
+FLOW-PROBLEM-SOLVING
+
+Failure
+→ Ishikawa/6M
+→ WHY
+→ 8D
+→ Poka-Yoke / Controls
+→ Action
+→ Evidence
+→ Effectiveness
+→ Learning
+
+FLOW-AI-DECISION
+
+Question/current context
+→ authoritative data retrieval
+→ validation history
+→ similar learning cases
+→ deterministic calculations
+→ ranked recommendations
+→ provenance
+→ user feedback
+
+============================================================
+24. CODING RULES
+============================================================
+
+Prefer incremental repair over rewriting.
+
+Before changing a large function:
+- identify callers
+- identify event handlers
+- identify data dependencies
+- identify validation tests
+- identify pages potentially affected
+
+Avoid adding a second implementation if one already exists.
+
+Search before creating:
+
+function
+CSS class
+event handler
+object collection
+route
+page
+modal
+export routine
+
+Consolidate duplicates rather than adding version after version inside the same HTML.
+
+Keep global state controlled.
+
+Avoid silently mutating data during render.
+
+Rendering functions should preferably render.
+
+Commands should mutate.
+
+Calculators should calculate.
+
+Validators should validate.
+
+============================================================
+25. NO DEAD GUI
+============================================================
+
+Every visible interactive control must be one of:
+
+FUNCTIONAL
+DISABLED WITH EXPLANATION
+MARKED AS PLANNED
+
+Never display a button that looks functional but does nothing.
+
+This is an explicit Open FMEA failure mode.
+
+============================================================
+26. DATA-DRIVEN WIDGET RULE
+============================================================
+
+Every KPI/chart/table must answer:
+
+Which source records produced this value?
+
+If the answer is “hard-coded demo value”, fix it or clearly identify it as demo/reference.
+
+Production views must use live state.
+
+============================================================
+27. VALIDATION BEFORE RELEASE
+============================================================
+
+After every implementation batch:
+
+1. JavaScript syntax check
+2. HTML parse/sanity check
+3. verify embedded JSON parses
+4. verify external container parses
+5. verify required collections exist
+6. check duplicate IDs
+7. check broken references
+8. check undefined event handlers
+9. check visible controls for handlers
+10. DFMEA functional smoke test
+11. DFMEA mockup parity test
+12. responsive regression
+13. persistence reload
+14. container export/import round trip
+15. transaction/audit check
+
+Do NOT call a build “finished” merely because syntax passes.
+
+============================================================
+28. CHANGE IMPACT BEFORE LARGE CHANGES
+============================================================
+
+For a large change, write a brief impact assessment first:
+
+CHANGE:
+WHAT WILL CHANGE
+
+AFFECTED MODULES:
+list
+
+AFFECTED DATA:
+list
+
+AFFECTED VALIDATIONS:
+list
+
+REGRESSION RISK:
+Low / Medium / High
+
+MITIGATION:
+tests
+
+Then implement.
+
+============================================================
+29. UPDATE THE LEARNING CORPUS
+============================================================
+
+When a real development failure is found and corrected:
+
+append/update a structured learning case in the project learning data.
+
+Include:
+
+id
+title
+domain
+failure_mode
+effect
+cause
+detection
+methods used
+corrective action
+result
+validation
+lesson
+source version
+approved status
+quality score
+
+Do not learn from an unvalidated fix as if it were correct.
+
+Only validated solutions become approved learning cases.
+
+============================================================
+30. RELEASE HISTORY
+============================================================
+
+For significant accepted builds update release history.
+
+Track:
+
+file/build
+version
+major changes
+validation status
+known failures
+schema version
+hash where practical
+
+Never destroy previous accepted release knowledge.
+
+============================================================
+31. CURRENT TASK ORDER
+============================================================
+
+Work in this order:
+
+PHASE A — INSPECTION
+- inspect all current files
+- document inconsistencies
+- identify duplicated code and regressions
+- identify DFMEA baseline gaps
+
+PHASE B — DFMEA STABILIZATION
+- match current DFMEA controlled baseline
+- repair responsive behavior
+- repair all visible DFMEA controls
+- ensure right detail panel works
+- ensure KPI calculations are live
+- ensure charts are live
+- ensure filters work
+- ensure row selection works
+- ensure CRUD works
+- ensure Actions link works
+- ensure history works
+
+PHASE C — DFMEA ALTERNATE VIEWS
+- Structure Tree
+- Interface Matrix
+- Parameter Diagram
+- RPN Overview
+- Action Tracker
+
+Use SAME source objects.
+
+PHASE D — DFMEA SELF-PROJECT
+Improve:
+FMEA-OPEN-APP-DFMEA
+
+Populate it progressively with validated application development failure modes.
+
+PHASE E — VALIDATION
+Run VAL-GUI-DFMEA-001.
+Record failures.
+Fix failures.
+Re-run.
+Only then mark accepted.
+
+DO NOT work on PFMEA/System FMEA redesign yet unless required to prevent a regression.
+
+============================================================
+32. IMPORTANT CONCEPTUAL DISTINCTION
+============================================================
+
+Open FMEA application development currently uses:
+
+DESIGN FMEA
+to analyze the DESIGN of Open FMEA.
+
+Later it will use:
+
+SYSTEM FMEA
+to analyze the OPERATION of Open FMEA as a complete system.
+
+Do not confuse these.
+
+Example:
+
+DESIGN FMEA:
+“DFMEA page interaction allows dead button”
+
+SYSTEM FMEA:
+“Container synchronization failure causes inconsistent state between modules”
+
+Both may concern software but exist at different analysis levels.
+
+============================================================
+33. EXPECTED FIRST RESPONSE FROM CODEX
+============================================================
+
+DO NOT immediately modify files.
+
+First respond with:
+
+A. FILE INSPECTION SUMMARY
+
+B. CURRENT ARCHITECTURE
+
+C. DFMEA CURRENT STATE
+
+D. GAPS AGAINST CONTROLLED DFMEA BASELINE
+
+E. DATA MODEL / LINKAGE ISSUES
+
+F. DEAD OR PARTIALLY FUNCTIONAL CONTROLS
+
+G. RESPONSIVE RISKS
+
+H. VALIDATION RISKS
+
+I. PROPOSED IMPLEMENTATION PLAN
+
+J. FILES THAT WILL BE MODIFIED
+
+K. TESTS THAT WILL BE RUN
+
+Then wait for implementation or, if instructed to proceed automatically,
+make a backup and work incrementally.
+
+============================================================
+34. NON-NEGOTIABLE RULE
+============================================================
+
+DO NOT solve a new feature by breaking an existing accepted feature.
+
+If this occurs, record it as a regression failure mode and fix both.
+
+The goal is not to make Open FMEA look increasingly complex.
+
+The goal is to create a stable, traceable, data-driven engineering FMEA application whose own development history makes the application progressively better.

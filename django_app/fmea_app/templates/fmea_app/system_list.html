@@ -1,0 +1,53 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}Systems - Open FMEA{% endblock %}
+{% block topbar_title %}System / Product / Process{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>Systems</h1>
+    <p class="muted">Product and Process count is computed from linked records.</p>
+  </div>
+  <a class="button primary" href="{% url 'fmea:system_create' %}">New System</a>
+</div>
+
+<section class="panel">
+  <div class="table-shell">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Parent</th>
+          <th>Products</th>
+          <th>Processes</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for system in systems %}
+        <tr>
+          <td><a href="{% url 'fmea:system_detail' system.stable_id %}">{{ system.name }}</a></td>
+          <td>{{ system.code|default:"" }}</td>
+          <td><span class="status">{{ system.get_status_display }}</span></td>
+          <td>
+            {% if system.parent %}
+            <a href="{% url 'fmea:system_detail' system.parent.stable_id %}">{{ system.parent.name }}</a>
+            {% else %}
+            &mdash;
+            {% endif %}
+          </td>
+          <td>{{ system.product_count }}</td>
+          <td>{{ system.process_count }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="muted">No systems yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

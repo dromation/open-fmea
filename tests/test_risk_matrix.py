@@ -8,7 +8,13 @@ from django.utils import timezone
 from fmea_app import models
 from fmea_app import risk_matrix
 from fmea_app.services import evaluate_failure_mode
-from fmea_evaluation import ACTION_PRIORITY_POC_METHOD, CLASSIC_RPN_METHOD, classify_severity_occurrence
+from fmea_evaluation import (
+    ACTION_PRIORITY_POC_METHOD,
+    AIAG_VDA_AP_METHOD,
+    AIAG_VDA_MSR_METHOD,
+    CLASSIC_RPN_METHOD,
+    classify_severity_occurrence,
+)
 
 
 class ClassifySeverityOccurrenceTests(TestCase):
@@ -241,3 +247,128 @@ class RiskMatrixViewTests(_RiskMatrixFixture, TestCase):
         dashboard = self.client.get("/")
         self.assertContains(dashboard, "Risk Matrix")
         self.assertContains(dashboard, "High Risk Items")
+
+
+class AiagVdaApMethodRegistrationTests(TestCase):
+    """The real AIAG & VDA Table AP method is a new, separately selectable
+    method alongside classic-rpn and aiag-vda-ap-poc - it does not replace
+    either, and normalize_method()'s default fallback deliberately stays
+    classic-rpn (a documented deviation from switching the default, kept to
+    avoid changing what every existing view shows by default)."""
+
+    def test_aiag_vda_ap_is_a_known_method_with_a_label(self):
+        self.assertIn(AIAG_VDA_AP_METHOD, risk_matrix.KNOWN_METHODS)
+        self.assertIn(CLASSIC_RPN_METHOD, risk_matrix.KNOWN_METHODS)
+        self.assertIn(ACTION_PRIORITY_POC_METHOD, risk_matrix.KNOWN_METHODS)
+        self.assertIn(AIAG_VDA_AP_METHOD, risk_matrix.METHOD_LABELS)
+
+    def test_normalize_method_recognizes_the_new_method_without_falling_back(self):
+        self.assertEqual(risk_matrix.normalize_method(AIAG_VDA_AP_METHOD), AIAG_VDA_AP_METHOD)
+
+    def test_normalize_method_default_fallback_is_still_classic_rpn(self):
+        # Deliberate: the decision doc's proposed alternative (switch the
+        # default fallback to the new real method) was not adopted, since
+        # that would change what every method-agnostic view shows by
+        # default - a behavior change, not an addition.
+        self.assertEqual(risk_matrix.normalize_method(None), CLASSIC_RPN_METHOD)
+        self.assertEqual(risk_matrix.normalize_method("not-a-real-method"), CLASSIC_RPN_METHOD)
+
+    def test_aiag_vda_msr_is_also_a_known_method_alongside_the_others(self):
+        # Part B: FMEA-MSR is additive too - all four methods coexist.
+        self.assertIn(AIAG_VDA_MSR_METHOD, risk_matrix.KNOWN_METHODS)
+        self.assertIn(AIAG_VDA_MSR_METHOD, risk_matrix.METHOD_LABELS)
+        self.assertEqual(risk_matrix.normalize_method(AIAG_VDA_MSR_METHOD), AIAG_VDA_MSR_METHOD)
+
+
+class AiagVdaApRiskMatrixQueryLogicTests(_RiskMatrixFixture, TestCase):
+    """The generic (non-classic-rpn) branches of risk_matrix.py - the
+    "priority"-keyed band sorting, method-scoped latest-evaluation lookup -
+    already work for any AP-shaped method; this proves it for the new real
+    method the same way test_risk_matrix.py proves it for the PoC method."""
+
+    def setUp(self) -> None:
+        self._seed_risk_matrix_fixture()
+        self.real_ap_definition = models.EvaluationDefinition.objects.create(
+            stable_id="eval:risk-matrix-aiag-vda-ap",
+            method=AIAG_VDA_AP_METHOD,
+            name="AIAG & VDA Action Priority (Table AP)",
+        )
+        evaluate_failure_mode(
+            failure_mode=self.fm_classic_only,
+            definition=self.real_ap_definition,
+            severity=10,
+            occurrence=10,
+            detection=10,
+            stable_id="riskeval:real-ap-high",
+        )
+        evaluate_failure_mode(
+            failure_mode=self.fm_both,
+            definition=self.real_ap_definition,
+            severity=1,
+            occurrence=10,
+            detection=10,
+            stable_id="riskeval:real-ap-low",
+        )
+
+    def test_latest_evaluations_scoped_to_the_new_method_only(self):
+        latest = risk_matrix.latest_evaluations_by_method(AIAG_VDA_AP_METHOD)
+        self.assertEqual(set(latest.keys()), {self.fm_classic_only.stable_id, self.fm_both.stable_id})
+
+    def test_top_evaluations_sorts_by_priority_band_not_score(self):
+        top = risk_matrix.top_evaluations(AIAG_VDA_AP_METHOD)
+        self.assertEqual(top[0].failure_mode.stable_id, self.fm_classic_only.stable_id)
+        self.assertEqual(top[0].result["priority"], "high")
+        self.assertEqual(top[1].result["priority"], "low")
+
+    def test_matrix_page_accepts_the_new_method_without_error(self):
+        response = self.client.get("/risk-matrix/", {"method": AIAG_VDA_AP_METHOD})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "AIAG &amp; VDA Action Priority (Table AP)")
+
+
+class AiagVdaMsrRiskMatrixQueryLogicTests(_RiskMatrixFixture, TestCase):
+    """Part B: FMEA-MSR's method also flows through the same generic
+    query-logic branches, using occurrence/detection as Frequency/Monitoring
+    rather than Occurrence/Detection."""
+
+    def setUp(self) -> None:
+        self._seed_risk_matrix_fixture()
+        self.msr_definition = models.EvaluationDefinition.objects.create(
+            stable_id="eval:risk-matrix-aiag-vda-msr",
+            method=AIAG_VDA_MSR_METHOD,
+            name="AIAG & VDA FMEA-MSR Action Priority (Frequency / Monitoring)",
+        )
+        evaluate_failure_mode(
+            failure_mode=self.fm_classic_only,
+            definition=self.msr_definition,
+            severity=10,
+            occurrence=10,  # Frequency
+            detection=10,  # Monitoring
+            stable_id="riskeval:msr-high",
+            failure_scenario="hazardous",
+        )
+        evaluate_failure_mode(
+            failure_mode=self.fm_both,
+            definition=self.msr_definition,
+            severity=1,
+            occurrence=10,
+            detection=10,
+            stable_id="riskeval:msr-low",
+            failure_scenario="non_hazardous",
+        )
+
+    def test_latest_evaluations_scoped_to_the_msr_method_only(self):
+        latest = risk_matrix.latest_evaluations_by_method(AIAG_VDA_MSR_METHOD)
+        self.assertEqual(set(latest.keys()), {self.fm_classic_only.stable_id, self.fm_both.stable_id})
+        self.assertEqual(latest[self.fm_classic_only.stable_id].failure_scenario, "hazardous")
+
+    def test_top_evaluations_sorts_msr_by_priority_band(self):
+        top = risk_matrix.top_evaluations(AIAG_VDA_MSR_METHOD)
+        self.assertEqual(top[0].failure_mode.stable_id, self.fm_classic_only.stable_id)
+        self.assertEqual(top[0].result["priority"], "high")
+        self.assertEqual(top[1].result["priority"], "low")
+
+    def test_matrix_page_accepts_the_msr_method_without_error(self):
+        response = self.client.get("/risk-matrix/", {"method": AIAG_VDA_MSR_METHOD})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "AIAG &amp; VDA FMEA-MSR Action Priority (Frequency / Monitoring)")

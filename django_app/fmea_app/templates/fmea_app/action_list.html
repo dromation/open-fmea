@@ -1,0 +1,66 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}Actions - Open FMEA{% endblock %}
+{% block topbar_title %}Actions{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>Actions</h1>
+    <p class="muted">All Recommended Actions across every FMEA. Edit from each FMEA's own worksheet.</p>
+  </div>
+</div>
+
+<form class="panel compact section-block" method="get" action="{% url 'fmea:action_list' %}">
+  <div class="field-grid">
+    <label>Status
+      <select name="status">
+        <option value="">All</option>
+        {% for value, label in status_choices %}
+          <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <div>
+      <button class="button" type="submit">Apply</button>
+    </div>
+  </div>
+</form>
+
+<section class="panel">
+  <div class="table-shell">
+    <table>
+      <thead>
+        <tr>
+          <th>FMEA</th>
+          <th>Linked To</th>
+          <th>Name</th>
+          <th>Status</th>
+          <th>Responsible Role</th>
+          <th>Due Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+        <tr>
+          <td>
+            {% if row.fmea %}
+              <a href="{% url 'fmea:fmea_detail' row.fmea.stable_id %}">{{ row.fmea.name }}</a>
+            {% endif %}
+          </td>
+          <td>{{ row.linked_label|default:"" }}</td>
+          <td><a href="{% url 'fmea:action_detail' row.action.stable_id %}">{{ row.action.name }}</a></td>
+          <td><span class="status status-{{ row.action.status }}">{{ row.action.get_status_display }}</span></td>
+          <td>{{ row.action.responsible_role|default:"" }}</td>
+          <td>{{ row.action.due_date|default:"" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="muted">No actions yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

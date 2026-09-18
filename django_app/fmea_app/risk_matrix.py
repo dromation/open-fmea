@@ -1,33 +1,32 @@
 """Risk matrix query logic.
 
-Grounded in Codex_Instruction_RiskMatrix_Slice.md Section 2. Cell placement
-is always severity x occurrence (1-10 each); detection is never a grid axis
-(Section 0). For a selected evaluation `method`, only FailureModes with at
-least one RiskEvaluation under that specific method are considered, using
-each FailureMode's most recent evaluation under that method (not its most
-recent evaluation overall) - a FailureMode with no evaluation under the
-selected method is excluded entirely, never shown as a zero/blank
-placeholder.
+Cell placement is always severity x occurrence (1-10 each); detection is
+never a grid axis. For a selected evaluation `method`, only FailureModes with
+at least one RiskEvaluation under that specific method are considered, using
+each FailureMode's most recent evaluation under that method.
 
-Scores/bands returned here are always the FailureMode's stored
-RiskEvaluation.result, read verbatim - never recomputed by calling
-calculate() again (Section 6's explicit exclusion).
+Scores and bands returned here are read from the stored RiskEvaluation.result
+instead of being recomputed during display.
 """
 from __future__ import annotations
 
 from fmea_evaluation import (
     ACTION_PRIORITY_POC_METHOD,
+    AIAG_VDA_AP_METHOD,
+    AIAG_VDA_MSR_METHOD,
     CLASSIC_RPN_METHOD,
     classify_severity_occurrence,
 )
 
 from . import models
 
-KNOWN_METHODS = (CLASSIC_RPN_METHOD, ACTION_PRIORITY_POC_METHOD)
+KNOWN_METHODS = (CLASSIC_RPN_METHOD, ACTION_PRIORITY_POC_METHOD, AIAG_VDA_AP_METHOD, AIAG_VDA_MSR_METHOD)
 
 METHOD_LABELS = {
     CLASSIC_RPN_METHOD: "Classic RPN",
     ACTION_PRIORITY_POC_METHOD: "AIAG-VDA Action Priority (PoC)",
+    AIAG_VDA_AP_METHOD: "AIAG & VDA Action Priority (Table AP)",
+    AIAG_VDA_MSR_METHOD: "AIAG & VDA FMEA-MSR Action Priority (Frequency / Monitoring)",
 }
 
 # aiag-vda-ap-poc's calculator output (fmea_evaluation.calculators.
@@ -41,7 +40,7 @@ _AP_BAND_ORDER = {"high": 2, "medium": 1, "low": 0}
 def normalize_method(method: str | None) -> str:
     """Falls back to classic-rpn for a missing/unrecognized value - this is a
     display filter, not a form submission with a contract to enforce
-    strictly (Section 6)."""
+    strictly."""
     if method in KNOWN_METHODS:
         return method
     return CLASSIC_RPN_METHOD
@@ -73,8 +72,8 @@ def latest_evaluations_by_method(method: str) -> dict[str, models.RiskEvaluation
 def grid_rows(method: str) -> list[list[dict]]:
     """A 10x10 grid as rows of cell dicts. Rows run occurrence 10 down to 1
     (top row = highest occurrence), columns run severity 1 to 10 - an axis
-    order convention (not fixed by the instruction) chosen to match the
-    common AIAG severity/occurrence matrix orientation."""
+    order convention chosen to match the common AIAG severity/occurrence
+    matrix orientation."""
     counts: dict[tuple[int, int], int] = {}
     for evaluation in latest_evaluations_by_method(method).values():
         key = (evaluation.severity, evaluation.occurrence)
@@ -104,9 +103,8 @@ def unevaluated_failure_mode_count(method: str) -> int:
 
 def high_risk_failure_mode_count(method: str = CLASSIC_RPN_METHOD) -> int:
     """FailureModes whose most recent evaluation under `method` falls in the
-    high or very_high severity x occurrence band - the dashboard stat card,
-    computed the same way as grid_rows (Codex_Instruction_RiskMatrix_Slice.md
-    Section 4), not a new query shape."""
+    high or very_high severity x occurrence band, computed the same way as
+    grid_rows."""
     return sum(
         1
         for evaluation in latest_evaluations_by_method(method).values()

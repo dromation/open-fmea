@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "open-fmea-sharepoint-client-side-solution",
+    "id": "f96a5591-1c69-4704-8f73-b41b2f0ad8d3",
+    "version": "1.0.0.1",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": false,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "Open FMEA",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.23.2"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "Open FMEA demo with personal browser storage"
+      },
+      "longDescription": {
+        "default": "SharePoint Online packaging of the supplied Open FMEA HTML demo. Includes demo data and portable export. Does not create lists or provide shared FMEA storage."
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "open-fmea-sharepoint Feature",
+        "description": "The feature that activates elements of the open-fmea-sharepoint solution.",
+        "id": "d9dbb6ab-7649-4ca0-a7f6-a0c959ef58c1",
+        "version": "1.0.0.1"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/open-fmea-sharepoint.sppkg"
+  }
+}

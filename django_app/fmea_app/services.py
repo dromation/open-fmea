@@ -48,6 +48,8 @@ def evaluate_failure_mode(
     trigger: str = "manual",
     stable_id: str | None = None,
     evaluated_at: datetime | None = None,
+    lifecycle_gate: str = "current",
+    failure_scenario: str = "",
 ) -> models.RiskEvaluation:
     rating = RiskRating(
         severity=severity,
@@ -65,6 +67,8 @@ def evaluate_failure_mode(
         "result": result.output,
         "actor": actor,
         "trigger": trigger,
+        "lifecycle_gate": lifecycle_gate,
+        "failure_scenario": failure_scenario,
     }
     if evaluated_at is not None:
         values["evaluated_at"] = evaluated_at

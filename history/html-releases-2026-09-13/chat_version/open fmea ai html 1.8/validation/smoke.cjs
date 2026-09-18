@@ -1,0 +1,66 @@
+const fs = require('fs');
+const path = require('path');
+const assert = require('assert/strict');
+const {pathToFileURL} = require('url');
+const {chromium} = require('C:/Users/janez/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const root = path.resolve(__dirname, '..');
+const file = path.join(root, 'open_fmea_v1_8_dfmea_focus.html');
+(async()=>{
+ const browser = await chromium.launch({headless:true,channel:'chrome'});
+ const context = await browser.newContext({viewport:{width:1536,height:1024},acceptDownloads:true});
+ const page = await context.newPage();
+ const errors=[]; page.on('pageerror',e=>errors.push(e.message));
+ await page.goto(pathToFileURL(file).href);await page.waitForSelector('[data-page="dfmea"]');
+ await page.locator('[data-page="dfmea"]').first().click();
+ console.log('INIT',await page.evaluate(()=>({schema:OFMEA.C.manifest.schemaVersion,dfmea:OFMEA.C.dfmea.length,functions:OFMEA.C.functions.length,project:OFMEA.state.projectId})));
+ assert.equal(await page.locator('.dfmea-table tbody tr').count(),6);
+ const pages=await page.locator('#nav [data-page]').evaluateAll(es=>es.map(e=>e.dataset.page));
+ const nav=await page.locator('#nav').innerText();
+ for(const name of pages){await page.evaluate(name=>{OFMEA.state.page=name;OFMEA.render()},name);assert.equal(await page.locator('.errorbox').count(),0,name+' render');assert.equal(await page.locator('#nav').innerText(),nav,'same navigation on '+name);}
+ console.log('PAGES',pages.length,'PASS');
+ await page.evaluate(()=>{OFMEA.state.page='dfmea';OFMEA.render()});
+ const layouts=[];
+ for(const width of [320,480,768,1024,1366,1920,2560]){
+  await page.setViewportSize({width,height:1000});
+  if(width<=900)await page.evaluate(()=>{OFMEA.state.sidebarCollapsed=true;document.body.classList.add('sidebar-collapsed')});
+  const metrics=await page.evaluate(()=>{let main=document.querySelector('.main'),side=document.querySelector('.dfmea-side'),p=document.querySelector('#page');return {bodyOverflow:document.documentElement.scrollWidth>innerWidth,mainOverflow:main.scrollWidth>main.clientWidth+1,pageOverflow:p.scrollWidth>p.clientWidth+1,sideVisible:!!side.getClientRects().length,mainWidth:main.clientWidth}});
+  layouts.push({width,...metrics});
+ }
+ console.log('LAYOUT',JSON.stringify(layouts));
+ await page.setViewportSize({width:1536,height:1024});await page.evaluate(()=>{OFMEA.state.sidebarCollapsed=false;document.body.classList.remove('sidebar-collapsed')});
+ await page.locator('[data-df-filter="search"]').fill('Lens crack');
+ assert.equal(await page.locator('.dfmea-table tbody tr').count(),1);
+ await page.locator('tr[data-dfmea-row="DF-001"] td').first().click();
+ assert.equal(await page.locator('[data-df-filter="search"]').inputValue(),'Lens crack');
+ await page.locator('[data-clear-dfmea-filters]').click();
+ await page.locator('[data-new="DFMEA"]').click();
+ for(const [key,value] of Object.entries({element:'Test element',function:'Test function',failure:'Test failure',effect:'Test effect',cause:'Test cause',s:'8',o:'2',d:'3'}))await page.locator('#ed_'+key).fill(value);
+ await page.locator('#mOk').click();assert.equal(await page.locator('#modalError:visible').count(),0);
+ const id=await page.evaluate(()=>OFMEA.state.selected);
+ assert.equal(await page.evaluate(id=>OFMEA.C.dfmea.find(r=>r.id===id).current,id),48);
+ await page.locator(`[data-edit-dfmea="${id}"]`).click();await page.locator('#ed_o').fill('4');await page.locator('#ed_ratings').check();await page.locator('#mOk').click();
+ assert.equal(await page.evaluate(id=>OFMEA.C.dfmea.find(r=>r.id===id).current,id),96);
+ assert.equal(await page.evaluate(id=>OFMEA.C.dfmea.find(r=>r.id===id).initial,id),48);
+ const history=await page.evaluate(id=>OFMEA.C.transactions.filter(t=>t.objectId===id),id);
+ assert.equal(history[0].newValue.current,48,'immutable create audit');assert.equal(history[1].oldValue.current,48);assert.equal(history[1].newValue.current,96);
+ await page.locator(`[data-dfmea-actions="${id}"]`).first().click();await page.locator('#dfNewAction').click();
+ const aid=await page.evaluate(id=>OFMEA.C.actions.find(a=>a.linked===id).id,id);
+ await page.evaluate(aid=>{OFMEA.state.page='actions';OFMEA.state.selected=aid;OFMEA.render()},aid);
+ await page.locator(`[data-complete-action="${aid}"]`).click();
+ assert.equal(await page.evaluate(id=>OFMEA.C.dfmea.find(r=>r.id===id).current,id),96,'closing action preserves risk');
+ await page.reload();assert.equal(await page.evaluate(id=>OFMEA.C.dfmea.find(r=>r.id===id).current,id),96,'reload');
+ await page.locator('[data-page="dfmea"]').first().click();
+ await page.locator('#projectSel').selectOption('FMEA-OPEN-APP-DFMEA');
+ assert.equal(await page.locator('.dfmea-table tbody tr').count(),5,'project switching');
+ for(const tab of ['structure','interface','parameter','rpn','actions','table']){await page.locator(`[data-dfmea-tab="${tab}"]`).click();assert.equal(await page.locator('.errorbox').count(),0,tab)}
+ await page.locator('[data-page="why"]').first().click();
+ await page.locator('[data-learn-source]').click();
+ await page.locator('#lcCause').fill('Test verified cause');await page.locator('#lcAction').fill('Test corrective action');await page.locator('#lcResult').fill('Test observed result');await page.locator('#mOk').click();
+ const draft=await page.evaluate(()=>OFMEA.C.learningCases.at(-1));assert.equal(draft.approved,false);assert.ok(draft.sourceSnapshot);assert.ok(draft.sources[0].startsWith('RCA-'));
+ await page.locator('[data-page="learning"]').first().click();
+ assert.ok(await page.locator('#page').innerText().then(t=>t.includes('Test observed result')||t.includes(draft.title)));
+ assert.deepEqual(errors,[],'browser errors');
+ await page.evaluate(()=>{OFMEA.state.page='dfmea';OFMEA.render()});await page.screenshot({path:path.join(__dirname,'dfmea-desktop.png'),fullPage:true});
+ fs.writeFileSync(path.join(__dirname,'smoke-results.json'),JSON.stringify({date:new Date().toISOString(),pages:pages.length,layouts,errors,checks:['render all pages','same shared navigation','DFMEA filtering persists on selection','create and edit ratings','immutable audit','action completion preserves risk','persistence reload','project switch','alternate views','analysis learning draft'],limitations:['Legacy rating/link findings remain for human review','Visual acceptance against mockup not yet approved']},null,2));
+ await browser.close();console.log('SMOKE PASS');
+})().catch(e=>{console.error(e);process.exit(1)});

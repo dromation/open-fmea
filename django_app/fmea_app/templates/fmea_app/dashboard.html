@@ -1,4 +1,5 @@
 {% extends "fmea_app/base.html" %}
+{% load static %}
 
 {% block title %}Open FMEA{% endblock %}
 {% block topbar_title %}FMEA Workspace{% endblock %}
@@ -22,6 +23,29 @@
     <strong class="stat-value">{{ high_risk_failure_mode_count }}</strong>
     <span class="stat-detail">High/very high Severity x Occurrence band, classic RPN - view Risk Matrix</span>
   </a>
+  {% include "fmea_app/_components/_stat_tile.html" with label="Projects" value=project_count detail="Total FMEA Project records" tile_class="span-3" %}
+  {% include "fmea_app/_components/_stat_tile.html" with label="Failure Modes" value=failure_mode_count detail="Across all FMEAs" tile_class="span-3" %}
+  {% include "fmea_app/_components/_stat_tile.html" with label="Actions" value=action_count detail="Total recommended actions" tile_class="span-3" %}
+
+  <section class="panel span-6">
+    <div class="panel-heading">
+      <h2>Actions Summary</h2>
+      <p class="muted">Computed from RecommendedAction status and due date, as of today.</p>
+    </div>
+    <div class="grid">
+      {% include "fmea_app/_components/_stat_tile.html" with label="Total" value=actions_total tile_class="span-4" %}
+      {% include "fmea_app/_components/_stat_tile.html" with label="Overdue" value=actions_overdue tile_class="span-4" %}
+      {% include "fmea_app/_components/_stat_tile.html" with label="Due Soon" value=actions_due_soon detail="Within 7 days" tile_class="span-4" %}
+    </div>
+  </section>
+
+  <section class="panel span-6">
+    <div class="panel-heading">
+      <h2>Risk Evaluation Trend</h2>
+      <p class="muted">RiskEvaluation count per day, trailing 30 days.</p>
+    </div>
+    <canvas id="risk-trend-chart" height="120"></canvas>
+  </section>
 
   <section class="panel span-6">
     <div class="panel-heading">
@@ -115,6 +139,8 @@
     <form class="compact" method="post" action="{% url 'fmea:create_project' %}">
       {% csrf_token %}
       <label>Name {{ project_form.name }}</label>
+      <label>Project Code {{ project_form.project_code }}</label>
+      <label>Status {{ project_form.status }}</label>
       <label>Description {{ project_form.description }}</label>
       <button class="button" type="submit">Create Project</button>
     </form>
@@ -132,4 +158,41 @@
     </form>
   </section>
 </div>
+
+{{ risk_trend_data|json_script:"risk-trend-data" }}
+<script src="{% static 'fmea_app/vendor/chartjs/chart.umd.min.js' %}"></script>
+<script>
+  (function () {
+    var data = JSON.parse(document.getElementById("risk-trend-data").textContent);
+    var canvas = document.getElementById("risk-trend-chart");
+    if (!canvas || typeof Chart === "undefined") {
+      return;
+    }
+    new Chart(canvas.getContext("2d"), {
+      type: "bar",
+      data: {
+        labels: data.labels,
+        datasets: [
+          {
+            label: "Risk Evaluations",
+            data: data.counts,
+            backgroundColor: "#4f7cff",
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { precision: 0 },
+          },
+        },
+        plugins: {
+          legend: { display: false },
+        },
+      },
+    });
+  })();
+</script>
 {% endblock %}

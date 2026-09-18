@@ -1,0 +1,42 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}Effects - Open FMEA{% endblock %}
+{% block topbar_title %}Effects{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>Effects</h1>
+    <p class="muted">All Effects across every FMEA. Edit from each FMEA's own worksheet.</p>
+  </div>
+</div>
+
+<section class="panel">
+  <div class="table-shell">
+    <table>
+      <thead>
+        <tr>
+          <th>FMEA</th>
+          <th>Failure Mode</th>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for effect in effects %}
+        <tr>
+          <td><a href="{% url 'fmea:fmea_detail' effect.failure_mode.fmea.stable_id %}">{{ effect.failure_mode.fmea.name }}</a></td>
+          <td>{{ effect.failure_mode.name }}</td>
+          <td>{{ effect.name }}</td>
+          <td>{{ effect.description|default:"" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" class="muted">No effects yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

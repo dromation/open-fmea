@@ -25,7 +25,17 @@
         <tr><th>Operation</th><td>{{ process_characteristic.operation }}</td></tr>
         <tr><th>Process</th><td>{{ process_characteristic.operation.process }}</td></tr>
         <tr><th>Default Category</th><td>{{ category.name|default:"Uncategorized" }}</td></tr>
+        <tr><th>Special Classification</th><td>{{ process_characteristic.special_classification.name|default:"Unclassified" }}</td></tr>
         <tr><th>Attributes</th><td><code>{{ process_characteristic.attributes }}</code></td></tr>
+        <tr><th>Control Type</th><td>{{ process_characteristic.get_control_type_display|default:"" }}</td></tr>
+        <tr><th>Method</th><td>{{ process_characteristic.method|default:"" }}</td></tr>
+        <tr><th>Resource / Equipment</th><td>{{ process_characteristic.resource_equipment|default:"" }}</td></tr>
+        <tr><th>Frequency / Trigger</th><td>{{ process_characteristic.frequency_trigger|default:"" }}</td></tr>
+        <tr><th>Status</th><td><span class="status status-{{ process_characteristic.status }}">{{ process_characteristic.get_status_display }}</span></td></tr>
+        <tr><th>Effectiveness</th><td>{{ process_characteristic.get_effectiveness_display }}</td></tr>
+        <tr><th>Owner</th><td>{{ process_characteristic.owner|default:"" }}</td></tr>
+        <tr><th>Review Due</th><td>{{ process_characteristic.review_due|default:"" }}</td></tr>
+        <tr><th>Reaction Plan</th><td>{{ process_characteristic.reaction_plan|default:"" }}</td></tr>
         <tr><th>Stable ID</th><td><code>{{ process_characteristic.stable_id }}</code></td></tr>
       </tbody>
     </table>

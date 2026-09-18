@@ -2,6 +2,7 @@
 
 from .entities import (
     ActionStatus,
+    Asset,
     CauseCategory,
     CauseCategoryScheme,
     CauseInfluence,
@@ -21,9 +22,11 @@ from .entities import (
     FailureMechanism,
     FailureMode,
     Function,
+    LifecycleGate,
     MeasurementMethod,
     Operation,
     PreventionControl,
+    Priority,
     ProcessCharacteristic,
     Process,
     ProductCharacteristic,
@@ -34,6 +37,10 @@ from .entities import (
     ResponsibleRole,
     RiskEvaluation,
     RiskRating,
+    TestType,
+    ValidationResultStatus,
+    ValidationTest,
+    ValidationTestStatus,
 )
 from .identifiers import new_stable_id
 from .rules import (
@@ -47,6 +54,7 @@ from .rules import (
 
 __all__ = [
     "ActionStatus",
+    "Asset",
     "CauseCategory",
     "CauseCategoryScheme",
     "CauseInfluence",
@@ -68,9 +76,11 @@ __all__ = [
     "FailureMechanism",
     "FailureMode",
     "Function",
+    "LifecycleGate",
     "MeasurementMethod",
     "Operation",
     "PreventionControl",
+    "Priority",
     "ProcessCharacteristic",
     "Process",
     "ProductCharacteristic",
@@ -81,6 +91,10 @@ __all__ = [
     "ResponsibleRole",
     "RiskEvaluation",
     "RiskRating",
+    "TestType",
+    "ValidationResultStatus",
+    "ValidationTest",
+    "ValidationTestStatus",
     "assert_valid_lifecycle_transition",
     "new_stable_id",
     "next_revision_number",

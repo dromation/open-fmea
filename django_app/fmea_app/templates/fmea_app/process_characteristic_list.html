@@ -1,4 +1,5 @@
 {% extends "fmea_app/base.html" %}
+{% load static %}
 
 {% block title %}Process Characteristics - Open FMEA{% endblock %}
 {% block topbar_title %}Process Characteristics{% endblock %}
@@ -12,32 +13,265 @@
   <a class="button primary" href="{% url 'fmea:new_process_characteristic' %}">New Process Characteristic</a>
 </div>
 
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Operation</th>
-      <th>Process</th>
-      <th>Default Category</th>
-      <th>Stable ID</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for row in process_characteristics %}
-    <tr>
-      <td><a href="{% url 'fmea:process_characteristic_detail' row.item.stable_id %}">{{ row.item.name }}</a></td>
-      <td>{{ row.item.operation }}</td>
-      <td>{{ row.item.operation.process }}</td>
-      <td>{{ row.category_name }}</td>
-      <td><code>{{ row.item.stable_id }}</code></td>
-      <td><a class="button" href="{% url 'fmea:process_flow' row.item.operation.process.stable_id %}?operation_id={{ row.item.operation.stable_id|urlencode }}">Process Flow</a></td>
-    </tr>
-    {% empty %}
-    <tr>
-      <td colspan="6" class="muted">No process characteristics yet.</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="grid section-block">
+  {% include "fmea_app/_components/_stat_tile.html" with label="Total" value=kpi_total tile_class="span-2" %}
+  {% include "fmea_app/_components/_stat_tile.html" with label="Active" value=kpi_active tile_class="span-2" %}
+  {% include "fmea_app/_components/_stat_tile.html" with label="Not Effective" value=kpi_not_effective tile_class="span-2" %}
+  {% include "fmea_app/_components/_stat_tile.html" with label="Needs Review" value=kpi_needs_review tile_class="span-2" %}
+  {% include "fmea_app/_components/_stat_tile.html" with label="No Reaction Plan" value=kpi_no_reaction_plan tile_class="span-2" %}
+  {% include "fmea_app/_components/_stat_tile.html" with label="Linked" value=kpi_linked detail="To a Process FMEA" tile_class="span-2" %}
+</div>
+
+<form class="panel compact section-block" method="get" action="{% url 'fmea:process_characteristic_list' %}">
+  <div class="field-grid">
+    <label>Control Type
+      <select name="control_type">
+        <option value="">All</option>
+        {% for value, label in control_type_choices %}
+          <option value="{{ value }}" {% if control_type_filter == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Status
+      <select name="status">
+        <option value="">All</option>
+        {% for value, label in status_choices %}
+          <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <div>
+      <button class="button" type="submit">Apply</button>
+    </div>
+  </div>
+</form>
+
+<div class="split">
+  <div class="stack">
+    <section class="panel">
+      <div class="table-shell">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Operation</th>
+            <th>Process</th>
+            <th>Default Category</th>
+            <th>Special Classification</th>
+            <th>Control Type</th>
+            <th>Status</th>
+            <th>Effectiveness</th>
+            <th>Owner</th>
+            <th>Review Due</th>
+            <th>PFMEA</th>
+            <th>Stable ID</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in process_characteristics %}
+          <tr class="{% if selected_characteristic and row.item.stable_id == selected_characteristic.stable_id %}row-selected{% endif %}">
+            <td><a href="{% url 'fmea:process_characteristic_detail' row.item.stable_id %}">{{ row.item.name }}</a></td>
+            <td>{{ row.item.operation }}</td>
+            <td>{{ row.item.operation.process }}</td>
+            <td>{{ row.category_name }}</td>
+            <td><span class="status">{{ row.item.special_classification.name|default:"Unclassified" }}</span></td>
+            <td>{{ row.item.get_control_type_display|default:"" }}</td>
+            <td><span class="status status-{{ row.item.status }}">{{ row.item.get_status_display }}</span></td>
+            <td>{{ row.item.get_effectiveness_display }}</td>
+            <td>{{ row.item.owner|default:"" }}</td>
+            <td>{{ row.item.review_due|default:"" }}</td>
+            <td>{% if row.linked_to_pfmea %}<span class="status status-active">Linked</span>{% else %}<span class="muted">-</span>{% endif %}</td>
+            <td><code>{{ row.item.stable_id }}</code></td>
+            <td>
+              <a class="button" href="{{ query_prefix }}selected={{ row.item.stable_id|urlencode }}">Panel</a>
+              <a class="button" href="{% url 'fmea:process_flow' row.item.operation.process.stable_id %}?operation_id={{ row.item.operation.stable_id|urlencode }}">Process Flow</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="13" class="muted">No process characteristics yet.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="panel span-6">
+        <div class="panel-heading">
+          <h2>Control Type Distribution</h2>
+          <p class="muted">Grouped from the currently filtered characteristics.</p>
+        </div>
+        <canvas id="control-type-donut" height="220"></canvas>
+      </section>
+      <section class="panel span-6">
+        <div class="panel-heading">
+          <h2>Effectiveness Overview</h2>
+          <p class="muted">Grouped from the currently filtered characteristics.</p>
+        </div>
+        <canvas id="effectiveness-donut" height="220"></canvas>
+      </section>
+    </div>
+
+    <section class="panel">
+      <div class="panel-heading">
+        <h2>Top PFMEA Links</h2>
+        <p class="muted">Process FMEAs whose Operations carry the currently filtered characteristics.</p>
+      </div>
+      <div class="table-shell">
+      <table>
+        <thead>
+          <tr>
+            <th>PFMEA</th>
+            <th>Linked Characteristics</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in top_pfmea_links %}
+          <tr>
+            <td><a href="{% url 'fmea:fmea_detail' entry.fmea.stable_id %}">{{ entry.fmea.name }}</a></td>
+            <td>{{ entry.count }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="2" class="muted">No PFMEA-linked characteristics in the current filter.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      </div>
+    </section>
+  </div>
+
+  <aside class="panel detail-panel">
+    {% if selected_characteristic %}
+      <div class="panel-heading">
+        <h2>{{ selected_characteristic.name }}</h2>
+        <p class="muted"><code>{{ selected_characteristic.stable_id }}</code></p>
+      </div>
+
+      <div class="flow-diagram">
+        <div class="flow-step">
+          <span class="flow-step-label">Process Step</span>
+          <strong>{{ selected_characteristic.operation }}</strong>
+        </div>
+        <span class="flow-arrow" aria-hidden="true">&rarr;</span>
+        <div class="flow-step">
+          <span class="flow-step-label">Control Characteristic</span>
+          <strong>{{ selected_characteristic.name }}</strong>
+        </div>
+        <span class="flow-arrow" aria-hidden="true">&rarr;</span>
+        <div class="flow-step">
+          <span class="flow-step-label">Resource / Method</span>
+          <strong>{{ selected_characteristic.resource_equipment|default:"-" }} / {{ selected_characteristic.method|default:"-" }}</strong>
+        </div>
+        <span class="flow-arrow" aria-hidden="true">&rarr;</span>
+        <div class="flow-step">
+          <span class="flow-step-label">Result</span>
+          <strong>{{ flow_result_text }}</strong>
+        </div>
+        <span class="flow-arrow" aria-hidden="true">&rarr;</span>
+        <div class="flow-step">
+          <span class="flow-step-label">Reaction</span>
+          <strong>{{ selected_characteristic.reaction_plan|default:"No reaction plan recorded." }}</strong>
+        </div>
+      </div>
+
+      <nav class="tab-nav" aria-label="Process characteristic detail tabs">
+        {% for tab in detail_tabs %}
+          <a
+            class="tab-link{% if active_tab == tab %} is-active{% endif %}"
+            href="{{ query_prefix }}selected={{ selected_characteristic.stable_id|urlencode }}&tab={{ tab }}"
+          >{{ tab|capfirst }}</a>
+        {% endfor %}
+      </nav>
+
+      {% if active_tab == "general" %}
+        <table>
+          <tbody>
+            <tr><th>Name</th><td>{{ selected_characteristic.name }}</td></tr>
+            <tr><th>Description</th><td>{{ selected_characteristic.description|default:"" }}</td></tr>
+            <tr><th>Operation</th><td>{{ selected_characteristic.operation }}</td></tr>
+            <tr><th>Process</th><td>{{ selected_characteristic.operation.process }}</td></tr>
+            <tr><th>Default Category</th><td>{{ selected_category_name }}</td></tr>
+            <tr><th>Special Classification</th><td>{{ selected_characteristic.special_classification.name|default:"Unclassified" }}</td></tr>
+            <tr><th>Status</th><td>{% include "fmea_app/_components/_status_badge.html" with label=selected_characteristic.get_status_display status=selected_characteristic.status %}</td></tr>
+            <tr><th>Effectiveness</th><td>{{ selected_characteristic.get_effectiveness_display }}</td></tr>
+            <tr><th>Owner</th><td>{{ selected_characteristic.owner|default:"Unassigned" }}</td></tr>
+            <tr><th>Review Due</th><td>{{ selected_characteristic.review_due|default:"Not set" }}</td></tr>
+          </tbody>
+        </table>
+      {% elif active_tab == "method" %}
+        <table>
+          <tbody>
+            <tr><th>Control Type</th><td>{{ selected_characteristic.get_control_type_display|default:"Unspecified" }}</td></tr>
+            <tr><th>Method</th><td>{{ selected_characteristic.method|default:"Not recorded" }}</td></tr>
+            <tr><th>Resource / Equipment</th><td>{{ selected_characteristic.resource_equipment|default:"Not recorded" }}</td></tr>
+            <tr><th>Frequency / Trigger</th><td>{{ selected_characteristic.frequency_trigger|default:"Not recorded" }}</td></tr>
+          </tbody>
+        </table>
+      {% elif active_tab == "reaction" %}
+        <p>{{ selected_characteristic.reaction_plan|default:"No reaction plan recorded." }}</p>
+      {% elif active_tab == "links" %}
+        {% if selected_linked_fmea %}
+          <p>Linked to Process FMEA <a href="{% url 'fmea:fmea_detail' selected_linked_fmea.stable_id %}">{{ selected_linked_fmea.name }}</a> via {{ selected_characteristic.operation.process }} / {{ selected_characteristic.operation }}.</p>
+        {% else %}
+          <p class="muted">Not linked to a Process FMEA.</p>
+        {% endif %}
+      {% elif active_tab == "history" %}
+        <table>
+          <tbody>
+            <tr><th>Created</th><td>{{ selected_characteristic.created_at }}</td></tr>
+            <tr><th>Last Updated</th><td>{{ selected_characteristic.updated_at }}</td></tr>
+          </tbody>
+        </table>
+      {% endif %}
+    {% else %}
+      <div class="panel-heading">
+        <h2>Detail Panel</h2>
+      </div>
+      <p class="muted">Select a process characteristic's "Panel" link to see its details here.</p>
+    {% endif %}
+  </aside>
+</div>
+
+{{ control_type_chart_data|json_script:"control-type-chart-data" }}
+{{ effectiveness_chart_data|json_script:"effectiveness-chart-data" }}
+<script src="{% static 'fmea_app/vendor/chartjs/chart.umd.min.js' %}"></script>
+<script>
+  (function () {
+    if (typeof Chart === "undefined") {
+      return;
+    }
+    var palette = ["#4f7cff", "#14b8a6", "#f59e0b", "#ef4444", "#818cf8", "#22c55e"];
+
+    var controlTypeData = JSON.parse(document.getElementById("control-type-chart-data").textContent);
+    var controlTypeCanvas = document.getElementById("control-type-donut");
+    if (controlTypeCanvas) {
+      new Chart(controlTypeCanvas.getContext("2d"), {
+        type: "doughnut",
+        data: {
+          labels: controlTypeData.labels,
+          datasets: [{ data: controlTypeData.counts, backgroundColor: palette }],
+        },
+        options: { responsive: true, plugins: { legend: { position: "bottom" } } },
+      });
+    }
+
+    var effectivenessData = JSON.parse(document.getElementById("effectiveness-chart-data").textContent);
+    var effectivenessCanvas = document.getElementById("effectiveness-donut");
+    if (effectivenessCanvas) {
+      new Chart(effectivenessCanvas.getContext("2d"), {
+        type: "doughnut",
+        data: {
+          labels: effectivenessData.labels,
+          datasets: [{ data: effectivenessData.counts, backgroundColor: palette }],
+        },
+        options: { responsive: true, plugins: { legend: { position: "bottom" } } },
+      });
+    }
+  })();
+</script>
 {% endblock %}

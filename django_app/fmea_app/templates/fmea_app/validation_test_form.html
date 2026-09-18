@@ -1,0 +1,36 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}New Validation Test - Open FMEA{% endblock %}
+{% block topbar_title %}New Validation Test{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>New Validation Test</h1>
+    <p class="muted">Create a validation, verification, reliability, or acceptance test.</p>
+  </div>
+  <a class="button" href="{% url 'fmea:validation_test_list' %}">Evidence & Tests</a>
+</div>
+
+<form class="panel compact" method="post" action="{% url 'fmea:new_validation_test' %}">
+  {% csrf_token %}
+  <div class="field-grid">
+    <label>Name {{ form.name }}</label>
+    <label>Failure Mode {{ form.failure_mode }}</label>
+    <label>Recommended Action {{ form.recommended_action }}</label>
+    <label>Test Type {{ form.test_type }}</label>
+    <label>Method {{ form.method }}</label>
+    <label>Nominal / Target {{ form.nominal_target }}</label>
+    <label>Result Status {{ form.result_status }}</label>
+    <label>Planned Date {{ form.planned_date }}</label>
+    <label>Executed Date {{ form.executed_date }}</label>
+    <label>Priority {{ form.priority }}</label>
+    <label>Owner {{ form.owner }}</label>
+    <label>Lifecycle Gate {{ form.lifecycle_gate }}</label>
+    <label>Status {{ form.status }}</label>
+  </div>
+  <label>Objective {{ form.objective }}</label>
+  <label>Acceptance Criteria {{ form.acceptance_criteria }}</label>
+  <button class="button primary" type="submit">Create Validation Test</button>
+</form>
+{% endblock %}

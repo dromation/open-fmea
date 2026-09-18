@@ -1,0 +1,134 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}{{ system.name }} - Open FMEA{% endblock %}
+{% block topbar_title %}System{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>{{ system.name }}</h1>
+    <p class="muted">{{ system.code|default:"" }}</p>
+  </div>
+  <div class="button-row">
+    <a class="button" href="{% url 'fmea:system_list' %}">Systems</a>
+    <a class="button primary" href="{% url 'fmea:system_edit' system.stable_id %}">Edit</a>
+  </div>
+</div>
+
+<div class="grid">
+  <section class="panel span-6">
+    <div class="panel-heading">
+      <h2>Details</h2>
+    </div>
+    <table>
+      <tbody>
+        <tr><th>Name</th><td>{{ system.name }}</td></tr>
+        <tr><th>Code</th><td>{{ system.code|default:"" }}</td></tr>
+        <tr><th>Status</th><td><span class="status">{{ system.get_status_display }}</span></td></tr>
+        <tr>
+          <th>Parent</th>
+          <td>
+            {% if system.parent %}
+            <a href="{% url 'fmea:system_detail' system.parent.stable_id %}">{{ system.parent.name }}</a>
+            {% else %}
+            &mdash;
+            {% endif %}
+          </td>
+        </tr>
+        <tr><th>Description</th><td>{{ system.description }}</td></tr>
+        <tr><th>Stable ID</th><td><code>{{ system.stable_id }}</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="panel span-6">
+    <div class="panel-heading">
+      <h2>Child Systems</h2>
+    </div>
+    <div class="table-shell">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Code</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for child in children %}
+          <tr>
+            <td><a href="{% url 'fmea:system_detail' child.stable_id %}">{{ child.name }}</a></td>
+            <td>{{ child.code|default:"" }}</td>
+            <td><span class="status">{{ child.get_status_display }}</span></td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="3" class="muted">No child systems.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<section class="panel section-gap">
+  <div class="panel-heading">
+    <h2>Linked Products</h2>
+  </div>
+  <div class="table-shell">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Part Number</th>
+          <th>FMEA</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for product in products %}
+        <tr>
+          <td>{{ product.name }}</td>
+          <td>{{ product.part_number|default:"" }}</td>
+          <td><a href="{% url 'fmea:fmea_detail' product.fmea.stable_id %}">{{ product.fmea.name }}</a></td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="3" class="muted">No linked products.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="panel section-gap">
+  <div class="panel-heading">
+    <h2>Linked Processes</h2>
+  </div>
+  <div class="table-shell">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Process Code</th>
+          <th>FMEA</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for process in processes %}
+        <tr>
+          <td>{{ process.name }}</td>
+          <td>{{ process.process_code|default:"" }}</td>
+          <td><a href="{% url 'fmea:fmea_detail' process.fmea.stable_id %}">{{ process.fmea.name }}</a></td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="3" class="muted">No linked processes.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

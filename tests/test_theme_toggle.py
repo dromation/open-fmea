@@ -8,6 +8,8 @@ from django.urls import reverse
 
 from fmea_app import models as fmea_models
 
+from _contrast import CHECKED_PAIRS, contrast_ratio, extract_theme_tokens
+
 
 class ThemeToggleTests(TestCase):
     def test_toggle_control_present_on_dashboard(self):
@@ -69,3 +71,29 @@ class ThemeToggleTests(TestCase):
         self.assertContains(response, "Risk Matrix")
         for unbuilt_label in ("Validation Trajectory", "CAPA", "Control Plans"):
             self.assertNotContains(response, unbuilt_label)
+
+    def test_wcag_aa_contrast_for_text_background_pairs(self):
+        theme_path = find("fmea_app/css/theme.css")
+        self.assertIsNotNone(theme_path)
+        content = Path(theme_path).read_text(encoding="utf-8")
+
+        dark_tokens = extract_theme_tokens(content, ":root {")
+        light_tokens = extract_theme_tokens(content, ':root[data-theme="light"] {')
+
+        for foreground, background in CHECKED_PAIRS:
+            for theme_name, tokens in (("dark", dark_tokens), ("light", light_tokens)):
+                self.assertIn(
+                    foreground, tokens,
+                    f"{foreground} missing from the {theme_name} token block",
+                )
+                self.assertIn(
+                    background, tokens,
+                    f"{background} missing from the {theme_name} token block",
+                )
+                ratio = contrast_ratio(tokens[foreground], tokens[background])
+                self.assertGreaterEqual(
+                    ratio, 4.5,
+                    f"{theme_name} {foreground} ({tokens[foreground]}) on "
+                    f"{background} ({tokens[background]}) is only {ratio:.2f}:1, "
+                    "below the 4.5:1 AA floor for normal text",
+                )

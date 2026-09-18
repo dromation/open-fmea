@@ -1,0 +1,286 @@
+{% extends "fmea_app/base.html" %}
+{% load static %}
+
+{% block title %}Failure Modes - Open FMEA{% endblock %}
+{% block topbar_title %}Failure Modes{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>Failure Modes</h1>
+    <p class="muted">All Failure Modes across every FMEA. Edit from each FMEA's own worksheet.</p>
+  </div>
+</div>
+
+<div class="grid section-block">
+  {% include "fmea_app/_components/_stat_tile.html" with label="Total" value=kpi_total tile_class="span-2" %}
+  {% include "fmea_app/_components/_stat_tile.html" with label="Not Evaluated" value=kpi_not_evaluated tile_class="span-2" %}
+  {% include "fmea_app/_components/_stat_tile.html" with label="High/Critical Risk" value=kpi_high_critical tile_class="span-3" %}
+  {% include "fmea_app/_components/_stat_tile.html" with label="No Cause Recorded" value=kpi_no_cause tile_class="span-2" %}
+  {% include "fmea_app/_components/_stat_tile.html" with label="No Action Recorded" value=kpi_no_action detail="Direct + via causes" tile_class="span-3" %}
+</div>
+
+<form class="panel compact section-block" method="get" action="{% url 'fmea:failure_mode_list' %}">
+  <div class="field-grid">
+    <label>FMEA
+      <select name="fmea">
+        <option value="">All</option>
+        {% for value, label in fmea_choices %}
+          <option value="{{ value }}" {% if fmea_filter == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Risk Level
+      <select name="risk_level">
+        <option value="">All</option>
+        {% for value, label in risk_level_choices %}
+          <option value="{{ value }}" {% if risk_level_filter == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Has Action
+      <select name="has_action">
+        <option value="">All</option>
+        {% for value, label in has_action_choices %}
+          <option value="{{ value }}" {% if has_action_filter == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <div>
+      <button class="button" type="submit">Apply</button>
+    </div>
+  </div>
+</form>
+
+<div class="split">
+  <div class="stack">
+    <section class="panel">
+      <div class="table-shell">
+        <table>
+          <thead>
+            <tr>
+              <th>FMEA</th>
+              <th>Function / Requirement</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Latest Risk Result</th>
+              <th>Effects</th>
+              <th>Causes</th>
+              <th>Actions (direct)</th>
+              <th>Has Action</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in rows %}
+            <tr class="{% if selected_failure_mode and row.failure_mode.stable_id == selected_failure_mode.stable_id %}row-selected{% endif %}">
+              <td><a href="{% url 'fmea:fmea_detail' row.failure_mode.fmea.stable_id %}">{{ row.failure_mode.fmea.name }}</a></td>
+              <td>{{ row.function_or_requirement }}</td>
+              <td>{{ row.failure_mode.name }}</td>
+              <td>{{ row.failure_mode.description|default:"" }}</td>
+              <td>
+                {% if row.risk.result %}
+                  <span class="status status-{{ row.risk.result_class }}">{{ row.risk.result }}</span>
+                {% else %}
+                  <span class="muted">Not evaluated</span>
+                {% endif %}
+              </td>
+              <td>{{ row.effects_count }}</td>
+              <td>{{ row.causes_count }}</td>
+              <td>{{ row.actions_count }}</td>
+              <td>{% if row.has_action %}<span class="status status-active">Yes</span>{% else %}<span class="muted">No</span>{% endif %}</td>
+              <td><a class="button" href="{{ query_prefix }}selected={{ row.failure_mode.stable_id|urlencode }}">Panel</a></td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="10" class="muted">No failure modes yet.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading">
+        <h2>Risk Summary</h2>
+        <p class="muted">Grouped from the currently filtered failure modes, same classification as the KPI row above.</p>
+      </div>
+      <canvas id="risk-summary-donut" height="220"></canvas>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading">
+        <h2>Coverage Summary</h2>
+        <p class="muted">Plain counts over the currently filtered failure modes. No composite score.</p>
+      </div>
+      <div class="grid">
+        {% include "fmea_app/_components/_stat_tile.html" with label="Zero Causes" value=coverage_zero_causes tile_class="span-3" %}
+        {% include "fmea_app/_components/_stat_tile.html" with label="Zero Effects" value=coverage_zero_effects tile_class="span-3" %}
+        {% include "fmea_app/_components/_stat_tile.html" with label="Zero Actions" value=coverage_zero_actions detail="Direct + via causes" tile_class="span-3" %}
+        {% include "fmea_app/_components/_stat_tile.html" with label="Zero Risk Evaluations" value=coverage_zero_risk_evaluations tile_class="span-3" %}
+      </div>
+    </section>
+  </div>
+
+  <aside class="panel detail-panel">
+    {% if selected_failure_mode %}
+      <div class="panel-heading">
+        <h2>{{ selected_failure_mode.name }}</h2>
+        <p class="muted"><code>{{ selected_failure_mode.stable_id }}</code></p>
+      </div>
+
+      <div class="flow-diagram">
+        <div class="flow-step">
+          <span class="flow-step-label">Function / Requirement</span>
+          <strong>
+            {% if selected_failure_mode.function %}{{ selected_failure_mode.function.name }}
+            {% elif selected_failure_mode.requirement %}{{ selected_failure_mode.requirement.name }}
+            {% else %}None recorded{% endif %}
+          </strong>
+        </div>
+        <span class="flow-arrow" aria-hidden="true">&rarr;</span>
+        <div class="flow-step">
+          <span class="flow-step-label">Failure Mode</span>
+          <strong>{{ selected_failure_mode.name }}</strong>
+        </div>
+        <span class="flow-arrow" aria-hidden="true">&rarr;</span>
+        <div class="flow-step">
+          <span class="flow-step-label">Effects</span>
+          <strong>
+            {% if selected_effects %}{{ selected_effects|length }} recorded{% else %}None recorded{% endif %}
+          </strong>
+        </div>
+        <span class="flow-arrow" aria-hidden="true">&rarr;</span>
+        <div class="flow-step">
+          <span class="flow-step-label">Causes</span>
+          <strong>
+            {% if selected_causes %}{{ selected_causes|length }} recorded{% else %}None recorded{% endif %}
+          </strong>
+        </div>
+        <span class="flow-arrow" aria-hidden="true">&rarr;</span>
+        <div class="flow-step">
+          <span class="flow-step-label">Actions</span>
+          <strong>
+            {% if selected_total_actions_count %}{{ selected_total_actions_count }} recorded{% else %}None recorded{% endif %}
+          </strong>
+        </div>
+      </div>
+
+      <nav class="tab-nav" aria-label="Failure mode detail tabs">
+        {% for tab in detail_tabs %}
+          <a
+            class="tab-link{% if active_tab == tab %} is-active{% endif %}"
+            href="{{ query_prefix }}selected={{ selected_failure_mode.stable_id|urlencode }}&tab={{ tab }}"
+          >{{ tab|capfirst }}</a>
+        {% endfor %}
+      </nav>
+
+      {% if active_tab == "general" %}
+        <table>
+          <tbody>
+            <tr><th>Name</th><td>{{ selected_failure_mode.name }}</td></tr>
+            <tr><th>Description</th><td>{{ selected_failure_mode.description|default:"" }}</td></tr>
+            <tr><th>FMEA</th><td><a href="{% url 'fmea:fmea_detail' selected_failure_mode.fmea.stable_id %}">{{ selected_failure_mode.fmea.name }}</a></td></tr>
+            <tr><th>Function</th><td>{{ selected_failure_mode.function|default:"Not set" }}</td></tr>
+            <tr><th>Requirement</th><td>{{ selected_failure_mode.requirement|default:"Not set" }}</td></tr>
+          </tbody>
+        </table>
+      {% elif active_tab == "effects" %}
+        {% if selected_effects %}
+          <ul class="related-list">
+            {% for effect in selected_effects %}
+              <li>{{ effect.name }}{% if effect.description %} - {{ effect.description }}{% endif %}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="muted">None recorded.</p>
+        {% endif %}
+      {% elif active_tab == "causes" %}
+        {% if selected_causes %}
+          <ul class="related-list">
+            {% for cause in selected_causes %}
+              <li>{{ cause.name }}{% if cause.description %} - {{ cause.description }}{% endif %}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="muted">None recorded.</p>
+        {% endif %}
+      {% elif active_tab == "actions" %}
+        <div class="panel-heading">
+          <h3>Actions (direct + via causes)</h3>
+        </div>
+        {% if selected_direct_actions or selected_via_cause_actions %}
+          <ul class="related-list">
+            {% for action in selected_direct_actions %}
+              <li>
+                <a href="{% url 'fmea:action_detail' action.stable_id %}">{{ action.name }}</a>
+                <span class="status status-{{ action.status }}">{{ action.get_status_display }}</span>
+                <span class="muted">(direct)</span>
+              </li>
+            {% endfor %}
+            {% for action in selected_via_cause_actions %}
+              <li>
+                <a href="{% url 'fmea:action_detail' action.stable_id %}">{{ action.name }}</a>
+                <span class="status status-{{ action.status }}">{{ action.get_status_display }}</span>
+                <span class="muted">(via cause: {{ action.failure_cause.name }})</span>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="muted">None recorded.</p>
+        {% endif %}
+      {% elif active_tab == "risk" %}
+        {% if selected_risk_history %}
+          <table>
+            <thead>
+              <tr><th>Result</th><th>Severity</th><th>Occurrence</th><th>Detection</th><th>Evaluated</th></tr>
+            </thead>
+            <tbody>
+              {% for entry in selected_risk_history %}
+                <tr>
+                  <td><span class="status status-{{ entry.result_class }}">{{ entry.result }}</span></td>
+                  <td>{{ entry.severity }}</td>
+                  <td>{{ entry.occurrence }}</td>
+                  <td>{{ entry.detection }}</td>
+                  <td>{{ entry.evaluation.evaluated_at }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p class="muted">None recorded.</p>
+        {% endif %}
+      {% endif %}
+    {% else %}
+      <div class="panel-heading">
+        <h2>Detail Panel</h2>
+      </div>
+      <p class="muted">Select a failure mode's "Panel" link to see its details here.</p>
+    {% endif %}
+  </aside>
+</div>
+
+{{ risk_chart_data|json_script:"risk-summary-chart-data" }}
+<script src="{% static 'fmea_app/vendor/chartjs/chart.umd.min.js' %}"></script>
+<script>
+  (function () {
+    if (typeof Chart === "undefined") {
+      return;
+    }
+    var palette = ["#4f7cff", "#f59e0b", "#ef4444", "#818cf8", "#22c55e"];
+    var data = JSON.parse(document.getElementById("risk-summary-chart-data").textContent);
+    var canvas = document.getElementById("risk-summary-donut");
+    if (canvas) {
+      new Chart(canvas.getContext("2d"), {
+        type: "doughnut",
+        data: {
+          labels: data.labels,
+          datasets: [{ data: data.counts, backgroundColor: palette }],
+        },
+        options: { responsive: true, plugins: { legend: { position: "bottom" } } },
+      });
+    }
+  })();
+</script>
+{% endblock %}

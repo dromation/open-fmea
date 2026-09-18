@@ -1,0 +1,166 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}Product Characteristics - Open FMEA{% endblock %}
+{% block topbar_title %}Product Characteristics{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>Product Characteristics</h1>
+    <p class="muted">Read-only register of Product Characteristics. Manage links from Characteristics Flow.</p>
+  </div>
+</div>
+
+<div class="grid section-block">
+  {% include "fmea_app/_components/_stat_tile.html" with label="Total" value=kpi_total tile_class="span-3" %}
+  {% include "fmea_app/_components/_stat_tile.html" with label="Special Characteristics" value=kpi_special tile_class="span-3" %}
+  {% include "fmea_app/_components/_stat_tile.html" with label="Unclassified" value=kpi_unclassified tile_class="span-3" %}
+  {% include "fmea_app/_components/_stat_tile.html" with label="Linked" value=kpi_linked tile_class="span-3" %}
+</div>
+
+<form class="panel compact section-block" method="get" action="{% url 'fmea:product_characteristic_list' %}">
+  <div class="field-grid">
+    <label>Classification
+      <select name="classification">
+        <option value="">All</option>
+        {% for term in classification_choices %}
+          <option value="{{ term.stable_id }}" {% if classification_filter == term.stable_id %}selected{% endif %}>{{ term.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Special
+      <select name="is_special">
+        <option value="">All</option>
+        {% for value, label in is_special_choices %}
+          <option value="{{ value }}" {% if is_special_filter == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>System
+      <select name="system">
+        <option value="">All</option>
+        {% for system in system_choices %}
+          <option value="{{ system.stable_id }}" {% if system_filter == system.stable_id %}selected{% endif %}>{{ system.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <div>
+      <button class="button" type="submit">Apply</button>
+    </div>
+  </div>
+</form>
+
+<div class="split">
+  <div class="stack">
+    <section class="panel">
+      <div class="table-shell">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Characteristic</th>
+              <th>Category</th>
+              <th>System / Product</th>
+              <th>Links</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in rows %}
+            <tr class="{% if selected_characteristic and row.characteristic.stable_id == selected_characteristic.stable_id %}row-selected{% endif %}">
+              <td><code>{{ row.characteristic.stable_id }}</code></td>
+              <td>{{ row.characteristic.name }}</td>
+              <td>{{ row.category_label }}</td>
+              <td>{{ row.system_product_label }}</td>
+              <td>{{ row.links_count }}</td>
+              <td>
+                {% if row.characteristic.is_special %}
+                  <span class="status status-active">Special</span>
+                {% else %}
+                  <span class="muted">Standard</span>
+                {% endif %}
+              </td>
+              <td><a class="button" href="{{ query_prefix }}selected={{ row.characteristic.stable_id|urlencode }}">Panel</a></td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="7" class="muted">No product characteristics yet.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading">
+        <h2>Coverage Summary</h2>
+        <p class="muted">Plain counts over the currently filtered characteristics. No composite score.</p>
+      </div>
+      <div class="grid">
+        {% include "fmea_app/_components/_stat_tile.html" with label="Unclassified" value=coverage_unclassified tile_class="span-4" %}
+        {% include "fmea_app/_components/_stat_tile.html" with label="Unlinked" value=coverage_unlinked tile_class="span-4" %}
+        {% include "fmea_app/_components/_stat_tile.html" with label="No System/Product Chain" value=coverage_no_chain tile_class="span-4" %}
+      </div>
+    </section>
+  </div>
+
+  <aside class="panel detail-panel">
+    {% if selected_characteristic %}
+      <div class="panel-heading">
+        <h2>{{ selected_characteristic.name }}</h2>
+        <p class="muted"><code>{{ selected_characteristic.stable_id }}</code></p>
+      </div>
+
+      <nav class="tab-nav" aria-label="Product characteristic detail tabs">
+        {% for tab in detail_tabs %}
+          <a
+            class="tab-link{% if active_tab == tab %} is-active{% endif %}"
+            href="{{ query_prefix }}selected={{ selected_characteristic.stable_id|urlencode }}&tab={{ tab }}"
+          >{{ tab|capfirst }}</a>
+        {% endfor %}
+      </nav>
+
+      {% if active_tab == "general" %}
+        <table>
+          <tbody>
+            <tr><th>Name</th><td>{{ selected_characteristic.name }}</td></tr>
+            <tr><th>Description</th><td>{{ selected_characteristic.description|default:"" }}</td></tr>
+            <tr><th>Special</th><td>{% if selected_characteristic.is_special %}Yes{% else %}No{% endif %}</td></tr>
+            <tr><th>System / Product</th><td>{{ selected_system_product_label }}</td></tr>
+          </tbody>
+        </table>
+      {% elif active_tab == "classification" %}
+        <table>
+          <tbody>
+            <tr><th>Classification</th><td>{{ selected_characteristic.primary_classification.name|default:"Unclassified" }}</td></tr>
+            <tr><th>Scheme</th><td>{{ selected_characteristic.primary_classification.scheme.name|default:"—" }}</td></tr>
+          </tbody>
+        </table>
+      {% elif active_tab == "links" %}
+        {% if selected_links %}
+          <ul class="related-list">
+            {% for link in selected_links %}
+              <li>
+                {{ link.from_characteristic.name }} &rarr; {{ link.to_characteristic.name }}
+                <span class="muted">({{ link.get_relationship_type_display }})</span>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="muted">None recorded.</p>
+        {% endif %}
+        <p>
+          <a class="button" href="{% url 'fmea:characteristic_link_list' %}?characteristic={{ selected_characteristic.pk }}">View in Characteristics Flow</a>
+        </p>
+      {% endif %}
+    {% else %}
+      <div class="panel-heading">
+        <h2>Detail Panel</h2>
+      </div>
+      <p class="muted">Select a characteristic's "Panel" link to see its details here.</p>
+    {% endif %}
+  </aside>
+</div>
+{% endblock %}

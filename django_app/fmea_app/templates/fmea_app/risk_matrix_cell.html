@@ -21,6 +21,7 @@
         <th>Failure Mode</th>
         <th>FMEA</th>
         <th>Score / Band</th>
+        <th>Trajectory</th>
       </tr>
     </thead>
     <tbody>
@@ -36,10 +37,11 @@
             {% include "fmea_app/_components/_status_badge.html" with label=evaluation.result.priority|title status=evaluation.result.priority %}
           {% endif %}
         </td>
+        <td><a href="{% url 'fmea:risk_trajectory' evaluation.failure_mode.stable_id %}">View Trajectory</a></td>
       </tr>
       {% empty %}
       <tr>
-        <td colspan="3" class="muted">No failure modes in this cell.</td>
+        <td colspan="4" class="muted">No failure modes in this cell.</td>
       </tr>
       {% endfor %}
     </tbody>

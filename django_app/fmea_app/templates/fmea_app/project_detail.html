@@ -1,0 +1,109 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}{{ project.name }} - Open FMEA{% endblock %}
+{% block topbar_title %}{{ project.name }}{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>{{ project.name }}</h1>
+    <p class="muted">{{ project.description }}</p>
+  </div>
+  <div class="button-row">
+    <a class="button" href="{% url 'fmea:project_list' %}">Projects</a>
+    <a class="button" href="{% url 'fmea:project_team' project.stable_id %}">Team</a>
+    <a class="button" href="{% url 'fmea:dashboard' %}">Workspace</a>
+  </div>
+</div>
+
+<div class="grid section-block">
+  {% include "fmea_app/_components/_stat_tile.html" with label="FMEAs" value=project_row.fmea_count detail=project_row.type_breakdown|default:"No FMEAs yet" tile_class="span-3" %}
+  {% include "fmea_app/_components/_stat_tile.html" with label="Products" value=related_products|length detail="Related through project FMEAs" tile_class="span-3" %}
+  {% include "fmea_app/_components/_stat_tile.html" with label="Processes" value=related_processes|length detail="Related through project FMEAs" tile_class="span-3" %}
+  {% include "fmea_app/_components/_stat_tile.html" with label="Team" value=memberships|length detail="Role assignments" tile_class="span-3" %}
+</div>
+
+<div class="grid">
+  <section class="panel span-8">
+    <div class="panel-heading">
+      <h2>Project Metadata</h2>
+    </div>
+    <table>
+      <tbody>
+        <tr><th>Project Code</th><td>{{ project.project_code|default:"" }}</td></tr>
+        <tr><th>Status</th><td>{% include "fmea_app/_components/_status_badge.html" with label=project.get_status_display status=project.status %}</td></tr>
+        <tr><th>Stable ID</th><td><code>{{ project.stable_id }}</code></td></tr>
+        <tr><th>Revision</th><td>{{ project.revision }}</td></tr>
+        <tr><th>Last Updated</th><td>{{ project_row.last_updated|date:"Y-m-d H:i" }}</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <aside class="panel span-4">
+    <div class="panel-heading">
+      <h2>Related Product/Process</h2>
+      <p class="muted">Computed from FMEAs linked to this project.</p>
+    </div>
+    <div class="related-list">
+      <div>
+        <h3>Products</h3>
+        {% for product in related_products %}
+          <p class="cell-item">{{ product.name }}<span class="cell-detail">{{ product.part_number }}</span></p>
+        {% empty %}
+          <p class="muted">No related products.</p>
+        {% endfor %}
+      </div>
+      <div>
+        <h3>Processes</h3>
+        {% for process in related_processes %}
+          <p class="cell-item">{{ process.name }}<span class="cell-detail">{{ process.process_code }}</span></p>
+        {% empty %}
+          <p class="muted">No related processes.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </aside>
+
+  <section class="panel span-12">
+    <div class="panel-heading">
+      <h2>FMEAs</h2>
+      <p class="muted">Project-linked FMEA records.</p>
+    </div>
+    <div class="table-shell">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Lifecycle</th>
+            <th>Products</th>
+            <th>Processes</th>
+            <th>Stable ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in fmea_rows %}
+          <tr>
+            <td>
+              <a href="{% url 'fmea:fmea_detail' row.fmea.stable_id %}">{{ row.fmea.name }}</a>
+              <span class="cell-detail">{{ row.fmea.scope }}</span>
+            </td>
+            <td>{{ row.fmea.get_fmea_type_display }}</td>
+            <td>{% include "fmea_app/_components/_status_badge.html" with label=row.fmea.get_lifecycle_display status=row.fmea.lifecycle %}</td>
+            <td>{{ row.products|length }}</td>
+            <td>{{ row.processes|length }}</td>
+            <td><code>{{ row.fmea.stable_id }}</code></td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="muted">No FMEA records are linked to this project.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  {% include "fmea_app/_project_team_tab.html" %}
+</div>
+{% endblock %}

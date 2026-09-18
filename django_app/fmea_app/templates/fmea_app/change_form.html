@@ -1,0 +1,31 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}{% if change %}Edit Change{% else %}New Change{% endif %} - Open FMEA{% endblock %}
+{% block topbar_title %}{% if change %}Edit Change{% else %}New Change{% endif %}{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>{% if change %}Edit {{ change.title }}{% else %}New Change{% endif %}</h1>
+    <p class="muted">Record a change and the Failure Modes it affects.</p>
+  </div>
+  <a class="button" href="{% url 'fmea:change_list' %}">Change Log</a>
+</div>
+
+<form class="panel compact" method="post" action="{% if change %}{% url 'fmea:edit_change' change.stable_id %}{% else %}{% url 'fmea:new_change' %}{% endif %}">
+  {% csrf_token %}
+  <div class="field-grid">
+    <label>Title {{ form.title }}</label>
+    <label>Type {{ form.change_type }}</label>
+    <label>Source {{ form.source }}</label>
+    <label>Impact Level {{ form.impact_level }}</label>
+    <label>Status {{ form.status }}</label>
+    <label>Owner {{ form.owner }}</label>
+    <label>Target Date {{ form.target_date }}</label>
+  </div>
+  <label>Reason {{ form.reason }}</label>
+  <label>Description {{ form.description }}</label>
+  <label>Affected Failure Modes {{ form.affected_failure_modes }}</label>
+  <button class="button primary" type="submit">{% if change %}Save Changes{% else %}Create Change{% endif %}</button>
+</form>
+{% endblock %}

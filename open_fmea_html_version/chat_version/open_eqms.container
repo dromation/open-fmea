@@ -1,0 +1,903 @@
+{
+  "format": "open-eqms-container",
+  "formatVersion": 1,
+  "manifest": {
+    "id": "OEQMS-DEMO01",
+    "name": "Meridian Precision — demo",
+    "createdAt": "2026-09-12T18:58:27.550944+00:00",
+    "modifiedAt": "2026-09-12T18:58:27.550944+00:00",
+    "appVersion": "M1",
+    "schemaVersion": 1
+  },
+  "world": {
+    "objects": [
+      {
+        "id": "COMPANY-001",
+        "type": "company",
+        "name": "Meridian Precision d.o.o.",
+        "state": "active",
+        "owner": "Management",
+        "properties": {
+          "industry": "Precision machining",
+          "employees": 84,
+          "country": "SI"
+        },
+        "relations": [
+          {
+            "type": "has_site",
+            "to": "SITE-001"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "SITE-001",
+        "type": "site",
+        "name": "Kranj Plant",
+        "state": "active",
+        "owner": "Operations",
+        "properties": {
+          "address": "Industrijska cesta 4, Kranj",
+          "shifts": 2
+        },
+        "relations": [
+          {
+            "type": "part_of",
+            "to": "COMPANY-001"
+          },
+          {
+            "type": "has_department",
+            "to": "DEPT-PROD"
+          },
+          {
+            "type": "has_department",
+            "to": "DEPT-QA"
+          },
+          {
+            "type": "has_department",
+            "to": "DEPT-ENG"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "DEPT-PROD",
+        "type": "department",
+        "name": "Production",
+        "state": "active",
+        "owner": "USER-002",
+        "properties": {
+          "code": "PROD"
+        },
+        "relations": [
+          {
+            "type": "part_of",
+            "to": "SITE-001"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "DEPT-QA",
+        "type": "department",
+        "name": "Quality Assurance",
+        "state": "active",
+        "owner": "USER-003",
+        "properties": {
+          "code": "QA"
+        },
+        "relations": [
+          {
+            "type": "part_of",
+            "to": "SITE-001"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "DEPT-ENG",
+        "type": "department",
+        "name": "Engineering",
+        "state": "active",
+        "owner": "USER-004",
+        "properties": {
+          "code": "ENG"
+        },
+        "relations": [
+          {
+            "type": "part_of",
+            "to": "SITE-001"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "USER-001",
+        "type": "user",
+        "name": "Janez Novak",
+        "state": "active",
+        "owner": "Management",
+        "properties": {
+          "role": "Plant Manager",
+          "authority": "approve",
+          "email": "j.novak@meridian.si"
+        },
+        "relations": [],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "USER-002",
+        "type": "user",
+        "name": "Marko Zupan",
+        "state": "active",
+        "owner": "DEPT-PROD",
+        "properties": {
+          "role": "Production Lead",
+          "authority": "act",
+          "competencies": [
+            "CNC setup",
+            "PPAP"
+          ]
+        },
+        "relations": [
+          {
+            "type": "leads",
+            "to": "DEPT-PROD"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "USER-003",
+        "type": "user",
+        "name": "Ana Kovač",
+        "state": "active",
+        "owner": "DEPT-QA",
+        "properties": {
+          "role": "Quality Engineer",
+          "authority": "approve",
+          "competencies": [
+            "FMEA",
+            "MSA",
+            "8D"
+          ]
+        },
+        "relations": [
+          {
+            "type": "leads",
+            "to": "DEPT-QA"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "USER-004",
+        "type": "user",
+        "name": "Peter Horvat",
+        "state": "active",
+        "owner": "DEPT-ENG",
+        "properties": {
+          "role": "Process Engineer",
+          "authority": "act",
+          "competencies": [
+            "CAM",
+            "SPC"
+          ]
+        },
+        "relations": [
+          {
+            "type": "leads",
+            "to": "DEPT-ENG"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "USER-005",
+        "type": "user",
+        "name": "Nina Bizjak",
+        "state": "active",
+        "owner": "DEPT-PROD",
+        "properties": {
+          "role": "CNC Operator",
+          "authority": "record",
+          "competencies": [
+            "CNC operation"
+          ]
+        },
+        "relations": [],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "MACHINE-001",
+        "type": "machine",
+        "name": "CNC Mill 01 (DMG DMU 50)",
+        "state": "running",
+        "owner": "DEPT-PROD",
+        "properties": {
+          "tag": "CNC-01",
+          "toolLifePct": 41,
+          "spindleHours": 12840,
+          "lastCalibration": "2026-06-12"
+        },
+        "relations": [
+          {
+            "type": "in_department",
+            "to": "DEPT-PROD"
+          },
+          {
+            "type": "operated_by",
+            "to": "USER-005"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "MACHINE-002",
+        "type": "machine",
+        "name": "CNC Mill 02 (Haas VF-2)",
+        "state": "warning",
+        "owner": "DEPT-PROD",
+        "properties": {
+          "tag": "CNC-02",
+          "toolLifePct": 94,
+          "spindleHours": 21110,
+          "lastCalibration": "2026-02-03",
+          "warningReason": "Tool lifetime 94% + 2 recent dimensional warnings"
+        },
+        "relations": [
+          {
+            "type": "in_department",
+            "to": "DEPT-PROD"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "MACHINE-003",
+        "type": "machine",
+        "name": "CNC Lathe 01 (Okuma LB3000)",
+        "state": "running",
+        "owner": "DEPT-PROD",
+        "properties": {
+          "tag": "LATHE-01",
+          "toolLifePct": 33,
+          "spindleHours": 8420,
+          "lastCalibration": "2026-07-01"
+        },
+        "relations": [
+          {
+            "type": "in_department",
+            "to": "DEPT-PROD"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "MACHINE-004",
+        "type": "machine",
+        "name": "CMM (Zeiss Contura)",
+        "state": "running",
+        "owner": "DEPT-QA",
+        "properties": {
+          "tag": "CMM-01",
+          "toolLifePct": 0,
+          "lastCalibration": "2026-08-20"
+        },
+        "relations": [
+          {
+            "type": "in_department",
+            "to": "DEPT-QA"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "MACHINE-005",
+        "type": "machine",
+        "name": "Washing Line 01",
+        "state": "stopped",
+        "owner": "DEPT-PROD",
+        "properties": {
+          "tag": "WASH-01",
+          "stoppedReason": "Scheduled maintenance",
+          "lastCalibration": "2026-05-15"
+        },
+        "relations": [
+          {
+            "type": "in_department",
+            "to": "DEPT-PROD"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "PRODUCT-A21",
+        "type": "product",
+        "name": "Hydraulic Manifold A21",
+        "state": "active",
+        "owner": "DEPT-ENG",
+        "properties": {
+          "partNumber": "MP-A21",
+          "material": "AlSi7Mg",
+          "revision": "C",
+          "targetPPM": 200
+        },
+        "relations": [
+          {
+            "type": "produced_on",
+            "to": "MACHINE-002"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "PRODUCT-B14",
+        "type": "product",
+        "name": "Valve Body B14",
+        "state": "active",
+        "owner": "DEPT-ENG",
+        "properties": {
+          "partNumber": "MP-B14",
+          "material": "Steel 1.4404",
+          "revision": "B",
+          "targetPPM": 150
+        },
+        "relations": [
+          {
+            "type": "produced_on",
+            "to": "MACHINE-003"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "PRODUCT-C07",
+        "type": "product",
+        "name": "Sensor Housing C07",
+        "state": "development",
+        "owner": "DEPT-ENG",
+        "properties": {
+          "partNumber": "MP-C07",
+          "material": "PA66-GF30",
+          "revision": "A",
+          "targetPPM": 300
+        },
+        "relations": [],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "SUPPLIER-001",
+        "type": "supplier",
+        "name": "AlpTech Alloys",
+        "state": "approved",
+        "owner": "DEPT-QA",
+        "properties": {
+          "supplies": "Aluminium billets",
+          "ppm": 180,
+          "lateDeliveries": 1,
+          "score": 88
+        },
+        "relations": [
+          {
+            "type": "supplies_to",
+            "to": "PRODUCT-A21"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "SUPPLIER-002",
+        "type": "supplier",
+        "name": "NordSteel GmbH",
+        "state": "conditional",
+        "owner": "DEPT-QA",
+        "properties": {
+          "supplies": "Stainless bar",
+          "ppm": 420,
+          "lateDeliveries": 4,
+          "score": 61,
+          "riskNote": "PPM above target and 4 late deliveries"
+        },
+        "relations": [
+          {
+            "type": "supplies_to",
+            "to": "PRODUCT-B14"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "CUSTOMER-001",
+        "type": "customer",
+        "name": "Hydro Systems AG",
+        "state": "active",
+        "owner": "Sales",
+        "properties": {
+          "segment": "Hydraulics",
+          "onTimeExpectation": 98
+        },
+        "relations": [
+          {
+            "type": "orders",
+            "to": "PRODUCT-A21"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "CUSTOMER-002",
+        "type": "customer",
+        "name": "FlowControl s.r.l.",
+        "state": "active",
+        "owner": "Sales",
+        "properties": {
+          "segment": "Valves"
+        },
+        "relations": [
+          {
+            "type": "orders",
+            "to": "PRODUCT-B14"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "PO-882",
+        "type": "production_order",
+        "name": "PO-882 — Manifold A21 x500",
+        "state": "in_progress",
+        "owner": "DEPT-PROD",
+        "properties": {
+          "product": "PRODUCT-A21",
+          "qty": 500,
+          "done": 310,
+          "due": "2026-09-18",
+          "customer": "CUSTOMER-001"
+        },
+        "relations": [
+          {
+            "type": "for_product",
+            "to": "PRODUCT-A21"
+          },
+          {
+            "type": "on_machine",
+            "to": "MACHINE-002"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "PO-883",
+        "type": "production_order",
+        "name": "PO-883 — Valve Body B14 x300",
+        "state": "in_progress",
+        "owner": "DEPT-PROD",
+        "properties": {
+          "product": "PRODUCT-B14",
+          "qty": 300,
+          "done": 120,
+          "due": "2026-09-22",
+          "customer": "CUSTOMER-002"
+        },
+        "relations": [
+          {
+            "type": "for_product",
+            "to": "PRODUCT-B14"
+          },
+          {
+            "type": "on_machine",
+            "to": "MACHINE-003"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "PO-884",
+        "type": "production_order",
+        "name": "PO-884 — Manifold A21 x200",
+        "state": "planned",
+        "owner": "DEPT-PROD",
+        "properties": {
+          "product": "PRODUCT-A21",
+          "qty": 200,
+          "done": 0,
+          "due": "2026-09-30",
+          "customer": "CUSTOMER-001"
+        },
+        "relations": [
+          {
+            "type": "for_product",
+            "to": "PRODUCT-A21"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "MEAS-101",
+        "type": "measurement",
+        "name": "Bore Ø12.00 H7 — sample",
+        "state": "out_of_tolerance",
+        "owner": "DEPT-QA",
+        "properties": {
+          "characteristic": "Bore Ø12 H7",
+          "nominal": 12.0,
+          "upper": 12.018,
+          "lower": 12.0,
+          "value": 12.024,
+          "unit": "mm",
+          "at": "2026-09-11T09:20:00",
+          "machine": "MACHINE-002"
+        },
+        "relations": [
+          {
+            "type": "measured_on",
+            "to": "MACHINE-002"
+          },
+          {
+            "type": "of_product",
+            "to": "PRODUCT-A21"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "MEAS-102",
+        "type": "measurement",
+        "name": "Flatness 0.05 — sample",
+        "state": "in_tolerance",
+        "owner": "DEPT-QA",
+        "properties": {
+          "characteristic": "Flatness",
+          "nominal": 0.0,
+          "upper": 0.05,
+          "value": 0.032,
+          "unit": "mm",
+          "at": "2026-09-11T10:05:00",
+          "machine": "MACHINE-002"
+        },
+        "relations": [
+          {
+            "type": "measured_on",
+            "to": "MACHINE-002"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "MEAS-103",
+        "type": "measurement",
+        "name": "OD Ø40 g6 — sample",
+        "state": "in_tolerance",
+        "owner": "DEPT-QA",
+        "properties": {
+          "characteristic": "OD Ø40 g6",
+          "value": 39.991,
+          "unit": "mm",
+          "at": "2026-09-10T14:40:00",
+          "machine": "MACHINE-003"
+        },
+        "relations": [
+          {
+            "type": "measured_on",
+            "to": "MACHINE-003"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "NCR-045",
+        "type": "quality_event",
+        "name": "NCR-045 — Oversize bore on A21",
+        "state": "open",
+        "owner": "DEPT-QA",
+        "properties": {
+          "kind": "nonconformity",
+          "severity": "major",
+          "opened": "2026-09-11",
+          "machine": "MACHINE-002",
+          "product": "PRODUCT-A21",
+          "description": "Bore Ø12 H7 exceeded upper tolerance on CNC-02"
+        },
+        "relations": [
+          {
+            "type": "on_machine",
+            "to": "MACHINE-002"
+          },
+          {
+            "type": "affects_product",
+            "to": "PRODUCT-A21"
+          },
+          {
+            "type": "from_measurement",
+            "to": "MEAS-101"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "NCR-044",
+        "type": "quality_event",
+        "name": "NCR-044 — Surface finish B14",
+        "state": "in_review",
+        "owner": "DEPT-QA",
+        "properties": {
+          "kind": "nonconformity",
+          "severity": "minor",
+          "opened": "2026-09-08",
+          "machine": "MACHINE-003",
+          "product": "PRODUCT-B14"
+        },
+        "relations": [
+          {
+            "type": "on_machine",
+            "to": "MACHINE-003"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "MAINT-201",
+        "type": "maintenance",
+        "name": "MAINT-201 — Washing line service",
+        "state": "in_progress",
+        "owner": "DEPT-PROD",
+        "properties": {
+          "machine": "MACHINE-005",
+          "kind": "preventive",
+          "start": "2026-09-12T06:00:00",
+          "planned_end": "2026-09-12T12:00:00"
+        },
+        "relations": [
+          {
+            "type": "on_machine",
+            "to": "MACHINE-005"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "MAINT-200",
+        "type": "maintenance",
+        "name": "MAINT-200 — CNC-02 tool change",
+        "state": "planned",
+        "owner": "DEPT-PROD",
+        "properties": {
+          "machine": "MACHINE-002",
+          "kind": "corrective",
+          "planned": "2026-09-12T15:00:00"
+        },
+        "relations": [
+          {
+            "type": "on_machine",
+            "to": "MACHINE-002"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "TASK-301",
+        "type": "task",
+        "name": "Investigate oversize bore (NCR-045)",
+        "state": "open",
+        "owner": "USER-003",
+        "properties": {
+          "priority": "high",
+          "due": "2026-09-13",
+          "assignee": "USER-003",
+          "overdue": false
+        },
+        "relations": [
+          {
+            "type": "for_event",
+            "to": "NCR-045"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "TASK-302",
+        "type": "task",
+        "name": "Replace tooling on CNC-02",
+        "state": "open",
+        "owner": "USER-002",
+        "properties": {
+          "priority": "high",
+          "due": "2026-09-12",
+          "assignee": "USER-002",
+          "overdue": false
+        },
+        "relations": [
+          {
+            "type": "for_machine",
+            "to": "MACHINE-002"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "TASK-303",
+        "type": "task",
+        "name": "Supplier review — NordSteel",
+        "state": "open",
+        "owner": "USER-003",
+        "properties": {
+          "priority": "medium",
+          "due": "2026-09-05",
+          "assignee": "USER-003",
+          "overdue": true
+        },
+        "relations": [
+          {
+            "type": "for_supplier",
+            "to": "SUPPLIER-002"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "TASK-304",
+        "type": "task",
+        "name": "PPAP documentation for C07",
+        "state": "open",
+        "owner": "USER-004",
+        "properties": {
+          "priority": "low",
+          "due": "2026-09-28",
+          "assignee": "USER-004",
+          "overdue": false
+        },
+        "relations": [
+          {
+            "type": "for_product",
+            "to": "PRODUCT-C07"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "DOC-401",
+        "type": "document",
+        "name": "Control Plan — A21 Rev C",
+        "state": "approved",
+        "owner": "DEPT-QA",
+        "properties": {
+          "docType": "control_plan",
+          "revision": "C",
+          "format": "pdf"
+        },
+        "relations": [
+          {
+            "type": "for_product",
+            "to": "PRODUCT-A21"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "DOC-402",
+        "type": "document",
+        "name": "PFMEA — A21",
+        "state": "approved",
+        "owner": "DEPT-QA",
+        "properties": {
+          "docType": "pfmea",
+          "revision": "4",
+          "format": "xlsx"
+        },
+        "relations": [
+          {
+            "type": "for_product",
+            "to": "PRODUCT-A21"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "DOC-403",
+        "type": "document",
+        "name": "Work Instruction — CNC-02 setup",
+        "state": "draft",
+        "owner": "DEPT-PROD",
+        "properties": {
+          "docType": "work_instruction",
+          "revision": "1",
+          "format": "docx"
+        },
+        "relations": [
+          {
+            "type": "for_machine",
+            "to": "MACHINE-002"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "RISK-501",
+        "type": "risk",
+        "name": "Single-source alloy dependency",
+        "state": "monitored",
+        "owner": "DEPT-QA",
+        "properties": {
+          "severity": 4,
+          "likelihood": 3,
+          "rpn": 12,
+          "note": "AlpTech is single approved source for A21 alloy"
+        },
+        "relations": [
+          {
+            "type": "related_to",
+            "to": "SUPPLIER-001"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      },
+      {
+        "id": "RISK-502",
+        "type": "risk",
+        "name": "Key-expert dependency (FMEA)",
+        "state": "open",
+        "owner": "Management",
+        "properties": {
+          "severity": 4,
+          "likelihood": 2,
+          "rpn": 8,
+          "note": "Only one qualified FMEA facilitator (Ana Kovač)"
+        },
+        "relations": [
+          {
+            "type": "related_to",
+            "to": "USER-003"
+          }
+        ],
+        "permissions": {},
+        "history": []
+      }
+    ]
+  },
+  "transactions": [],
+  "layouts": {},
+  "queries": {},
+  "knowledge": {},
+  "attachments": []
+}

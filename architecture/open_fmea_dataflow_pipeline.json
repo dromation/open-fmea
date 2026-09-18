@@ -1,0 +1,189 @@
+{
+  "schema": "open-fmea-pipeline/1.1",
+  "name": "Open FMEA Data Flow & Validation Pipeline",
+  "principles": {
+    "authoritative_state": "OpenFMEA.Repository in memory; explicit portable save/load through open_fmea.container",
+    "ui_baseline": "mockup validation registry",
+    "learning_corpus": "knowledge/open_fmea_ai_knowledge.jsonl",
+    "human_context": [
+      ".md",
+      ".txt"
+    ],
+    "relational_companion": "database/open_fmea.sqlite — optional snapshot, never a runtime requirement",
+    "rule": "AI suggestions and validation findings never directly overwrite authoritative FMEA data."
+  },
+  "flows": [
+    {
+      "id": "FLOW-REQ-FMEA",
+      "name": "Requirement to FMEA",
+      "stages": [
+        "Source Requirement",
+        "Requirement Gap Detection",
+        "Candidate Failure Mode",
+        "Human Review",
+        "Approved FMEA Object",
+        "Controls & Actions",
+        "Validation",
+        "Residual Risk",
+        "Learning Case"
+      ],
+      "failure_conditions": [
+        "untraceable source",
+        "automatic approval",
+        "duplicate object",
+        "broken link"
+      ]
+    },
+    {
+      "id": "FLOW-MOCKUP-VALIDATION",
+      "name": "Mockup to validation to change",
+      "stages": [
+        "Mockup Baseline",
+        "Rendered Page",
+        "Visual/Functional Validation",
+        "Failure Finding",
+        "Change Impact",
+        "Corrective Change",
+        "Regression Validation",
+        "Approved Learning Case"
+      ],
+      "failure_conditions": [
+        "GUI drift",
+        "missing widget",
+        "dead control",
+        "wrong layout",
+        "wrong computed value",
+        "broken responsiveness",
+        "missing data linkage"
+      ]
+    },
+    {
+      "id": "FLOW-CHANGE-RISK",
+      "name": "Change impact propagation",
+      "stages": [
+        "Change Record",
+        "Affected Objects",
+        "DFMEA/PFMEA Re-evaluation",
+        "Controls/Actions",
+        "Validation Evidence",
+        "Risk Matrix",
+        "Risk Trajectory",
+        "Closure"
+      ],
+      "failure_conditions": [
+        "change not propagated",
+        "stale risk",
+        "missing validation",
+        "unresolved affected object"
+      ]
+    },
+    {
+      "id": "FLOW-PROBLEM-SOLVING",
+      "name": "Problem-solving learning loop",
+      "stages": [
+        "Failure/Issue",
+        "Ishikawa 5M/6M",
+        "3WHY/5WHY",
+        "8D",
+        "Poka-Yoke/Controls",
+        "Action",
+        "Evidence",
+        "Effectiveness Review",
+        "Learning Case"
+      ],
+      "failure_conditions": [
+        "root cause without evidence",
+        "action without verification",
+        "lesson learned without provenance"
+      ]
+    },
+    {
+      "id": "FLOW-AI-DECISION",
+      "name": "AI-assisted decision flow",
+      "stages": [
+        "User Question / Current Object",
+        "Retrieve Authoritative Data",
+        "Retrieve Mockup/Validation History",
+        "Retrieve Similar Learning Cases",
+        "Apply Deterministic Calculators/Rules",
+        "Rank Recommendations",
+        "Show Provenance",
+        "User Accept/Modify/Reject",
+        "Store Feedback"
+      ],
+      "failure_conditions": [
+        "AI invents authoritative state",
+        "missing provenance",
+        "feedback not recorded",
+        "model overwrites business rule"
+      ]
+    },
+    {
+      "id": "FLOW-DEVELOPMENT",
+      "name": "Development task fidelity and learning",
+      "stages": [
+        "User requirement",
+        "Development task and acceptance matrix",
+        "Implementation",
+        "Task validation",
+        "Development finding",
+        "Non-authoritative FMEA candidate",
+        "Root cause analysis",
+        "Corrective control",
+        "Re-implementation",
+        "Validation",
+        "Reviewed learning case"
+      ],
+      "failure_conditions": [
+        "scope drift",
+        "render-only acceptance",
+        "dead control",
+        "hard-coded data",
+        "wrong runtime architecture"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "open_fmea.html",
+      "role": "runtime/UI",
+      "requiredAtRuntime": true
+    },
+    {
+      "name": "open_fmea.container",
+      "role": "portable authoritative application state",
+      "requiredAtRuntime": false
+    },
+    {
+      "name": "knowledge/open_fmea_ai_knowledge.jsonl",
+      "role": "AI/case learning corpus",
+      "requiredAtRuntime": false
+    },
+    {
+      "name": "architecture/open_fmea_validation_tests.jsonl",
+      "role": "mockup + functional validation registry",
+      "requiredAtRuntime": false
+    },
+    {
+      "name": "architecture/open_fmea_dataflow_pipeline.json",
+      "role": "machine-readable flow/pipeline contract",
+      "requiredAtRuntime": false
+    },
+    {
+      "name": "architecture/open_fmea_dataflow_pipeline.md",
+      "role": "human-readable architecture and validation workflow",
+      "requiredAtRuntime": false
+    },
+    {
+      "name": "database/open_fmea.sqlite",
+      "role": "Optional portable snapshot for reporting/interchange; not read or written automatically by the HTML",
+      "requiredAtRuntime": false
+    },
+    {
+      "name": "database/open_fmea.sql",
+      "role": "Optional portable snapshot for reporting/interchange; not read or written automatically by the HTML",
+      "requiredAtRuntime": false
+    }
+  ],
+  "runtime": "OpenFMEA.DataFlow inside open_fmea.html; no external runtime scripts or server"
+}

@@ -59,15 +59,42 @@ class CauseInfluenceAdmin(admin.ModelAdmin):
 
 @admin.register(models.ProductCharacteristic)
 class ProductCharacteristicAdmin(admin.ModelAdmin):
-    list_display = ("name", "requirement", "is_special", "stable_id")
-    list_filter = ("is_special",)
-    search_fields = ("name", "stable_id", "description", "primary_classification_id")
+    list_display = ("name", "requirement", "is_special", "primary_classification", "stable_id")
+    list_filter = ("is_special", "primary_classification")
+    search_fields = ("name", "stable_id", "description", "primary_classification__name")
+
+
+@admin.register(models.System)
+class SystemAdmin(admin.ModelAdmin):
+    list_display = ("name", "code", "status", "parent", "stable_id")
+    list_filter = ("status",)
+    search_fields = ("name", "stable_id", "code", "description")
+
+
+@admin.register(models.Asset)
+class AssetAdmin(admin.ModelAdmin):
+    list_display = ("name", "asset_code", "status", "location", "stable_id")
+    list_filter = ("status",)
+    search_fields = ("name", "stable_id", "asset_code", "location", "notes")
+
+
+@admin.register(models.ClassificationScheme)
+class ClassificationSchemeAdmin(admin.ModelAdmin):
+    list_display = ("name", "stable_id", "revision")
+    search_fields = ("name", "stable_id", "description")
+
+
+@admin.register(models.ClassificationTerm)
+class ClassificationTermAdmin(admin.ModelAdmin):
+    list_display = ("name", "scheme", "order", "stable_id")
+    list_filter = ("scheme",)
+    search_fields = ("name", "stable_id", "description")
 
 
 @admin.register(models.ProcessCharacteristic)
 class ProcessCharacteristicAdmin(admin.ModelAdmin):
-    list_display = ("name", "operation", "cause_category_id", "stable_id")
-    list_filter = ("cause_category_id",)
+    list_display = ("name", "operation", "cause_category_id", "special_classification", "stable_id")
+    list_filter = ("cause_category_id", "special_classification")
     search_fields = ("name", "stable_id", "description", "cause_category_id")
 
 

@@ -1,0 +1,1059 @@
+{
+  "manifest": {
+    "format": "open_fmea.container",
+    "schemaVersion": "1.2.0",
+    "name": "Open FMEA Embedded Container v1.2",
+    "project": "New Headlamp X1",
+    "mode": "single-html",
+    "knowledgeVersion": 1
+  },
+  "settings": {
+    "riskMethod": "RPN",
+    "apEnabled": true,
+    "theme": "light",
+    "workspace": "Global"
+  },
+  "users": [
+    {
+      "id": "USR-JD",
+      "name": "Janez Demo",
+      "role": "Quality Engineer",
+      "authority": "Project Owner"
+    },
+    {
+      "id": "USR-MK",
+      "name": "Marko Kovac",
+      "role": "Design Engineer"
+    },
+    {
+      "id": "USR-AN",
+      "name": "Ana Novak",
+      "role": "Process Engineer"
+    },
+    {
+      "id": "USR-PT",
+      "name": "Peter Turk",
+      "role": "Quality Engineer"
+    },
+    {
+      "id": "USR-LS",
+      "name": "Luka Sterle",
+      "role": "Manufacturing Engineer"
+    }
+  ],
+  "projects": [
+    {
+      "id": "P-001",
+      "name": "New Headlamp X1",
+      "status": "In Progress",
+      "types": [
+        "DFMEA",
+        "PFMEA",
+        "System FMEA",
+        "PM-FMEA"
+      ],
+      "revision": "A"
+    }
+  ],
+  "dfmea": [
+    {
+      "id": "DF-001",
+      "element": "Housing (Lens)",
+      "function": "Provide light transmission",
+      "failure": "Lens crack",
+      "effect": "Reduced light output, water ingress",
+      "cause": "Impact, stress concentration",
+      "s": 8,
+      "o": 4,
+      "d": 4,
+      "p": 3,
+      "initial": 128,
+      "current": 48,
+      "actions": "2/1",
+      "status": "Open",
+      "owner": "Marko Kovac"
+    },
+    {
+      "id": "DF-002",
+      "element": "LED Module",
+      "function": "Generate light",
+      "failure": "LED failure (no light)",
+      "effect": "No illumination",
+      "cause": "Over current, thermal stress",
+      "s": 9,
+      "o": 3,
+      "d": 3,
+      "p": 4,
+      "initial": 108,
+      "current": 36,
+      "actions": "1/0",
+      "status": "Open",
+      "owner": "Janez Demo"
+    },
+    {
+      "id": "DF-003",
+      "element": "Heatsink",
+      "function": "Dissipate heat",
+      "failure": "Insufficient cooling",
+      "effect": "Shorter life, lumen drop",
+      "cause": "Design margin low, clogging",
+      "s": 7,
+      "o": 4,
+      "d": 4,
+      "p": 3,
+      "initial": 112,
+      "current": 56,
+      "actions": "2/1",
+      "status": "Open",
+      "owner": "Luka Sterle"
+    },
+    {
+      "id": "DF-004",
+      "element": "Driver PCB",
+      "function": "Supply stable current",
+      "failure": "Driver failure",
+      "effect": "Flicker, dimming, no light",
+      "cause": "Component failure, overload",
+      "s": 9,
+      "o": 3,
+      "d": 3,
+      "p": 4,
+      "initial": 108,
+      "current": 27,
+      "actions": "1/0",
+      "status": "In Progress",
+      "owner": "Peter Turk"
+    },
+    {
+      "id": "DF-005",
+      "element": "Connector",
+      "function": "Provide electrical connection",
+      "failure": "Loose connection",
+      "effect": "Intermittent light",
+      "cause": "Vibration, poor engagement",
+      "s": 6,
+      "o": 5,
+      "d": 5,
+      "p": 3,
+      "initial": 150,
+      "current": 75,
+      "actions": "2/1",
+      "status": "Open",
+      "owner": "Ana Novak"
+    },
+    {
+      "id": "DF-006",
+      "element": "Seal (Gasket)",
+      "function": "Prevent water ingress",
+      "failure": "Seal damage",
+      "effect": "Water ingress, corrosion",
+      "cause": "Assembly damage, ageing",
+      "s": 8,
+      "o": 4,
+      "d": 4,
+      "p": 3,
+      "initial": 128,
+      "current": 48,
+      "actions": "1/1",
+      "status": "In Progress",
+      "owner": "Marko Kovac"
+    }
+  ],
+  "pfmea": [
+    {
+      "id": "PF-001",
+      "step": "10 - Incoming Insp.",
+      "function": "Verify material",
+      "failure": "Wrong material",
+      "effect": "Process stop, scrap",
+      "cause": "Supplier mix-up",
+      "s": 8,
+      "o": 4,
+      "d": 3,
+      "p": 2,
+      "initial": 96,
+      "current": 32,
+      "actions": "1/1",
+      "status": "Open",
+      "owner": "Ana Novak"
+    },
+    {
+      "id": "PF-002",
+      "step": "20 - Cutting",
+      "function": "Cut to length",
+      "failure": "Wrong length",
+      "effect": "Assembly issue",
+      "cause": "Wrong setup",
+      "s": 7,
+      "o": 5,
+      "d": 4,
+      "p": 3,
+      "initial": 140,
+      "current": 60,
+      "actions": "2/2",
+      "status": "In Progress",
+      "owner": "Luka Sterle"
+    },
+    {
+      "id": "PF-003",
+      "step": "30 - Bending",
+      "function": "Bend to angle",
+      "failure": "Wrong angle",
+      "effect": "Fit / function issue",
+      "cause": "Tool wear",
+      "s": 8,
+      "o": 4,
+      "d": 4,
+      "p": 3,
+      "initial": 128,
+      "current": 48,
+      "actions": "1/2",
+      "status": "Open",
+      "owner": "Marko Kovac"
+    },
+    {
+      "id": "PF-004",
+      "step": "40 - Welding / MIG Welding",
+      "function": "Join parts",
+      "failure": "Poor weld",
+      "effect": "Leakage, reduced strength",
+      "cause": "Parameter drift",
+      "s": 9,
+      "o": 4,
+      "d": 4,
+      "p": 2,
+      "initial": 144,
+      "current": 54,
+      "actions": "2/3",
+      "status": "In Progress",
+      "owner": "Luka Sterle"
+    },
+    {
+      "id": "PF-005",
+      "step": "50 - Cleaning",
+      "function": "Remove contaminants",
+      "failure": "Contamination left",
+      "effect": "Paint / coating defect",
+      "cause": "Cleaning bath condition",
+      "s": 6,
+      "o": 3,
+      "d": 3,
+      "p": 2,
+      "initial": 54,
+      "current": 18,
+      "actions": "1/1",
+      "status": "Closed",
+      "owner": "Peter Turk"
+    },
+    {
+      "id": "PF-006",
+      "step": "60 - Coating",
+      "function": "Apply coating",
+      "failure": "Thin coating",
+      "effect": "Corrosion / appearance",
+      "cause": "Flow / temperature drift",
+      "s": 7,
+      "o": 3,
+      "d": 3,
+      "p": 2,
+      "initial": 63,
+      "current": 21,
+      "actions": "1/1",
+      "status": "Open",
+      "owner": "Ana Novak"
+    },
+    {
+      "id": "PF-007",
+      "step": "70 - Assembly",
+      "function": "Assemble parts",
+      "failure": "Loose fit",
+      "effect": "Noise, rattle",
+      "cause": "Torque variation",
+      "s": 6,
+      "o": 5,
+      "d": 4,
+      "p": 3,
+      "initial": 120,
+      "current": 45,
+      "actions": "1/1",
+      "status": "In Progress",
+      "owner": "Marko Kovac"
+    }
+  ],
+  "failureModes": [
+    {
+      "id": "FM-001",
+      "name": "Lens crack",
+      "description": "Crack in outer lens leading to reduced light output",
+      "function": "Provide illumination / Housing",
+      "source": "Design + Compl.",
+      "catalog": "EC-1204",
+      "complaints": 7,
+      "s": 9,
+      "o": 5,
+      "d": 4,
+      "rpn": 180,
+      "trend": "↗",
+      "status": "Open"
+    },
+    {
+      "id": "FM-002",
+      "name": "Water ingress",
+      "description": "Water inside housing",
+      "function": "Protect components / Seal",
+      "source": "Catalog",
+      "catalog": "EC-1456",
+      "complaints": 12,
+      "s": 8,
+      "o": 6,
+      "d": 4,
+      "rpn": 192,
+      "trend": "↗",
+      "status": "Open"
+    },
+    {
+      "id": "FM-003",
+      "name": "LED not light",
+      "description": "LED no illumination",
+      "function": "Generate light / LED Module",
+      "source": "Complaints",
+      "catalog": "EC-0987",
+      "complaints": 24,
+      "s": 9,
+      "o": 4,
+      "d": 3,
+      "rpn": 108,
+      "trend": "↗",
+      "status": "Open"
+    },
+    {
+      "id": "FM-004",
+      "name": "Overheating",
+      "description": "Excess temperature",
+      "function": "Dissipate heat / Heatsink",
+      "source": "Design",
+      "catalog": "EC-0765",
+      "complaints": 3,
+      "s": 7,
+      "o": 5,
+      "d": 4,
+      "rpn": 140,
+      "trend": "↗",
+      "status": "In Progress"
+    },
+    {
+      "id": "FM-005",
+      "name": "Condensation",
+      "description": "Fogging on lens",
+      "function": "Protect components / Housing",
+      "source": "Catalog",
+      "catalog": "EC-1332",
+      "complaints": 15,
+      "s": 7,
+      "o": 6,
+      "d": 4,
+      "rpn": 168,
+      "trend": "↗",
+      "status": "Open"
+    },
+    {
+      "id": "FM-006",
+      "name": "Loose connector",
+      "description": "Connector loosen",
+      "function": "Provide electrical / Connector",
+      "source": "Complaints",
+      "catalog": "EC-2011",
+      "complaints": 18,
+      "s": 8,
+      "o": 5,
+      "d": 5,
+      "rpn": 200,
+      "trend": "↗",
+      "status": "Open"
+    }
+  ],
+  "causes": [
+    {
+      "id": "C-0001",
+      "name": "Wrong torque at screw connection",
+      "type": "Process",
+      "category": "Assembly",
+      "source": "Catalog",
+      "linked": "FM-004, FM-015",
+      "influence": 8,
+      "status": "Active"
+    },
+    {
+      "id": "C-0002",
+      "name": "Material out of specification",
+      "type": "Material",
+      "category": "Material",
+      "source": "Catalog",
+      "linked": "FM-007, FM-018",
+      "influence": 9,
+      "status": "Active"
+    },
+    {
+      "id": "C-0003",
+      "name": "Seal design not appropriate",
+      "type": "Design",
+      "category": "Design",
+      "source": "User",
+      "linked": "FM-002, FM-012",
+      "influence": 8,
+      "status": "Active"
+    },
+    {
+      "id": "C-0004",
+      "name": "Inadequate process parameters",
+      "type": "Process",
+      "category": "Process",
+      "source": "Catalog",
+      "linked": "FM-009",
+      "influence": 7,
+      "status": "Active"
+    },
+    {
+      "id": "C-0005",
+      "name": "Supplier quality issue",
+      "type": "External",
+      "category": "Supplier",
+      "source": "Catalog",
+      "linked": "FM-006, FM-011",
+      "influence": 9,
+      "status": "Under Review"
+    },
+    {
+      "id": "C-0006",
+      "name": "Operator not trained",
+      "type": "Human",
+      "category": "Human",
+      "source": "Catalog",
+      "linked": "FM-010, FM-016",
+      "influence": 7,
+      "status": "Active"
+    }
+  ],
+  "effects": [
+    {
+      "id": "E-001",
+      "name": "Loss of illumination",
+      "level": "End Effect",
+      "severity": 9,
+      "linked": 7,
+      "ap": "Medium",
+      "status": "Active"
+    },
+    {
+      "id": "E-002",
+      "name": "Reduced light output",
+      "level": "System Effect",
+      "severity": 8,
+      "linked": 6,
+      "ap": "Low",
+      "status": "Active"
+    },
+    {
+      "id": "E-003",
+      "name": "Reduced LED lifetime",
+      "level": "Subsequent L2",
+      "severity": 7,
+      "linked": 5,
+      "ap": "Medium",
+      "status": "Active"
+    },
+    {
+      "id": "E-004",
+      "name": "LED overheating",
+      "level": "Local Effect",
+      "severity": 8,
+      "linked": 7,
+      "ap": "Medium",
+      "status": "Active"
+    },
+    {
+      "id": "E-005",
+      "name": "Electrical failure",
+      "level": "System Effect",
+      "severity": 9,
+      "linked": 4,
+      "ap": "High",
+      "status": "Active"
+    }
+  ],
+  "preventionControls": [
+    {
+      "id": "PC-0234",
+      "name": "Poka-Yoke bracket presence sensor",
+      "category": "Process Controls",
+      "type": "Poka-Yoke",
+      "controlType": "Detection Prevention",
+      "linked": "FM-023, C-011",
+      "effectiveness": 85,
+      "operation": "OC-042 Assembly Verification",
+      "resource": "Vision Sensor Keyence IV3",
+      "status": "Active"
+    },
+    {
+      "id": "PC-0012",
+      "name": "Assembly fixture with locator pins",
+      "category": "Design Controls",
+      "type": "Mistake Proofing",
+      "controlType": "Physical Prevention",
+      "linked": "FM-023",
+      "effectiveness": 90,
+      "operation": "OC-015 Assembly Setup",
+      "resource": "Fixture F-23",
+      "status": "Active"
+    },
+    {
+      "id": "PC-0017",
+      "name": "Screw tightening torque control",
+      "category": "Process Controls",
+      "type": "Parameter Control",
+      "controlType": "Process Prevention",
+      "linked": "FM-017",
+      "effectiveness": 65,
+      "operation": "OC-031 Fastening",
+      "resource": "Torque Wrench",
+      "status": "Active"
+    },
+    {
+      "id": "PC-0021",
+      "name": "Incoming material inspection",
+      "category": "Supplier Controls",
+      "type": "Inspection",
+      "controlType": "Inspection Prevention",
+      "linked": "C-005",
+      "effectiveness": 80,
+      "operation": "OC-006 Receiving",
+      "resource": "Digital Caliper",
+      "status": "Active"
+    }
+  ],
+  "detectionControls": [
+    {
+      "id": "DC-0234",
+      "name": "AOI – Solder joint inspection",
+      "category": "Inspection Controls",
+      "type": "Automated",
+      "method": "Optical inspection",
+      "linked": "FM-023, C-011",
+      "effectiveness": 90,
+      "resource": "AOI Machine Model X500",
+      "operation": "OC-041 Soldering Line Inspection",
+      "status": "Active"
+    },
+    {
+      "id": "DC-0017",
+      "name": "Electrical continuity test",
+      "category": "Test Controls",
+      "type": "Manual",
+      "method": "Electrical test",
+      "linked": "FM-017",
+      "effectiveness": 85,
+      "resource": "Multimeter Fluke 117",
+      "operation": "OC-023 Electrical Test Station",
+      "status": "Active"
+    },
+    {
+      "id": "DC-0031",
+      "name": "Temperature cycling test",
+      "category": "Test Controls",
+      "type": "Automated",
+      "method": "Environmental test",
+      "linked": "FM-031",
+      "effectiveness": 65,
+      "resource": "Temp Chamber ESPEC SH-642",
+      "operation": "OC-051 Environmental Lab",
+      "status": "Active"
+    },
+    {
+      "id": "DC-0008",
+      "name": "Microscopic visual inspection",
+      "category": "Inspection Controls",
+      "type": "Manual",
+      "method": "Visual inspection",
+      "linked": "FM-008",
+      "effectiveness": 60,
+      "resource": "Stereo Microscope",
+      "operation": "OC-015 Assembly Verification",
+      "status": "Active"
+    }
+  ],
+  "processControls": [
+    {
+      "id": "PCC-001",
+      "step": "10 - Incoming Material",
+      "name": "Material ID / Lot Verification",
+      "type": "Administrative",
+      "method": "Barcode Scan",
+      "resource": "Handheld Scanner",
+      "frequency": "Each lot / Before use",
+      "links": 3,
+      "status": "Active",
+      "effectiveness": "Effective"
+    },
+    {
+      "id": "PCC-002",
+      "step": "20 - Cutting",
+      "name": "Cut Length Check",
+      "type": "Measurement",
+      "method": "Digital Caliper",
+      "resource": "Mitutoyo CD-15CPX",
+      "frequency": "Each piece / In-process",
+      "links": 2,
+      "status": "Active",
+      "effectiveness": "Effective"
+    },
+    {
+      "id": "PCC-003",
+      "step": "30 - Drilling",
+      "name": "Hole Position Check",
+      "type": "Measurement",
+      "method": "Go / No-Go Gauge",
+      "resource": "Custom Gauge",
+      "frequency": "Each piece / In-process",
+      "links": 2,
+      "status": "Active",
+      "effectiveness": "Effective"
+    },
+    {
+      "id": "PCC-004",
+      "step": "40 - Welding",
+      "name": "Weld Presence",
+      "type": "Detection",
+      "method": "Vision Sensor",
+      "resource": "Keyence IV3",
+      "frequency": "Each cycle / End",
+      "links": 3,
+      "status": "Active",
+      "effectiveness": "Effective"
+    },
+    {
+      "id": "PCC-006",
+      "step": "50 - Assembly",
+      "name": "Component Presence",
+      "type": "Poka-Yoke",
+      "method": "Presence Sensor",
+      "resource": "Banner QS18",
+      "frequency": "Before cycle release",
+      "links": 4,
+      "status": "Active",
+      "effectiveness": "Effective"
+    }
+  ],
+  "actions": [
+    {
+      "id": "A-2025-014",
+      "title": "Add bracket to protect presence sensor",
+      "linked": "FM-023",
+      "type": "Design Action",
+      "priority": "High",
+      "responsible": "Marko K.",
+      "start": "20.03.2025",
+      "due": "30.04.2025",
+      "status": "In Progress",
+      "complete": 65,
+      "reduction": 130
+    },
+    {
+      "id": "A-2025-018",
+      "title": "Increase torque specification for screw",
+      "linked": "FM-017",
+      "type": "Process Action",
+      "priority": "High",
+      "responsible": "Sara P.",
+      "start": "25.03.2025",
+      "due": "15.04.2025",
+      "status": "In Progress",
+      "complete": 40,
+      "reduction": 90
+    },
+    {
+      "id": "A-2025-022",
+      "title": "Add functional test at end of line",
+      "linked": "FM-031",
+      "type": "Detection Action",
+      "priority": "Medium",
+      "responsible": "Janez D.",
+      "start": "10.04.2025",
+      "due": "30.05.2025",
+      "status": "Open",
+      "complete": 0,
+      "reduction": 80
+    },
+    {
+      "id": "A-2025-025",
+      "title": "Supplier quality improvement plan",
+      "linked": "C-005",
+      "type": "Supplier Action",
+      "priority": "Medium",
+      "responsible": "Luka G.",
+      "start": "15.04.2025",
+      "due": "15.06.2025",
+      "status": "Open",
+      "complete": 0,
+      "reduction": 70
+    }
+  ],
+  "evidence": [
+    {
+      "id": "EVT-001",
+      "name": "Luminous Flux Verification",
+      "link": "F-01 / FM-01",
+      "type": "Validation",
+      "method": "Photometric Test Lab",
+      "status": "Completed",
+      "priority": "High",
+      "date": "08 May 2025",
+      "owner": "MK"
+    },
+    {
+      "id": "EVT-002",
+      "name": "Color Temperature Check",
+      "link": "F-01 / FM-01",
+      "type": "Validation",
+      "method": "Colorimeter Lab",
+      "status": "In Execution",
+      "priority": "Medium",
+      "date": "14 May 2025",
+      "owner": "AN"
+    },
+    {
+      "id": "EVT-003",
+      "name": "Vibration Durability Test",
+      "link": "F-02 / FM-03",
+      "type": "Reliability",
+      "method": "Vibration Test Lab",
+      "status": "Planned",
+      "priority": "High",
+      "date": "20 May 2025",
+      "owner": "PT"
+    },
+    {
+      "id": "EVT-004",
+      "name": "Ingress Protection Verification",
+      "link": "F-02 / FM-04",
+      "type": "Validation",
+      "method": "IP Test (IP67) Lab",
+      "status": "Planned",
+      "priority": "High",
+      "date": "22 May 2025",
+      "owner": "LK"
+    }
+  ],
+  "validations": [
+    {
+      "id": "VAL-001",
+      "name": "Optical Performance Test",
+      "linked": "DF-001, DF-002",
+      "stages": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "status": "Completed"
+    },
+    {
+      "id": "VAL-002",
+      "name": "Thermal Cycling Test",
+      "linked": "DF-003, PF-004",
+      "stages": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        0
+      ],
+      "status": "In Execution"
+    },
+    {
+      "id": "VAL-003",
+      "name": "Vibration Durability Test",
+      "linked": "DF-001",
+      "stages": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        0
+      ],
+      "status": "In Execution"
+    },
+    {
+      "id": "VAL-004",
+      "name": "Ingress Protection Test",
+      "linked": "DF-004, PF-005",
+      "stages": [
+        1,
+        1,
+        1,
+        1,
+        3,
+        0
+      ],
+      "status": "Overdue"
+    }
+  ],
+  "changes": [
+    {
+      "id": "CHG-024",
+      "title": "Lens material change PC → PC+ASA",
+      "type": "Design",
+      "source": "Engineering",
+      "reason": "Improve UV resistance",
+      "impact": "High",
+      "dfmea": 12,
+      "pfmea": 9,
+      "status": "Under Analysis",
+      "owner": "MK",
+      "date": "12 May 2025"
+    },
+    {
+      "id": "CHG-023",
+      "title": "LED supplier change",
+      "type": "Supplier",
+      "source": "Procurement",
+      "reason": "Supply continuity",
+      "impact": "Medium",
+      "dfmea": 6,
+      "pfmea": 8,
+      "status": "In Progress",
+      "owner": "AN",
+      "date": "08 May 2025"
+    },
+    {
+      "id": "CHG-022",
+      "title": "Lens geometry update (Optical performance)",
+      "type": "Design",
+      "source": "Engineering",
+      "reason": "Improve light pattern",
+      "impact": "High",
+      "dfmea": 18,
+      "pfmea": 14,
+      "status": "Under Analysis",
+      "owner": "LK",
+      "date": "06 May 2025"
+    },
+    {
+      "id": "CHG-021",
+      "title": "Change in legal requirement ECE R112",
+      "type": "Regulatory",
+      "source": "Regulatory",
+      "reason": "New requirement",
+      "impact": "Critical",
+      "dfmea": 24,
+      "pfmea": 17,
+      "status": "In Progress",
+      "owner": "JD",
+      "date": "02 May 2025"
+    }
+  ],
+  "characteristics": [
+    {
+      "id": "CR-001",
+      "name": "LMN-FLX",
+      "type": "FUNC",
+      "category": "OPT",
+      "importance": "Critical"
+    },
+    {
+      "id": "CR-002",
+      "name": "COL-TMP",
+      "type": "FUNC",
+      "category": "OPT",
+      "importance": "High"
+    },
+    {
+      "id": "CR-003",
+      "name": "BRM-PTN",
+      "type": "FUNC",
+      "category": "OPT",
+      "importance": "High"
+    },
+    {
+      "id": "CR-004",
+      "name": "PWR-CNS",
+      "type": "FUNC",
+      "category": "ELE",
+      "importance": "Critical"
+    },
+    {
+      "id": "CR-005",
+      "name": "OPR-VLT",
+      "type": "FUNC",
+      "category": "ELE",
+      "importance": "High"
+    },
+    {
+      "id": "CR-006",
+      "name": "ING-PRT",
+      "type": "FUNC",
+      "category": "MEC",
+      "importance": "Critical"
+    },
+    {
+      "id": "CR-007",
+      "name": "VIB-RES",
+      "type": "FUNC",
+      "category": "MEC",
+      "importance": "High"
+    },
+    {
+      "id": "CR-012",
+      "name": "DEC-FIN",
+      "type": "FUNC",
+      "category": "DEC",
+      "importance": "Low"
+    },
+    {
+      "id": "CR-013",
+      "name": "SAFE-TMP",
+      "type": "SAFE",
+      "category": "SAF",
+      "importance": "Critical"
+    }
+  ],
+  "transactions": [],
+  "knowledge": [],
+  "rootCauseAnalyses": [
+    {
+      "id": "RCA-2025-009",
+      "title": "Water ingress / seal failure investigation",
+      "method": "Ishikawa + 5 Why",
+      "linkedFailure": "FM-002",
+      "status": "In Progress",
+      "owner": "Marko Kovac",
+      "problem": "Water ingress detected during environmental testing.",
+      "categories": {
+        "Man": [
+          "Seal installation technique varies by operator"
+        ],
+        "Machine": [
+          "Fixture does not positively locate seal"
+        ],
+        "Method": [
+          "No explicit visual confirmation before release"
+        ],
+        "Material": [
+          "Seal compression variation between lots"
+        ],
+        "Measurement": [
+          "No in-line compression-height check"
+        ],
+        "Environment": [
+          "Temperature cycling increases dimensional variation"
+        ]
+      },
+      "whyChain": [
+        "Why did water enter the housing? — Seal did not provide full contact.",
+        "Why was full contact missing? — Seal was locally under-compressed.",
+        "Why was compression insufficient? — Assembly position varied.",
+        "Why could position vary? — Fixture permits positional tolerance.",
+        "Why was this not detected? — No poka-yoke / in-line verification existed."
+      ]
+    },
+    {
+      "id": "RCA-2025-011",
+      "title": "Incorrect weld / reduced joint strength",
+      "method": "3 Why",
+      "linkedFailure": "PF-004",
+      "status": "Open",
+      "owner": "Luka Sterle",
+      "problem": "Weld strength below requirement.",
+      "whyChain": [
+        "Why was weld strength low? — Heat input was below target.",
+        "Why was heat input below target? — Parameter set was incorrect.",
+        "Why was the wrong set used? — Recipe selection was not interlocked to product variant."
+      ]
+    }
+  ],
+  "eightD": [
+    {
+      "id": "8D-2025-006",
+      "title": "Recurring water ingress — Headlamp X1",
+      "linkedFailure": "FM-002",
+      "status": "In Progress",
+      "owner": "Janez Demo",
+      "team": "Quality + Design + Process",
+      "steps": {
+        "D0": "Emergency response initiated; affected stock blocked.",
+        "D1": "Cross-functional team formed.",
+        "D2": "Problem described using test, lot, date and affected configuration.",
+        "D3": "Containment: 100% leak test and quarantine suspect lots.",
+        "D4": "Root cause linked to RCA-2025-009.",
+        "D5": "Permanent corrective action: locator + seal-presence poka-yoke.",
+        "D6": "Validation planned through thermal cycling and ingress test.",
+        "D7": "Update PFMEA, controls, work instruction and lessons learned.",
+        "D8": "Closure pending effectiveness verification."
+      }
+    }
+  ],
+  "pokaYoke": [
+    {
+      "id": "PY-001",
+      "name": "Seal presence and seating verification",
+      "type": "Prevention + Detection",
+      "linkedFailure": "FM-002",
+      "linkedCause": "C-0003",
+      "process": "Housing Assembly",
+      "mechanism": "Presence sensor + fixture locator",
+      "reaction": "Block cycle and create deviation",
+      "status": "Proposed",
+      "effectivenessTarget": 90
+    },
+    {
+      "id": "PY-002",
+      "name": "Recipe-product interlock",
+      "type": "Prevention",
+      "linkedFailure": "PF-004",
+      "process": "Welding",
+      "mechanism": "Barcode selects locked weld recipe",
+      "reaction": "Prevent cycle on mismatch",
+      "status": "Planned",
+      "effectivenessTarget": 95
+    }
+  ],
+  "analysisMethods": {
+    "ishikawaCategories": [
+      "Man",
+      "Machine",
+      "Method",
+      "Material",
+      "Measurement",
+      "Environment"
+    ],
+    "fiveM": [
+      "Man",
+      "Machine",
+      "Method",
+      "Material",
+      "Measurement"
+    ],
+    "sixM": [
+      "Man",
+      "Machine",
+      "Method",
+      "Material",
+      "Measurement",
+      "Environment"
+    ],
+    "whyMethods": [
+      "3 Why",
+      "5 Why"
+    ],
+    "pokaYokePrinciples": [
+      "Prevention",
+      "Detection",
+      "Source inspection",
+      "100% check",
+      "Immediate reaction"
+    ]
+  }
+}

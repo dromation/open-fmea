@@ -1,0 +1,596 @@
+{
+  "at": "2026-09-13T16:57:34.870Z",
+  "checks": [
+    "Design classification filter",
+    "Explicit interface creation and traceable matrix",
+    "P-Diagram saved against source function and failure IDs",
+    "JSON import writes authoritative dataset in active project",
+    "CSV multiline round trip and numeric ratings",
+    "Invalid rating import is atomic",
+    "Portable container export/import preserves operational records",
+    "Invalid external container leaves state unchanged",
+    "New 8D and initially empty D0-D8 fields editable",
+    "WHY findings become source-linked drafts; unsupported approval blocked",
+    "Explicit evidence and completed-validation approval",
+    "Imported learning cannot silently become approved",
+    "Feedback quality affects deterministic retrieval ranking",
+    "Corrupt browser snapshot recovers to embedded data",
+    "Fresh-load responsive DFMEA and visible topbar controls at seven widths",
+    "HTML alone runs offline with no companion files or network requests; embedded engine reports known legacy defects",
+    "Repeated validation deduplicates findings and change impacts",
+    "Candidate requires human review and ratings before creating an application Design FMEA record",
+    "Rejected candidate never becomes an official failure mode",
+    "Imported validation definitions retain run results, findings and change impact IDs",
+    "Historical 1.8.0 validation seed migrates without adding the eleven-record focus dataset"
+  ],
+  "widths": [
+    {
+      "width": 320,
+      "overflow": false,
+      "controls": [
+        {
+          "name": "hamb",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "projectSel",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "globalSearch",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "notifBtn",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "helpBtn",
+          "visible": true,
+          "inViewport": true
+        }
+      ]
+    },
+    {
+      "width": 480,
+      "overflow": false,
+      "controls": [
+        {
+          "name": "hamb",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "projectSel",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "globalSearch",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "notifBtn",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "helpBtn",
+          "visible": true,
+          "inViewport": true
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "overflow": false,
+      "controls": [
+        {
+          "name": "hamb",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "projectSel",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "globalSearch",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "notifBtn",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "helpBtn",
+          "visible": true,
+          "inViewport": true
+        }
+      ]
+    },
+    {
+      "width": 1024,
+      "overflow": false,
+      "controls": [
+        {
+          "name": "hamb",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "projectSel",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "globalSearch",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "notifBtn",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "helpBtn",
+          "visible": true,
+          "inViewport": true
+        }
+      ]
+    },
+    {
+      "width": 1366,
+      "overflow": false,
+      "controls": [
+        {
+          "name": "hamb",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "projectSel",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "globalSearch",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "notifBtn",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "helpBtn",
+          "visible": true,
+          "inViewport": true
+        }
+      ]
+    },
+    {
+      "width": 1920,
+      "overflow": false,
+      "controls": [
+        {
+          "name": "hamb",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "projectSel",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "globalSearch",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "notifBtn",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "helpBtn",
+          "visible": true,
+          "inViewport": true
+        }
+      ]
+    },
+    {
+      "width": 2560,
+      "overflow": false,
+      "controls": [
+        {
+          "name": "hamb",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "projectSel",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "globalSearch",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "notifBtn",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "helpBtn",
+          "visible": true,
+          "inViewport": true
+        }
+      ]
+    }
+  ],
+  "embeddedEngine": {
+    "id": "RUN-0001",
+    "at": "2026-09-13T16:57:34.126Z",
+    "version": "1.8.2",
+    "viewport": 1366,
+    "checks": [
+      {
+        "id": "DATA-COLLECTIONS",
+        "name": "Source collections",
+        "status": "PASS",
+        "detail": "All required collections are available.",
+        "pages": [
+          "*"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "DATA-IDENTITY",
+        "name": "Unique canonical object IDs",
+        "status": "PASS",
+        "detail": "188 unique objects.",
+        "pages": [
+          "*"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "DATA-RATINGS",
+        "name": "Valid S/O/D range",
+        "status": "PASS",
+        "detail": "Ratings are integers from 1 to 10.",
+        "pages": [
+          "dfmea",
+          "pfmea"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "DATA-RPN",
+        "name": "RPN matches current S/O/D",
+        "status": "FAIL",
+        "detail": "DF-001, DF-002, DF-003, DF-004, DF-005, DF-006, DF-SW-001, DF-SW-002, DF-SW-003, DF-SW-004, DF-SW-005, PF-001, PF-002, PF-003, PF-004, PF-005, PF-006, PF-007",
+        "pages": [
+          "dfmea",
+          "pfmea",
+          "riskmatrix",
+          "risktrajectory"
+        ],
+        "affectedObjects": [
+          "DF-001",
+          "DF-002",
+          "DF-003",
+          "DF-004",
+          "DF-005",
+          "DF-006",
+          "DF-SW-001",
+          "DF-SW-002",
+          "DF-SW-003",
+          "DF-SW-004",
+          "DF-SW-005",
+          "PF-001",
+          "PF-002",
+          "PF-003",
+          "PF-004",
+          "PF-005",
+          "PF-006",
+          "PF-007"
+        ]
+      },
+      {
+        "id": "DATA-LINKS",
+        "name": "Broken reference detection",
+        "status": "FAIL",
+        "detail": "C-0001.linked → FM-015; C-0002.linked → FM-007; C-0002.linked → FM-018; C-0003.linked → FM-012; C-0004.linked → FM-009; C-0005.linked → FM-011; C-0006.linked → FM-010; C-0006.linked → FM-016; PC-0234.linked → FM-023; PC-0234.linked → C-011; PC-0012.linked → FM-023; PC-0017.linked → FM-017; PC-0021.linked → C-005; DC-0234.linked → FM-023; DC-0234.linked → C-011; DC-0017.linked → FM-017; DC-0031.linked → FM-031; DC-0008.linked → FM-008; A-2025-014.linked → FM-023; A-2025-018.linked → FM-017; A-2025-022.linked → FM-031; A-2025-025.linked → C-005; EVT-001.link → F-01; EVT-001.link → FM-01; EVT-002.link → F-01; EVT-002.link → FM-01; EVT-003.link → F-02; EVT-003.link → FM-03; EVT-004.link → F-02; EVT-004.link → FM-04",
+        "pages": [
+          "*"
+        ],
+        "affectedObjects": [
+          "C-0001",
+          "C-0002",
+          "C-0003",
+          "C-0004",
+          "C-0005",
+          "C-0006",
+          "PC-0234",
+          "PC-0012",
+          "PC-0017",
+          "PC-0021",
+          "DC-0234",
+          "DC-0017",
+          "DC-0031",
+          "DC-0008",
+          "A-2025-014",
+          "A-2025-018",
+          "A-2025-022",
+          "A-2025-025",
+          "EVT-001",
+          "EVT-002",
+          "EVT-003",
+          "EVT-004"
+        ]
+      },
+      {
+        "id": "DATA-ACTIONS",
+        "name": "Actions have a valid source link",
+        "status": "FAIL",
+        "detail": "A-2025-014, A-2025-018, A-2025-022, A-2025-025",
+        "pages": [
+          "dfmea",
+          "actions"
+        ],
+        "affectedObjects": [
+          "A-2025-014",
+          "A-2025-018",
+          "A-2025-022",
+          "A-2025-025"
+        ]
+      },
+      {
+        "id": "DATA-VALIDATION-LINKS",
+        "name": "DFMEA validation traceability",
+        "status": "FAIL",
+        "detail": "DF-005, DF-006",
+        "pages": [
+          "dfmea",
+          "validation"
+        ],
+        "affectedObjects": [
+          "DF-005",
+          "DF-006"
+        ]
+      },
+      {
+        "id": "SCHEMA-VERSION",
+        "name": "Runtime schema and version",
+        "status": "PASS",
+        "detail": "1.8.2-dfmea / 1.8.2",
+        "pages": [
+          "*"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "CONTAINER-ROUNDTRIP",
+        "name": "Portable state round trip",
+        "status": "PASS",
+        "detail": "JSON serialization and migration preserve DFMEA records.",
+        "pages": [
+          "*"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "CONTAINER-EMBEDDED",
+        "name": "Embedded fallback container",
+        "status": "PASS",
+        "detail": "Embedded fallback parses and matches the runtime schema. Operational edits may differ from defaults.",
+        "pages": [
+          "*"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "AUDIT-INTEGRITY",
+        "name": "Transaction structure and identity",
+        "status": "PASS",
+        "detail": "0 audit records checked.",
+        "pages": [
+          "*"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "LEARNING-PROVENANCE",
+        "name": "Approved learning provenance",
+        "status": "PASS",
+        "detail": "Approved cases cite sources; new approvals include evidence and completed validation.",
+        "pages": [
+          "learning",
+          "rca",
+          "why",
+          "ishikawa",
+          "eightd",
+          "pokayoke"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "CANDIDATE-BOUNDARY",
+        "name": "Candidate review boundary",
+        "status": "PASS",
+        "detail": "Candidates are separate from approved engineering records.",
+        "pages": [
+          "reqgaps",
+          "dfmea"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "BASELINE-DFMEA",
+        "name": "Controlled DFMEA requirements exist",
+        "status": "PASS",
+        "detail": "Checks use the recorded requirements. Exact visual parity requires human mockup review.",
+        "pages": [
+          "dfmea"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "RUNTIME-OFFLINE",
+        "name": "Single HTML runtime",
+        "status": "PASS",
+        "detail": "Runtime code, styles, calculations and validation engine are embedded.",
+        "pages": [
+          "*"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "REGRESSION-CALCULATOR",
+        "name": "Deterministic RPN regression",
+        "status": "PASS",
+        "detail": "8 × 2 × 3 = 48; initial RPN is retained.",
+        "pages": [
+          "dfmea",
+          "pfmea"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "REGRESSION-CSV",
+        "name": "Multiline CSV regression",
+        "status": "PASS",
+        "detail": "Quoted multiline fields retain record boundaries.",
+        "pages": [
+          "*"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "REGRESSION-LEARNING",
+        "name": "Feedback affects ranking",
+        "status": "PASS",
+        "detail": "Case quality contributes to deterministic retrieval scores.",
+        "pages": [
+          "learning"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "REGRESSION-MIGRATION",
+        "name": "Invalid collection migration rejected",
+        "status": "PASS",
+        "detail": "Malformed collections are rejected before replacing live state.",
+        "pages": [
+          "*"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "UI-PAGES",
+        "name": "Registered application pages",
+        "status": "PASS",
+        "detail": "34 page renderers registered.",
+        "pages": [
+          "*"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "UI-RENDER",
+        "name": "Application page rendering",
+        "status": "PASS",
+        "detail": "34 pages rendered without a runtime error.",
+        "pages": [
+          "*"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "UI-SHARED-NAV",
+        "name": "Consolidated navigation on every page",
+        "status": "PASS",
+        "detail": "All pages retain the same menu, including Ishikawa, WHY, 8D and Poka-Yoke.",
+        "pages": [
+          "*"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "UI-DFMEA-WIDGETS",
+        "name": "DFMEA required structure and controls",
+        "status": "PASS",
+        "detail": "Header controls, filters, table, details and analytics are present.",
+        "pages": [
+          "dfmea"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "UI-DFMEA-HANDLERS",
+        "name": "DFMEA controls have registered handlers",
+        "status": "PASS",
+        "detail": "88 enabled controls have event handlers.",
+        "pages": [
+          "dfmea"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "UI-DFMEA-SUBVIEWS",
+        "name": "Shared DFMEA alternate views",
+        "status": "PASS",
+        "detail": "All six views render from the same project records.",
+        "pages": [
+          "dfmea"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "UI-RESPONSIVE",
+        "name": "Responsive structure at current viewport",
+        "status": "PASS",
+        "detail": "1366 px: local table scrolling, visible details and header controls. Repeat at 320, 480, 768, 1024, 1366, 1920 and 2560 px.",
+        "pages": [
+          "dfmea"
+        ],
+        "affectedObjects": []
+      },
+      {
+        "id": "UI-READ-ONLY",
+        "name": "Rendering preserves authoritative records",
+        "status": "PASS",
+        "detail": "Page/subview changes must not alter engineering source data.",
+        "pages": [
+          "*"
+        ],
+        "affectedObjects": []
+      }
+    ],
+    "summary": {
+      "passed": 23,
+      "failed": 4
+    },
+    "visualReview": "Pending human comparison with controlled mockup"
+  },
+  "status": "PASS",
+  "limitations": [
+    "Historical legacy ratings and links still flagged",
+    "Other pages retain legacy reference widgets; not a full 23-page mockup acceptance"
+  ]
+}

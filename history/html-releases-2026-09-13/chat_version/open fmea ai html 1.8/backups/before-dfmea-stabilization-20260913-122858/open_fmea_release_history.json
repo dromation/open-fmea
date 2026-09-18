@@ -1,0 +1,156 @@
+[
+  {
+    "file": "open_fmea.html",
+    "sha256": "3e6adf28864e41bdce682406c169295979dc88faa4dfe23182489ab6e163016d",
+    "bytes": 76130,
+    "features": {
+      "risk_matrix": true,
+      "risk_trajectory": true,
+      "change_impact": true,
+      "projects": true,
+      "team": true,
+      "system_product_process": true,
+      "characteristics": true,
+      "ishikawa": false,
+      "fivewhy": false,
+      "eightd": true,
+      "pokayoke": true,
+      "learning": false,
+      "software_characteristics": false
+    },
+    "js_syntax_checked": true,
+    "role": "historical development baseline"
+  },
+  {
+    "file": "open_fmea_v1_1.html",
+    "sha256": "b85d4bdb96398e709a2883f6e21003c390afe9743623ce750b7aeb0e527555ae",
+    "bytes": 102704,
+    "features": {
+      "risk_matrix": true,
+      "risk_trajectory": true,
+      "change_impact": true,
+      "projects": true,
+      "team": true,
+      "system_product_process": true,
+      "characteristics": true,
+      "ishikawa": true,
+      "fivewhy": true,
+      "eightd": true,
+      "pokayoke": true,
+      "learning": false,
+      "software_characteristics": false
+    },
+    "js_syntax_checked": true,
+    "role": "historical development baseline"
+  },
+  {
+    "file": "open_fmea_v1_1_fixed.html",
+    "sha256": "3c17d9a0b6fc5e2d5f67633108b9c6bb2bf69c29b83cc24eabcad790446d99ba",
+    "bytes": 104876,
+    "features": {
+      "risk_matrix": true,
+      "risk_trajectory": true,
+      "change_impact": true,
+      "projects": true,
+      "team": true,
+      "system_product_process": true,
+      "characteristics": true,
+      "ishikawa": true,
+      "fivewhy": true,
+      "eightd": true,
+      "pokayoke": true,
+      "learning": false,
+      "software_characteristics": false
+    },
+    "js_syntax_checked": true,
+    "role": "historical development baseline"
+  },
+  {
+    "file": "open_fmea_v1_2.html",
+    "sha256": "8c970fc58894eae7415be963fd53eabf664383a04bf327f67aa782dd76c2fc6c",
+    "bytes": 96203,
+    "features": {
+      "risk_matrix": true,
+      "risk_trajectory": true,
+      "change_impact": true,
+      "projects": true,
+      "team": true,
+      "system_product_process": true,
+      "characteristics": true,
+      "ishikawa": true,
+      "fivewhy": true,
+      "eightd": true,
+      "pokayoke": true,
+      "learning": false,
+      "software_characteristics": false
+    },
+    "js_syntax_checked": true,
+    "role": "historical development baseline"
+  },
+  {
+    "file": "open_fmea_v1_3_functional.html",
+    "sha256": "2cb8bc26b327598760ad5cbd98ebeb4c98deaf724849d139d3459ff468aa13f8",
+    "bytes": 121710,
+    "features": {
+      "risk_matrix": true,
+      "risk_trajectory": true,
+      "change_impact": true,
+      "projects": true,
+      "team": true,
+      "system_product_process": true,
+      "characteristics": true,
+      "ishikawa": true,
+      "fivewhy": true,
+      "eightd": true,
+      "pokayoke": true,
+      "learning": false,
+      "software_characteristics": false
+    },
+    "js_syntax_checked": true,
+    "role": "historical development baseline"
+  },
+  {
+    "file": "open_fmea_v1_4_stable.html",
+    "sha256": "aa3904939704232b6a889f391c18bfb99511f2d3dfed4dea9e667a826732c707",
+    "bytes": 130383,
+    "features": {
+      "risk_matrix": true,
+      "risk_trajectory": true,
+      "change_impact": true,
+      "projects": true,
+      "team": true,
+      "system_product_process": true,
+      "characteristics": true,
+      "ishikawa": true,
+      "fivewhy": true,
+      "eightd": true,
+      "pokayoke": true,
+      "learning": false,
+      "software_characteristics": false
+    },
+    "js_syntax_checked": true,
+    "role": "historical development baseline"
+  },
+  {
+    "file": "open_fmea_v1_7_learning.html",
+    "sha256": "7af6a9c68053390e90f64d116f0aab18d9629d1c467bccd933cdde140535dade",
+    "bytes": 223890,
+    "features": {
+      "risk_matrix": true,
+      "risk_trajectory": true,
+      "change_impact": true,
+      "projects": true,
+      "team": true,
+      "system_product_process": true,
+      "characteristics": true,
+      "ishikawa": true,
+      "fivewhy": true,
+      "eightd": true,
+      "pokayoke": true,
+      "learning": true,
+      "software_characteristics": true
+    },
+    "js_syntax_checked": true,
+    "role": "historical development baseline"
+  }
+]

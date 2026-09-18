@@ -1,15 +1,29 @@
+> **Canonical HTML application:** open [`open_fmea.html`](open_fmea.html) directly in your browser. This standalone runtime requires no Python, Node, Django, server or database. Portable data is in [`open_fmea.container`](open_fmea.container). See [single HTML architecture and usage](architecture/open_fmea_runtime.md). Historical HTML versions are preserved under `history/`; the existing backend documentation below is retained for that separate codebase.
+
+<p align="center">
+  <img src="django_app/fmea_app/static/fmea_app/img/logo.png" alt="Open FMEA logo" width="96">
+</p>
+
 # Open FMEA
 
-Open FMEA is being rebuilt as a domain-first Django application for Failure Modes and Effects Analysis. The current development line keeps the legacy Tkinter prototype for reference, while new work starts from portable Python domain objects and thin Django persistence.
+Open FMEA is a local-first Django application for building, reviewing, and maintaining Failure Modes and Effects Analysis records. The current app combines a portable Python domain layer with Django persistence, workbook ingestion, review queues, risk evaluation, Ishikawa cause analysis, and focused FMEA workflow screens.
+
+## Available editions in this migration
+
+- **Standalone HTML:** open `open_fmea.html`; portable data is in `open_fmea.container`.
+- **Django application:** application packages in `django_app/` and portable rules in `domain/`.
+- **SharePoint Online demo:** see [installation instructions](open_fmea_sharepoint_version/INSTALLATION.md) and the [installable package](open_fmea_sharepoint_version/sharepoint/solution/open-fmea-sharepoint.sppkg). This edition currently uses personal browser storage.
+- **Architecture, tests, and history:** development documentation, test fixtures, and historical sources are included in this migration snapshot. Earlier public-release packaging notes below describe that earlier release scope.
+
+See [GitLab migration notes](docs/GITLAB_IMPORT.md).
 
 ## Repository Layout
 
 ```text
-architecture/                 Architecture reports, ADRs, and future specs
 django_app/                   Django project and application packages
 domain/fmea_domain/           Framework-free Open-FMEA domain model and rules
 docs/exchange-format/         Open-FMEA Exchange Format documentation and schema
-legacy/tkinter-prototype/     Frozen Tkinter/SQLite prototype from beta-v01
+samples/open_fmea/            Workbook fixtures used by ingestion tests
 tests/                        Domain and portability tests
 ```
 
@@ -22,14 +36,7 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-## Run Checks
-
-```powershell
-python -m unittest discover -s tests
-python manage.py check
-```
-
-## Run the Django PoC
+## Run the App
 
 ```powershell
 python manage.py migrate
@@ -37,15 +44,32 @@ python manage.py seed_demo
 python manage.py runserver
 ```
 
-Then open `http://127.0.0.1:8000/`.
+Open `http://127.0.0.1:8000/`.
 
-## Legacy Prototype
+## Run Checks
 
-The previous Tkinter/PyInstaller prototype is preserved under `legacy/tkinter-prototype/`. It is a historical reference and seed-data source, not the active architecture for new feature work.
+```powershell
+python -B manage.py check
+python -B manage.py makemigrations --check --dry-run
+python -B -m pytest
+```
 
-## Architecture
+## Current App Surface
 
-The starting architecture report is stored at `architecture/OpenFMEA_Architecture_and_Portability_Report.md`. The first ratified implementation decision is `architecture/adr/ADR-0000-adopt-django-poc-and-freeze-legacy.md`.
+- FMEA workspace dashboard
+- FMEA projects and team roster
+- DFMEA/PFMEA worksheet views
+- Product and process characteristics
+- Functions, failure modes, effects, causes, controls, and actions
+- Risk matrix and risk trajectory views
+- Ishikawa cause influence review
+- Workbook import and row-level review
+
+## Packaging Notes
+
+The application is designed to run locally from the Django project today. The historical prototype and architecture working notes are intentionally not part of the public app release branch.
+
+For a fresh local database, run `python manage.py migrate` and `python manage.py seed_demo` before starting the server.
 
 ## License
 

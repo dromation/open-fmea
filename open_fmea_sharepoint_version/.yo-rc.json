@@ -1,0 +1,23 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "whichFolder": "subdir",
+    "solutionName": "open-fmea-sharepoint",
+    "environment": "spo",
+    "packageManager": "npm",
+    "useGulp": false,
+    "componentType": "webpart",
+    "template": "minimal",
+    "componentName": "OpenFmea",
+    "componentDescription": "Open FMEA browser demo for SharePoint Online",
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "22.17.1",
+    "sdksVersions": {},
+    "version": "1.23.2",
+    "libraryName": "open-fmea-sharepoint",
+    "libraryId": "f96a5591-1c69-4704-8f73-b41b2f0ad8d3",
+    "solutionShortDescription": "open-fmea-sharepoint description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false
+  }
+}

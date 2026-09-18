@@ -1,0 +1,156 @@
+{
+  "schema": "open-fmea-pipeline/1.0",
+  "name": "Open FMEA Data Flow & Validation Pipeline",
+  "principles": {
+    "authoritative_state": "open_fmea.container",
+    "ui_baseline": "mockup validation registry",
+    "learning_corpus": "open_fmea_ai_knowledge.jsonl",
+    "human_context": [
+      ".md",
+      ".txt"
+    ],
+    "relational_companion": "SQLite",
+    "rule": "AI suggestions and validation findings never directly overwrite authoritative FMEA data."
+  },
+  "flows": [
+    {
+      "id": "FLOW-REQ-FMEA",
+      "name": "Requirement to FMEA",
+      "stages": [
+        "Source Requirement",
+        "Requirement Gap Detection",
+        "Candidate Failure Mode",
+        "Human Review",
+        "Approved FMEA Object",
+        "Controls & Actions",
+        "Validation",
+        "Residual Risk",
+        "Learning Case"
+      ],
+      "failure_conditions": [
+        "untraceable source",
+        "automatic approval",
+        "duplicate object",
+        "broken link"
+      ]
+    },
+    {
+      "id": "FLOW-MOCKUP-VALIDATION",
+      "name": "Mockup to validation to change",
+      "stages": [
+        "Mockup Baseline",
+        "Rendered Page",
+        "Visual/Functional Validation",
+        "Failure Finding",
+        "Change Impact",
+        "Corrective Change",
+        "Regression Validation",
+        "Approved Learning Case"
+      ],
+      "failure_conditions": [
+        "GUI drift",
+        "missing widget",
+        "dead control",
+        "wrong layout",
+        "wrong computed value",
+        "broken responsiveness",
+        "missing data linkage"
+      ]
+    },
+    {
+      "id": "FLOW-CHANGE-RISK",
+      "name": "Change impact propagation",
+      "stages": [
+        "Change Record",
+        "Affected Objects",
+        "DFMEA/PFMEA Re-evaluation",
+        "Controls/Actions",
+        "Validation Evidence",
+        "Risk Matrix",
+        "Risk Trajectory",
+        "Closure"
+      ],
+      "failure_conditions": [
+        "change not propagated",
+        "stale risk",
+        "missing validation",
+        "unresolved affected object"
+      ]
+    },
+    {
+      "id": "FLOW-PROBLEM-SOLVING",
+      "name": "Problem-solving learning loop",
+      "stages": [
+        "Failure/Issue",
+        "Ishikawa 5M/6M",
+        "3WHY/5WHY",
+        "8D",
+        "Poka-Yoke/Controls",
+        "Action",
+        "Evidence",
+        "Effectiveness Review",
+        "Learning Case"
+      ],
+      "failure_conditions": [
+        "root cause without evidence",
+        "action without verification",
+        "lesson learned without provenance"
+      ]
+    },
+    {
+      "id": "FLOW-AI-DECISION",
+      "name": "AI-assisted decision flow",
+      "stages": [
+        "User Question / Current Object",
+        "Retrieve Authoritative Data",
+        "Retrieve Mockup/Validation History",
+        "Retrieve Similar Learning Cases",
+        "Apply Deterministic Calculators/Rules",
+        "Rank Recommendations",
+        "Show Provenance",
+        "User Accept/Modify/Reject",
+        "Store Feedback"
+      ],
+      "failure_conditions": [
+        "AI invents authoritative state",
+        "missing provenance",
+        "feedback not recorded",
+        "model overwrites business rule"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "open_fmea.html",
+      "role": "runtime/UI"
+    },
+    {
+      "name": "open_fmea.container",
+      "role": "portable authoritative application state"
+    },
+    {
+      "name": "open_fmea_ai_knowledge.jsonl",
+      "role": "AI/case learning corpus"
+    },
+    {
+      "name": "open_fmea_validation_tests.jsonl",
+      "role": "mockup + functional validation registry"
+    },
+    {
+      "name": "open_fmea_dataflow_pipeline.json",
+      "role": "machine-readable flow/pipeline contract"
+    },
+    {
+      "name": "open_fmea_dataflow_pipeline.md",
+      "role": "human-readable architecture and validation workflow"
+    },
+    {
+      "name": "open_fmea.sqlite",
+      "role": "relational desktop/backend companion"
+    },
+    {
+      "name": "open_fmea.sql",
+      "role": "schema/export/migration representation"
+    }
+  ]
+}

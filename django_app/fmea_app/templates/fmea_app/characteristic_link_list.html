@@ -1,0 +1,210 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}Characteristics Flow - Open FMEA{% endblock %}
+{% block topbar_title %}Characteristics Flow{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>Characteristics Flow</h1>
+    <p class="muted">Manually recorded relationships between Product Characteristics.</p>
+  </div>
+  <a class="button primary" href="{% url 'fmea:characteristic_link_create' %}">New Link</a>
+</div>
+
+<form class="panel compact section-block" method="get" action="{% url 'fmea:characteristic_link_list' %}">
+  <div class="field-grid">
+    <label>Relationship Type
+      <select name="relationship_type">
+        <option value="">All</option>
+        {% for value, label in relationship_type_choices %}
+          <option value="{{ value }}" {% if relationship_type == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Characteristic
+      <select name="characteristic">
+        <option value="">All</option>
+        {% for characteristic in characteristics %}
+          <option value="{{ characteristic.pk }}" {% if characteristic_id == characteristic.pk|stringformat:"s" %}selected{% endif %}>{{ characteristic.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Category
+      <select name="category">
+        <option value="">All</option>
+        {% for term in classification_choices %}
+          <option value="{{ term.stable_id }}" {% if category_filter == term.stable_id %}selected{% endif %}>{{ term.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>System
+      <select name="system">
+        <option value="">All</option>
+        {% for system in system_choices %}
+          <option value="{{ system.stable_id }}" {% if system_filter == system.stable_id %}selected{% endif %}>{{ system.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>View
+      <select name="view">
+        <option value="" {% if not view_filter %}selected{% endif %}>All</option>
+        <option value="linked-only" {% if view_filter == "linked-only" %}selected{% endif %}>Linked only</option>
+        <option value="unlinked-only" {% if view_filter == "unlinked-only" %}selected{% endif %}>Unlinked only</option>
+      </select>
+    </label>
+    <div>
+      <button class="button" type="submit">Apply</button>
+    </div>
+  </div>
+</form>
+
+<div class="split">
+  <div class="stack">
+    <section class="panel">
+      <div class="table-shell">
+        <table>
+          <thead>
+            <tr>
+              <th>From Characteristic</th>
+              <th>To Characteristic</th>
+              <th>Relationship Type</th>
+              <th>Strength</th>
+              <th>Created By</th>
+              <th>Created At</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for link in links %}
+            <tr>
+              <td>
+                {{ link.from_characteristic.name }}
+                <span class="status">{{ link.from_characteristic.primary_classification.name|default:"Unclassified" }}</span>
+                {% if link.from_characteristic.is_special %}<span class="status status-active">Special</span>{% endif %}
+              </td>
+              <td>
+                {{ link.to_characteristic.name }}
+                <span class="status">{{ link.to_characteristic.primary_classification.name|default:"Unclassified" }}</span>
+                {% if link.to_characteristic.is_special %}<span class="status status-active">Special</span>{% endif %}
+              </td>
+              <td>{{ link.get_relationship_type_display }}</td>
+              <td>{{ link.get_strength_display }}</td>
+              <td>{{ link.created_by|default:"" }}</td>
+              <td>{{ link.created_at }}</td>
+              <td>
+                <a class="button" href="{{ query_prefix }}selected={{ link.from_characteristic.stable_id|urlencode }}">From</a>
+                <a class="button" href="{{ query_prefix }}selected={{ link.to_characteristic.stable_id|urlencode }}">To</a>
+                <form method="post" action="{% url 'fmea:characteristic_link_delete' link.stable_id %}">
+                  {% csrf_token %}
+                  <button class="button" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="7" class="muted">No characteristic links recorded yet.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading">
+        <h2>Coverage Summary</h2>
+        <p class="muted">Plain counts over the currently filtered characteristics. No composite score.</p>
+      </div>
+      <div class="grid">
+        {% include "fmea_app/_components/_stat_tile.html" with label="Total in View" value=coverage_total_in_view tile_class="span-3" %}
+        {% include "fmea_app/_components/_stat_tile.html" with label="Linked" value=coverage_linked_in_view tile_class="span-3" %}
+        {% include "fmea_app/_components/_stat_tile.html" with label="Unlinked" value=coverage_unlinked_in_view tile_class="span-3" %}
+        {% include "fmea_app/_components/_stat_tile.html" with label="Total Links" value=coverage_total_link_count tile_class="span-3" %}
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading">
+        <h2>Unlinked Characteristics</h2>
+        <p class="muted">Product Characteristics with zero recorded links, in the currently filtered set.</p>
+      </div>
+      {% if unlinked_characteristics %}
+        <ul class="related-list">
+          {% for characteristic in unlinked_characteristics %}
+            <li>
+              {{ characteristic.name }}
+              <span class="status">{{ characteristic.primary_classification.name|default:"Unclassified" }}</span>
+              {% if characteristic.is_special %}<span class="status status-active">Special</span>{% endif %}
+              <a href="{% url 'fmea:product_characteristic_list' %}?selected={{ characteristic.stable_id|urlencode }}">View in Product Characteristics</a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="muted">None - every characteristic in the current view has at least one link.</p>
+      {% endif %}
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading">
+        <h2>Relationship Type Legend</h2>
+      </div>
+      <ul class="related-list">
+        {% for value, label in relationship_type_choices %}
+          <li>{{ label }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+  </div>
+
+  <aside class="panel detail-panel">
+    {% if selected_characteristic %}
+      <div class="panel-heading">
+        <h2>
+          {{ selected_characteristic.name }}
+          <span class="status">{{ selected_characteristic.primary_classification.name|default:"Unclassified" }}</span>
+          {% if selected_characteristic.is_special %}<span class="status status-active">Special</span>{% endif %}
+        </h2>
+        <p class="muted"><code>{{ selected_characteristic.stable_id }}</code></p>
+      </div>
+
+      <div class="panel-heading">
+        <h3>Incoming</h3>
+      </div>
+      {% if selected_incoming_links %}
+        <ul class="related-list">
+          {% for link in selected_incoming_links %}
+            <li>
+              {{ link.from_characteristic.name }}
+              <span class="muted">({{ link.get_relationship_type_display }}, {{ link.get_strength_display }})</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="muted">None recorded.</p>
+      {% endif %}
+
+      <div class="panel-heading">
+        <h3>Outgoing</h3>
+      </div>
+      {% if selected_outgoing_links %}
+        <ul class="related-list">
+          {% for link in selected_outgoing_links %}
+            <li>
+              {{ link.to_characteristic.name }}
+              <span class="muted">({{ link.get_relationship_type_display }}, {{ link.get_strength_display }})</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="muted">None recorded.</p>
+      {% endif %}
+    {% else %}
+      <div class="panel-heading">
+        <h2>Detail Panel</h2>
+      </div>
+      <p class="muted">Select a characteristic's "From"/"To" link to see its Incoming/Outgoing relationships here.</p>
+    {% endif %}
+  </aside>
+</div>
+{% endblock %}

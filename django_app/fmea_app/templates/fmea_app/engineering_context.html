@@ -1,0 +1,83 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}Engineering Context - Open FMEA{% endblock %}
+{% block topbar_title %}Engineering Context{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>Engineering Context</h1>
+    <p class="muted">Products and processes across all FMEA projects, in one place.</p>
+  </div>
+</div>
+
+<div class="grid">
+  <section class="panel span-6">
+    <div class="panel-heading">
+      <h2>Products</h2>
+      <p class="muted">Function count is computed from linked Function records.</p>
+    </div>
+    <div class="table-shell">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Part Number</th>
+            <th>FMEA</th>
+            <th>Functions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for product in products %}
+          <tr>
+            <td>{{ product.name }}</td>
+            <td>{{ product.part_number|default:"" }}</td>
+            <td><a href="{% url 'fmea:fmea_detail' product.fmea.stable_id %}">{{ product.fmea.name }}</a></td>
+            <td>{{ product.function_count }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4" class="muted">No products yet.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel span-6">
+    <div class="panel-heading">
+      <h2>Processes</h2>
+      <p class="muted">Operation count is computed from linked Operation records.</p>
+    </div>
+    <div class="table-shell">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Process Code</th>
+            <th>FMEA</th>
+            <th>Operations</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for process in processes %}
+          <tr>
+            <td>{{ process.name }}</td>
+            <td>{{ process.process_code|default:"" }}</td>
+            <td><a href="{% url 'fmea:fmea_detail' process.fmea.stable_id %}">{{ process.fmea.name }}</a></td>
+            <td>{{ process.operation_count }}</td>
+            <td><a href="{% url 'fmea:process_flow' process.stable_id %}">Process Flow</a></td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" class="muted">No processes yet.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+{% endblock %}

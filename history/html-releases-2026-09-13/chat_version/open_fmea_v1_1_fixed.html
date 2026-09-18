@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Open FMEA</title>
+<style>
+:root{
+  --bg:#f5f7fb;--panel:#fff;--panel2:#f8fafc;--line:#e4e9f1;--text:#111827;--muted:#667085;
+  --blue:#075de8;--blue2:#eaf2ff;--nav:#06213b;--nav2:#071a2d;--green:#12a36d;--green2:#e8f8f2;
+  --orange:#f59e0b;--orange2:#fff6df;--red:#e53935;--red2:#fff0ef;--purple:#7c3aed;--purple2:#f2ecff;
+  --cyan:#0891b2;--gray:#98a2b3;--radius:10px;--shadow:0 1px 2px rgba(16,24,40,.04),0 2px 8px rgba(16,24,40,.04);
+  --navw:222px;--top:66px;--right:320px;
+}
+*{box-sizing:border-box} html,body{margin:0;height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--text);background:var(--bg);font-size:13px}
+body{overflow:hidden}.hidden{display:none!important}button,input,select,textarea{font:inherit}.muted{color:var(--muted)}
+#app{display:grid;grid-template-columns:var(--navw) minmax(0,1fr);grid-template-rows:var(--top) 1fr;height:100vh}
+.sidebar{grid-row:1/3;background:linear-gradient(180deg,var(--nav),var(--nav2));color:#fff;overflow:auto;padding:16px 10px 14px}
+.brand{display:flex;align-items:center;gap:10px;padding:0 6px 18px}.brand-mark{width:42px;height:42px;flex:0 0 42px}.brand-mark svg{display:block;width:42px;height:42px}.brand b{font-size:20px}.brand small{display:block;color:#c7d6e6;margin-top:2px}
+.navgrp{font-size:10px;color:#a9bed1;text-transform:uppercase;letter-spacing:.06em;margin:14px 8px 6px}.navbtn{width:100%;display:flex;align-items:center;gap:9px;background:transparent;border:0;color:#eef5fb;padding:8px 9px;border-radius:6px;text-align:left}.navbtn:hover{background:rgba(255,255,255,.07)}.navbtn.active{background:linear-gradient(90deg,#0e66f2,#0757d9)}.navbtn .ic{width:18px;text-align:center;opacity:.95}.navbtn .badge{margin-left:auto;background:#173653;color:#b9d1e3;border-radius:999px;padding:1px 6px;font-size:10px}.subnav{padding-left:16px}.subnav .navbtn{font-size:12px;color:#d6e3ef}
+.topbar{grid-column:2;display:flex;align-items:center;gap:12px;background:#fff;border-bottom:1px solid var(--line);padding:0 18px;z-index:4}.hamb{font-size:22px;border:0;background:none}.title{font-size:18px;font-weight:700;margin-right:auto}.project-select,.search{height:38px;border:1px solid var(--line);background:#fff;border-radius:7px;padding:0 12px}.project-select{min-width:250px}.search{width:200px}.topicon{width:36px;height:36px;border:0;background:#fff;border-radius:50%;font-size:17px}.avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#4f6fdc;color:#fff;position:relative}.avatar:after{content:"";position:absolute;width:8px;height:8px;border-radius:50%;background:#13b76a;right:0;bottom:0;border:2px solid #fff}
+.main{grid-column:2;overflow:auto;padding:14px 16px 28px}.layout{display:grid;grid-template-columns:minmax(0,1fr) var(--right);gap:12px}.layout.no-right{grid-template-columns:minmax(0,1fr)}.content{min-width:0}.rightcol{min-width:0}
+.pagehead{display:flex;align-items:flex-start;gap:12px;margin:2px 2px 12px}.pagehead h1{font-size:22px;margin:0 0 3px}.pagehead p{margin:0;color:var(--muted)}.actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:#fff;border-radius:6px;padding:8px 11px;color:#1f2937}.btn:hover{background:#f8fafc}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}.btn.soft{background:#f7f9fc}.btn.ai{color:#6d28d9}.btn.danger{color:var(--red)}
+.kpis{display:grid;grid-template-columns:repeat(6,minmax(115px,1fr));gap:10px;margin-bottom:12px}.kpi{background:#fff;border:1px solid var(--line);border-radius:8px;padding:14px;box-shadow:var(--shadow);min-height:98px}.kpi .top{display:flex;align-items:center;gap:10px}.kpi .ico{width:42px;height:42px;border-radius:9px;display:grid;place-items:center;font-size:22px}.kpi .lab{font-size:11px;font-weight:600}.kpi .val{font-size:25px;font-weight:700;line-height:1.1;margin:6px 0 4px}.kpi .foot{font-size:11px;color:var(--muted)}.bluebg{background:var(--blue2);color:var(--blue)}.greenbg{background:var(--green2);color:var(--green)}.orangebg{background:var(--orange2);color:var(--orange)}.redbg{background:var(--red2);color:var(--red)}.purplebg{background:var(--purple2);color:var(--purple)}
+.panel{background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden}.ph{display:flex;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);font-weight:700}.ph .tabs{display:flex;gap:24px;font-weight:500}.tab{padding:12px 0 10px;border-bottom:2px solid transparent;color:#344054;cursor:pointer}.tab.active{color:var(--blue);border-color:var(--blue)}.pb{padding:14px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.filters{display:flex;gap:10px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line);flex-wrap:wrap}.filters input,.filters select{height:34px;border:1px solid var(--line);border-radius:6px;padding:0 10px;background:#fff}.filters input{min-width:170px}.filters .spacer{flex:1}
+.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:11px}th{background:#fbfcfe;color:#475467;text-align:left;font-weight:600;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}td{padding:9px 10px;border-bottom:1px solid #edf0f4;vertical-align:middle}tbody tr{cursor:pointer}tbody tr:hover{background:#f7faff}tbody tr.sel{background:#eef5ff}.idlink{color:var(--blue);font-weight:600}.pill{display:inline-flex;align-items:center;border-radius:5px;padding:3px 6px;font-size:10px;white-space:nowrap}.p-blue{background:#e8f0ff;color:#075de8}.p-green{background:#e5f6ef;color:#087a52}.p-orange{background:#fff2df;color:#c56900}.p-red{background:#ffe8e7;color:#d92d20}.p-purple{background:#f1e8ff;color:#6d28d9}.p-gray{background:#f2f4f7;color:#475467}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+.detail{background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);min-height:180px}.detail .dh{display:flex;align-items:center;padding:14px;border-bottom:1px solid var(--line)}.detail .dh h3{margin:0;font-size:15px}.detail .db{padding:14px}.kv{display:grid;grid-template-columns:115px 1fr;gap:8px 10px;font-size:11px;margin-bottom:7px}.kv .k{color:#667085}.section-title{font-size:12px;font-weight:700;margin:15px 0 8px}.bigid{font-size:20px;font-weight:700;margin:2px 0 10px}.scoregrid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:10px 0}.score{border:1px solid var(--line);border-radius:6px;padding:9px;text-align:center}.score b{font-size:20px;display:block}.mini-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.chartbox{height:220px;position:relative}.donut{width:132px;height:132px;border-radius:50%;background:conic-gradient(var(--green) 0 55%,var(--orange) 55% 82%,var(--red) 82% 95%,#98a2b3 95%);display:grid;place-items:center;margin:auto}.donut:after{content:"";width:82px;height:82px;border-radius:50%;background:#fff}.donut-label{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;font-weight:700}.barrow{display:grid;grid-template-columns:130px 1fr 42px;align-items:center;gap:8px;margin:9px 0;font-size:11px}.bar{height:8px;background:#edf0f4;border-radius:999px;overflow:hidden}.bar i{display:block;height:100%;background:var(--blue);border-radius:999px}.timeline{display:flex;align-items:center;gap:0;padding:22px 8px 18px}.stage{flex:1;text-align:center;position:relative}.stage:not(:last-child):after{content:"";position:absolute;left:55%;right:-45%;top:10px;height:2px;background:#ccd7e5}.stage .ball{width:18px;height:18px;border-radius:50%;margin:0 auto 8px;border:2px solid var(--blue);background:#fff;position:relative;z-index:1}.stage.done .ball{background:var(--green);border-color:var(--green)}.stage.plan .ball{border-color:var(--orange)}.stage label{font-size:10px;color:#475467}
+.matrix{display:grid;grid-template-columns:42px repeat(5,1fr);gap:1px;background:#fff}.mcell{min-height:48px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.45);font-size:11px}.mhead{background:#f8fafc;font-weight:600}.risk-l{background:#bde5c9}.risk-m{background:#ffe8a3}.risk-h{background:#ffb347}.risk-vh{background:#ef6b61;color:#fff}.risk-ext{background:#d93630;color:#fff}.nodegraph{min-height:370px;position:relative;background:linear-gradient(#fff,#fcfdff)}.node{position:absolute;width:86px;height:86px;border-radius:50%;display:grid;place-items:center;text-align:center;color:#fff;font-size:10px;padding:8px;box-shadow:0 3px 10px rgba(0,0,0,.12)}.node.center{left:45%;top:39%;background:#2563eb}.node.n1{left:46%;top:7%;background:#e11d48}.node.n2{left:74%;top:18%;background:#f97316}.node.n3{left:78%;top:57%;background:#f59e0b}.node.n4{left:45%;top:72%;background:#eab308}.node.n5{left:18%;top:60%;background:#eab308}.node.n6{left:15%;top:20%;background:#f97316}.node.n7{left:8%;top:40%;background:#059669}.connector{position:absolute;height:2px;background:#b6c4d7;transform-origin:left center}.c1{left:49%;top:39%;width:105px;transform:rotate(-90deg)}.c2{left:53%;top:45%;width:195px;transform:rotate(-27deg)}.c3{left:53%;top:49%;width:205px;transform:rotate(22deg)}.c4{left:50%;top:54%;width:120px;transform:rotate(90deg)}.c5{left:45%;top:51%;width:195px;transform:rotate(155deg)}.c6{left:45%;top:45%;width:190px;transform:rotate(208deg)}.c7{left:45%;top:48%;width:230px;transform:rotate(180deg)}
+.flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.flowbox{border:1px solid var(--line);border-radius:6px;padding:10px;min-width:120px;background:#f9fbfe}.arrow{color:#98a2b3;font-size:18px}.spark{height:80px;position:relative}.spark svg{width:100%;height:100%}.summarycards{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.smallcard{border:1px solid var(--line);border-radius:7px;padding:10px;background:#fff}.smallcard b{display:block;font-size:20px;margin-top:4px}
+.ai-panel{position:fixed;right:18px;bottom:18px;width:390px;max-height:72vh;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 20px 50px rgba(16,24,40,.18);z-index:30;display:none;overflow:hidden}.ai-panel.open{display:flex;flex-direction:column}.ai-head{display:flex;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);font-weight:700}.ai-log{padding:12px;overflow:auto;min-height:180px}.msg{border-radius:8px;padding:9px 10px;margin:7px 0;background:#f5f7fb}.msg.user{background:#eaf2ff}.ai-input{display:flex;gap:7px;padding:10px;border-top:1px solid var(--line)}.ai-input input{flex:1;border:1px solid var(--line);border-radius:6px;padding:9px}.source{font-size:10px;color:#667085;margin-top:5px}.kind{font-size:9px;border-radius:4px;background:#f2f4f7;padding:2px 4px;margin-right:5px}
+.modalbg{position:fixed;inset:0;background:rgba(15,23,42,.3);display:none;place-items:center;z-index:40}.modalbg.open{display:grid}.modal{width:min(620px,92vw);background:#fff;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.2);padding:18px}.modal h3{margin:0 0 14px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.formgrid label{font-size:11px;color:#667085}.formgrid input,.formgrid select,.formgrid textarea{width:100%;border:1px solid var(--line);border-radius:6px;padding:8px;margin-top:4px}.modal .foot{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+.footerline{display:flex;gap:30px;color:#667085;font-size:10px;padding:8px 12px;border-top:1px solid var(--line);background:#fff}.homegrid{display:grid;grid-template-columns:1.05fr 1.4fr 1.1fr;gap:10px}.homebottom{display:grid;grid-template-columns:1fr 1.2fr 1fr 1.2fr;gap:10px}.processlist{list-style:none;padding:0;margin:6px 0}.processlist li{padding:8px;border-left:1px solid #d0d5dd;margin-left:7px}.processlist li.active{background:#eef5ff;color:var(--blue);border-radius:5px}.riskline{display:grid;grid-template-columns:120px repeat(6,1fr) 30px;align-items:center;gap:0;margin:9px 0}.riskline .seg{height:2px;background:#ccd5e2}.riskline .pt{width:9px;height:9px;border-radius:50%;background:var(--green);justify-self:center}.riskline .pt.hot{background:var(--red)}.riskline .pt.mid{background:var(--orange)}
+@media(max-width:1200px){:root{--right:280px}.kpis{grid-template-columns:repeat(3,1fr)}.homegrid,.homebottom{grid-template-columns:1fr 1fr}.project-select{min-width:190px}.summarycards{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:900px){:root{--navw:66px}.brand .txt,.navbtn span:not(.ic),.navgrp,.subnav{display:none}.sidebar{padding:12px 8px}.layout{grid-template-columns:1fr}.rightcol{display:none}.kpis{grid-template-columns:repeat(2,1fr)}.homegrid,.homebottom,.grid2,.grid3,.grid4,.grid5{grid-template-columns:1fr}.search{display:none}.project-select{min-width:140px;width:140px}}
+
+/* mockup-aligned refinement */
+:root{--nav:#06233f;--nav2:#041b31;--bg:#f8fafc;--line:#e6ebf2;--radius:8px}
+.sidebar{box-shadow:inset -1px 0 0 rgba(255,255,255,.06)}
+.topbar{height:66px}.main{padding:14px 16px 22px}.panel,.kpi,.detail{border-color:#e8edf3;box-shadow:0 1px 3px rgba(15,23,42,.035)}
+.kpi{min-height:92px}.navbtn{min-height:34px}.pagehead h1{letter-spacing:-.02em}.pagehead p{font-size:12px}.btn{font-weight:600}
+.methodgrid{display:grid;grid-template-columns:280px minmax(0,1fr);gap:12px}.methodlist{display:grid;gap:7px}.methodcard{border:1px solid var(--line);background:#fff;border-radius:8px;padding:11px;cursor:pointer}.methodcard.active{border-color:#8ab7ff;background:#f1f6ff}.methodcard b{display:block}.methodcard small{color:var(--muted)}
+.fishbone{min-height:430px;position:relative;overflow:hidden;background:linear-gradient(180deg,#fff,#fbfdff)}.fishbone .spine{position:absolute;left:10%;right:12%;top:50%;height:3px;background:#64748b}.fishbone .head{position:absolute;right:2%;top:43%;width:130px;padding:14px;border:2px solid #2563eb;border-radius:50%;background:#eff6ff;text-align:center;font-weight:700}.bone{position:absolute;width:235px;border-top:2px solid #94a3b8;transform-origin:left center}.bone .btitle{position:absolute;left:35px;top:-30px;font-weight:700;color:#0f172a}.bone .chips{position:absolute;left:45px;top:2px;width:175px;display:grid;gap:4px}.chip{background:#fff;border:1px solid #dbe4ef;border-radius:5px;padding:5px 7px;font-size:10px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+.b1{left:14%;top:49%;transform:rotate(-32deg)}.b2{left:38%;top:49%;transform:rotate(-32deg)}.b3{left:61%;top:49%;transform:rotate(-32deg)}.b4{left:22%;top:51%;transform:rotate(32deg)}.b5{left:46%;top:51%;transform:rotate(32deg)}.b6{left:69%;top:51%;transform:rotate(32deg)}
+.whychain{display:grid;gap:9px}.whyrow{display:grid;grid-template-columns:64px 1fr 34px;align-items:center;gap:8px}.whybadge{width:54px;height:54px;border-radius:50%;background:#eaf2ff;color:#075de8;display:grid;place-items:center;font-weight:800}.whybox{border:1px solid var(--line);border-radius:8px;padding:11px;background:#fff}.whyarrow{font-size:20px;color:#94a3b8;text-align:center}
+.dsteps{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.dstep{border:1px solid var(--line);border-radius:8px;padding:11px;background:#fff;min-height:125px}.dstep.done{border-top:3px solid var(--green)}.dstep.progress{border-top:3px solid var(--blue)}.dstep.plan{border-top:3px solid var(--orange)}.dnum{font-size:18px;font-weight:800;color:var(--blue)}
+.taxonomy{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.taxbox{border:1px solid var(--line);border-radius:8px;background:#fff;padding:12px}.taxbox h4{margin:0 0 8px}.mini-tag{display:inline-block;margin:2px;padding:3px 6px;border-radius:999px;background:#eef2ff;color:#334155;font-size:10px}
+@media(max-width:1100px){.methodgrid{grid-template-columns:1fr}.dsteps{grid-template-columns:repeat(2,1fr)}.taxonomy{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<div id="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark" aria-label="Open FMEA logo"><svg viewBox="0 0 48 48" role="img"><defs><linearGradient id="ob" x1="0" x2="1"><stop stop-color="#0ea5e9"/><stop offset="1" stop-color="#2563eb"/></linearGradient><linearGradient id="og" x1="0" x2="1"><stop stop-color="#22c55e"/><stop offset="1" stop-color="#84cc16"/></linearGradient></defs><path d="M8 7 L40 39" stroke="url(#ob)" stroke-width="7" stroke-linecap="round"/><path d="M40 7 L8 39" stroke="url(#og)" stroke-width="7" stroke-linecap="round"/><path d="M9 38 L20 27" stroke="#ef4444" stroke-width="7" stroke-linecap="round"/><circle cx="24" cy="24" r="4" fill="#071a2d" stroke="#fff" stroke-width="1.4"/></svg></div><div class="txt"><b>Open FMEA</b><small>Open-EQMS Family</small></div></div>
+    <div id="nav"></div>
+  </aside>
+  <header class="topbar">
+    <button class="hamb">☰</button><div class="title" id="pageTitle">Home</div>
+    <select class="project-select" id="projectSel"><option>Project: New Headlamp X1</option><option>Project: Real Light Y2</option><option>Project: Control Unit Z3</option></select>
+    <input class="search" id="globalSearch" placeholder="⌕  Search (Ctrl+K)" />
+    <button class="topicon">🔔</button><button class="topicon">?</button><div class="avatar">JD</div>
+  </header>
+  <main class="main"><div id="page"></div></main>
+</div>
+<div class="ai-panel" id="aiPanel"><div class="ai-head">✦ Open FMEA AI Assistant <button class="btn" style="margin-left:auto;padding:4px 8px" id="aiClose">×</button></div><div class="ai-log" id="aiLog"></div><div class="ai-input"><input id="aiInput" placeholder="Ask about selected FMEA context..."><button class="btn primary" id="aiSend">Send</button></div></div>
+<div class="modalbg" id="modalBg"><div class="modal" id="modal"></div></div>
+<script type="application/json" id="open-fmea-container">
+{
+  "manifest": {
+    "format": "open_fmea.container",
+    "schemaVersion": "1.1.0",
+    "name": "Open FMEA Embedded Container",
+    "project": "New Headlamp X1",
+    "mode": "single-html",
+    "knowledgeVersion": 1,
+    "uiReference": "Open FMEA mockups 01-23",
+    "methods": [
+      "DFMEA",
+      "PFMEA",
+      "System FMEA",
+      "PM-FMEA",
+      "Ishikawa",
+      "3WHY",
+      "5WHY",
+      "5M",
+      "6M",
+      "Poka-Yoke",
+      "8D"
+    ]
+  },
+  "settings": {
+    "riskMethod": "RPN",
+    "apEnabled": true,
+    "theme": "light",
+    "workspace": "Global"
+  },
+  "users": [
+    {
+      "id": "USR-JD",
+      "name": "Janez Demo",
+      "role": "Quality Engineer",
+      "authority": "Project Owner"
+    },
+    {
+      "id": "USR-MK",
+      "name": "Marko Kovac",
+      "role": "Design Engineer"
+    },
+    {
+      "id": "USR-AN",
+      "name": "Ana Novak",
+      "role": "Process Engineer"
+    },
+    {
+      "id": "USR-PT",
+      "name": "Peter Turk",
+      "role": "Quality Engineer"
+    },
+    {
+      "id": "USR-LS",
+      "name": "Luka Sterle",
+      "role": "Manufacturing Engineer"
+    }
+  ],
+  "projects": [
+    {
+      "id": "P-001",
+      "name": "New Headlamp X1",
+      "status": "In Progress",
+      "types": [
+        "DFMEA",
+        "PFMEA",
+        "System FMEA",
+        "PM-FMEA"
+      ],
+      "revision": "A"
+    }
+  ],
+  "dfmea": [
+    {
+      "id": "DF-001",
+      "element": "Housing (Lens)",
+      "function": "Provide light transmission",
+      "failure": "Lens crack",
+      "effect": "Reduced light output, water ingress",
+      "cause": "Impact, stress concentration",
+      "s": 8,
+      "o": 4,
+      "d": 4,
+      "p": 3,
+      "initial": 128,
+      "current": 48,
+      "actions": "2/1",
+      "status": "Open",
+      "owner": "Marko Kovac"
+    },
+    {
+      "id": "DF-002",
+      "element": "LED Module",
+      "function": "Generate light",
+      "failure": "LED failure (no light)",
+      "effect": "No illumination",
+      "cause": "Over current, thermal stress",
+      "s": 9,
+      "o": 3,
+      "d": 3,
+      "p": 4,
+      "initial": 108,
+      "current": 36,
+      "actions": "1/0",
+      "status": "Open",
+      "owner": "Janez Demo"
+    },
+    {
+      "id": "DF-003",
+      "element": "Heatsink",
+      "function": "Dissipate heat",
+      "failure": "Insufficient cooling",
+      "effect": "Shorter life, lumen drop",
+      "cause": "Design margin low, clogging",
+      "s": 7,
+      "o": 4,
+      "d": 4,
+      "p": 3,
+      "initial": 112,
+      "current": 56,
+      "actions": "2/1",
+      "status": "Open",
+      "owner": "Luka Sterle"
+    },
+    {
+      "id": "DF-004",
+      "element": "Driver PCB",
+      "function": "Supply stable current",
+      "failure": "Driver failure",
+      "effect": "Flicker, dimming, no light",
+      "cause": "Component failure, overload",
+      "s": 9,
+      "o": 3,
+      "d": 3,
+      "p": 4,
+      "initial": 108,
+      "current": 27,
+      "actions": "1/0",
+      "status": "In Progress",
+      "owner": "Peter Turk"
+    },
+    {
+      "id": "DF-005",
+      "element": "Connector",
+      "function": "Provide electrical connection",
+      "failure": "Loose connection",
+      "effect": "Intermittent light",
+      "cause": "Vibration, poor engagement",
+      "s": 6,
+      "o": 5,
+      "d": 5,
+      "p": 3,
+      "initial": 150,
+      "current": 75,
+      "actions": "2/1",
+      "status": "Open",
+      "owner": "Ana Novak"
+    },
+    {
+      "id": "DF-006",
+      "element": "Seal (Gasket)",
+      "function": "Prevent water ingress",
+      "failure": "Seal damage",
+      "effect": "Water ingress, corrosion",
+      "cause": "Assembly damage, ageing",
+      "s": 8,
+      "o": 4,
+      "d": 4,
+      "p": 3,
+      "initial": 128,
+      "current": 48,
+      "actions": "1/1",
+      "status": "In Progress",
+      "owner": "Marko Kovac"
+    }
+  ],
+  "pfmea": [
+    {
+      "id": "PF-001",
+      "step": "10 - Incoming Insp.",
+      "function": "Verify material",
+      "failure": "Wrong material",
+      "effect": "Process stop, scrap",
+      "cause": "Supplier mix-up",
+      "s": 8,
+      "o": 4,
+      "d": 3,
+      "p": 2,
+      "initial": 96,
+      "current": 32,
+      "actions": "1/1",
+      "status": "Open",
+      "owner": "Ana Novak"
+    },
+    {
+      "id": "PF-002",
+      "step": "20 - Cutting",
+      "function": "Cut to length",
+      "failure": "Wrong length",
+      "effect": "Assembly issue",
+      "cause": "Wrong setup",
+      "s": 7,
+      "o": 5,
+      "d": 4,
+      "p": 3,
+      "initial": 140,
+      "current": 60,
+      "actions": "2/2",
+      "status": "In Progress",
+      "owner": "Luka Sterle"
+    },
+    {
+      "id": "PF-003",
+      "step": "30 - Bending",
+      "function": "Bend to angle",
+      "failure": "Wrong angle",
+      "effect": "Fit / function issue",
+      "cause": "Tool wear",
+      "s": 8,
+      "o": 4,
+      "d": 4,
+      "p": 3,
+      "initial": 128,
+      "current": 48,
+      "actions": "1/2",
+      "status": "Open",
+      "owner": "Marko Kovac"
+    },
+    {
+      "id": "PF-004",
+      "step": "40 - Welding / MIG Welding",
+      "function": "Join parts",
+      "failure": "Poor weld",
+      "effect": "Leakage, reduced strength",
+      "cause": "Parameter drift",
+      "s": 9,
+      "o": 4,
+      "d": 4,
+      "p": 2,
+      "initial": 144,
+      "current": 54,
+      "actions": "2/3",
+      "status": "In Progress",
+      "owner": "Luka Sterle"
+    },
+    {
+      "id": "PF-005",
+      "step": "50 - Cleaning",
+      "function": "Remove contaminants",
+      "failure": "Contamination left",
+      "effect": "Paint / coating defect",
+      "cause": "Cleaning bath condition",
+      "s": 6,
+      "o": 3,
+      "d": 3,
+      "p": 2,
+      "initial": 54,
+      "current": 18,
+      "actions": "1/1",
+      "status": "Closed",
+      "owner": "Peter Turk"
+    },
+    {
+      "id": "PF-006",
+      "step": "60 - Coating",
+      "function": "Apply coating",
+      "failure": "Thin coating",
+      "effect": "Corrosion / appearance",
+      "cause": "Flow / temperature drift",
+      "s": 7,
+      "o": 3,
+      "d": 3,
+      "p": 2,
+      "initial": 63,
+      "current": 21,
+      "actions": "1/1",
+      "status": "Open",
+      "owner": "Ana Novak"
+    },
+    {
+      "id": "PF-007",
+      "step": "70 - Assembly",
+      "function": "Assemble parts",
+      "failure": "Loose fit",
+      "effect": "Noise, rattle",
+      "cause": "Torque variation",
+      "s": 6,
+      "o": 5,
+      "d": 4,
+      "p": 3,
+      "initial": 120,
+      "current": 45,
+      "actions": "1/1",
+      "status": "In Progress",
+      "owner": "Marko Kovac"
+    }
+  ],
+  "failureModes": [
+    {
+      "id": "FM-001",
+      "name": "Lens crack",
+      "description": "Crack in outer lens leading to reduced light output",
+      "function": "Provide illumination / Housing",
+      "source": "Design + Compl.",
+      "catalog": "EC-1204",
+      "complaints": 7,
+      "s": 9,
+      "o": 5,
+      "d": 4,
+      "rpn": 180,
+      "trend": "↗",
+      "status": "Open"
+    },
+    {
+      "id": "FM-002",
+      "name": "Water ingress",
+      "description": "Water inside housing",
+      "function": "Protect components / Seal",
+      "source": "Catalog",
+      "catalog": "EC-1456",
+      "complaints": 12,
+      "s": 8,
+      "o": 6,
+      "d": 4,
+      "rpn": 192,
+      "trend": "↗",
+      "status": "Open"
+    },
+    {
+      "id": "FM-003",
+      "name": "LED not light",
+      "description": "LED no illumination",
+      "function": "Generate light / LED Module",
+      "source": "Complaints",
+      "catalog": "EC-0987",
+      "complaints": 24,
+      "s": 9,
+      "o": 4,
+      "d": 3,
+      "rpn": 108,
+      "trend": "↗",
+      "status": "Open"
+    },
+    {
+      "id": "FM-004",
+      "name": "Overheating",
+      "description": "Excess temperature",
+      "function": "Dissipate heat / Heatsink",
+      "source": "Design",
+      "catalog": "EC-0765",
+      "complaints": 3,
+      "s": 7,
+      "o": 5,
+      "d": 4,
+      "rpn": 140,
+      "trend": "↗",
+      "status": "In Progress"
+    },
+    {
+      "id": "FM-005",
+      "name": "Condensation",
+      "description": "Fogging on lens",
+      "function": "Protect components / Housing",
+      "source": "Catalog",
+      "catalog": "EC-1332",
+      "complaints": 15,
+      "s": 7,
+      "o": 6,
+      "d": 4,
+      "rpn": 168,
+      "trend": "↗",
+      "status": "Open"
+    },
+    {
+      "id": "FM-006",
+      "name": "Loose connector",
+      "description": "Connector loosen",
+      "function": "Provide electrical / Connector",
+      "source": "Complaints",
+      "catalog": "EC-2011",
+      "complaints": 18,
+      "s": 8,
+      "o": 5,
+      "d": 5,
+      "rpn": 200,
+      "trend": "↗",
+      "status": "Open"
+    }
+  ],
+  "causes": [
+    {
+      "id": "C-0001",
+      "name": "Wrong torque at screw connection",
+      "type": "Process",
+      "category": "Assembly",
+      "source": "Catalog",
+      "linked": "FM-004, FM-015",
+      "influence": 8,
+      "status": "Active"
+    },
+    {
+      "id": "C-0002",
+      "name": "Material out of specification",
+      "type": "Material",
+      "category": "Material",
+      "source": "Catalog",
+      "linked": "FM-007, FM-018",
+      "influence": 9,
+      "status": "Active"
+    },
+    {
+      "id": "C-0003",
+      "name": "Seal design not appropriate",
+      "type": "Design",
+      "category": "Design",
+      "source": "User",
+      "linked": "FM-002, FM-012",
+      "influence": 8,
+      "status": "Active"
+    },
+    {
+      "id": "C-0004",
+      "name": "Inadequate process parameters",
+      "type": "Process",
+      "category": "Process",
+      "source": "Catalog",
+      "linked": "FM-009",
+      "influence": 7,
+      "status": "Active"
+    },
+    {
+      "id": "C-0005",
+      "name": "Supplier quality issue",
+      "type": "External",
+      "category": "Supplier",
+      "source": "Catalog",
+      "linked": "FM-006, FM-011",
+      "influence": 9,
+      "status": "Under Review"
+    },
+    {
+      "id": "C-0006",
+      "name": "Operator not trained",
+      "type": "Human",
+      "category": "Human",
+      "source": "Catalog",
+      "linked": "FM-010, FM-016",
+      "influence": 7,
+      "status": "Active"
+    }
+  ],
+  "effects": [
+    {
+      "id": "E-001",
+      "name": "Loss of illumination",
+      "level": "End Effect",
+      "severity": 9,
+      "linked": 7,
+      "ap": "Medium",
+      "status": "Active"
+    },
+    {
+      "id": "E-002",
+      "name": "Reduced light output",
+      "level": "System Effect",
+      "severity": 8,
+      "linked": 6,
+      "ap": "Low",
+      "status": "Active"
+    },
+    {
+      "id": "E-003",
+      "name": "Reduced LED lifetime",
+      "level": "Subsequent L2",
+      "severity": 7,
+      "linked": 5,
+      "ap": "Medium",
+      "status": "Active"
+    },
+    {
+      "id": "E-004",
+      "name": "LED overheating",
+      "level": "Local Effect",
+      "severity": 8,
+      "linked": 7,
+      "ap": "Medium",
+      "status": "Active"
+    },
+    {
+      "id": "E-005",
+      "name": "Electrical failure",
+      "level": "System Effect",
+      "severity": 9,
+      "linked": 4,
+      "ap": "High",
+      "status": "Active"
+    }
+  ],
+  "preventionControls": [
+    {
+      "id": "PC-0234",
+      "name": "Poka-Yoke bracket presence sensor",
+      "category": "Process Controls",
+      "type": "Poka-Yoke",
+      "controlType": "Detection Prevention",
+      "linked": "FM-023, C-011",
+      "effectiveness": 85,
+      "operation": "OC-042 Assembly Verification",
+      "resource": "Vision Sensor Keyence IV3",
+      "status": "Active"
+    },
+    {
+      "id": "PC-0012",
+      "name": "Assembly fixture with locator pins",
+      "category": "Design Controls",
+      "type": "Mistake Proofing",
+      "controlType": "Physical Prevention",
+      "linked": "FM-023",
+      "effectiveness": 90,
+      "operation": "OC-015 Assembly Setup",
+      "resource": "Fixture F-23",
+      "status": "Active"
+    },
+    {
+      "id": "PC-0017",
+      "name": "Screw tightening torque control",
+      "category": "Process Controls",
+      "type": "Parameter Control",
+      "controlType": "Process Prevention",
+      "linked": "FM-017",
+      "effectiveness": 65,
+      "operation": "OC-031 Fastening",
+      "resource": "Torque Wrench",
+      "status": "Active"
+    },
+    {
+      "id": "PC-0021",
+      "name": "Incoming material inspection",
+      "category": "Supplier Controls",
+      "type": "Inspection",
+      "controlType": "Inspection Prevention",
+      "linked": "C-005",
+      "effectiveness": 80,
+      "operation": "OC-006 Receiving",
+      "resource": "Digital Caliper",
+      "status": "Active"
+    }
+  ],
+  "detectionControls": [
+    {
+      "id": "DC-0234",
+      "name": "AOI – Solder joint inspection",
+      "category": "Inspection Controls",
+      "type": "Automated",
+      "method": "Optical inspection",
+      "linked": "FM-023, C-011",
+      "effectiveness": 90,
+      "resource": "AOI Machine Model X500",
+      "operation": "OC-041 Soldering Line Inspection",
+      "status": "Active"
+    },
+    {
+      "id": "DC-0017",
+      "name": "Electrical continuity test",
+      "category": "Test Controls",
+      "type": "Manual",
+      "method": "Electrical test",
+      "linked": "FM-017",
+      "effectiveness": 85,
+      "resource": "Multimeter Fluke 117",
+      "operation": "OC-023 Electrical Test Station",
+      "status": "Active"
+    },
+    {
+      "id": "DC-0031",
+      "name": "Temperature cycling test",
+      "category": "Test Controls",
+      "type": "Automated",
+      "method": "Environmental test",
+      "linked": "FM-031",
+      "effectiveness": 65,
+      "resource": "Temp Chamber ESPEC SH-642",
+      "operation": "OC-051 Environmental Lab",
+      "status": "Active"
+    },
+    {
+      "id": "DC-0008",
+      "name": "Microscopic visual inspection",
+      "category": "Inspection Controls",
+      "type": "Manual",
+      "method": "Visual inspection",
+      "linked": "FM-008",
+      "effectiveness": 60,
+      "resource": "Stereo Microscope",
+      "operation": "OC-015 Assembly Verification",
+      "status": "Active"
+    }
+  ],
+  "processControls": [
+    {
+      "id": "PCC-001",
+      "step": "10 - Incoming Material",
+      "name": "Material ID / Lot Verification",
+      "type": "Administrative",
+      "method": "Barcode Scan",
+      "resource": "Handheld Scanner",
+      "frequency": "Each lot / Before use",
+      "links": 3,
+      "status": "Active",
+      "effectiveness": "Effective"
+    },
+    {
+      "id": "PCC-002",
+      "step": "20 - Cutting",
+      "name": "Cut Length Check",
+      "type": "Measurement",
+      "method": "Digital Caliper",
+      "resource": "Mitutoyo CD-15CPX",
+      "frequency": "Each piece / In-process",
+      "links": 2,
+      "status": "Active",
+      "effectiveness": "Effective"
+    },
+    {
+      "id": "PCC-003",
+      "step": "30 - Drilling",
+      "name": "Hole Position Check",
+      "type": "Measurement",
+      "method": "Go / No-Go Gauge",
+      "resource": "Custom Gauge",
+      "frequency": "Each piece / In-process",
+      "links": 2,
+      "status": "Active",
+      "effectiveness": "Effective"
+    },
+    {
+      "id": "PCC-004",
+      "step": "40 - Welding",
+      "name": "Weld Presence",
+      "type": "Detection",
+      "method": "Vision Sensor",
+      "resource": "Keyence IV3",
+      "frequency": "Each cycle / End",
+      "links": 3,
+      "status": "Active",
+      "effectiveness": "Effective"
+    },
+    {
+      "id": "PCC-006",
+      "step": "50 - Assembly",
+      "name": "Component Presence",
+      "type": "Poka-Yoke",
+      "method": "Presence Sensor",
+      "resource": "Banner QS18",
+      "frequency": "Before cycle release",
+      "links": 4,
+      "status": "Active",
+      "effectiveness": "Effective"
+    }
+  ],
+  "actions": [
+    {
+      "id": "A-2025-014",
+      "title": "Add bracket to protect presence sensor",
+      "linked": "FM-023",
+      "type": "Design Action",
+      "priority": "High",
+      "responsible": "Marko K.",
+      "start": "20.03.2025",
+      "due": "30.04.2025",
+      "status": "In Progress",
+      "complete": 65,
+      "reduction": 130
+    },
+    {
+      "id": "A-2025-018",
+      "title": "Increase torque specification for screw",
+      "linked": "FM-017",
+      "type": "Process Action",
+      "priority": "High",
+      "responsible": "Sara P.",
+      "start": "25.03.2025",
+      "due": "15.04.2025",
+      "status": "In Progress",
+      "complete": 40,
+      "reduction": 90
+    },
+    {
+      "id": "A-2025-022",
+      "title": "Add functional test at end of line",
+      "linked": "FM-031",
+      "type": "Detection Action",
+      "priority": "Medium",
+      "responsible": "Janez D.",
+      "start": "10.04.2025",
+      "due": "30.05.2025",
+      "status": "Open",
+      "complete": 0,
+      "reduction": 80
+    },
+    {
+      "id": "A-2025-025",
+      "title": "Supplier quality improvement plan",
+      "linked": "C-005",
+      "type": "Supplier Action",
+      "priority": "Medium",
+      "responsible": "Luka G.",
+      "start": "15.04.2025",
+      "due": "15.06.2025",
+      "status": "Open",
+      "complete": 0,
+      "reduction": 70
+    }
+  ],
+  "evidence": [
+    {
+      "id": "EVT-001",
+      "name": "Luminous Flux Verification",
+      "link": "F-01 / FM-01",
+      "type": "Validation",
+      "method": "Photometric Test Lab",
+      "status": "Completed",
+      "priority": "High",
+      "date": "08 May 2025",
+      "owner": "MK"
+    },
+    {
+      "id": "EVT-002",
+      "name": "Color Temperature Check",
+      "link": "F-01 / FM-01",
+      "type": "Validation",
+      "method": "Colorimeter Lab",
+      "status": "In Execution",
+      "priority": "Medium",
+      "date": "14 May 2025",
+      "owner": "AN"
+    },
+    {
+      "id": "EVT-003",
+      "name": "Vibration Durability Test",
+      "link": "F-02 / FM-03",
+      "type": "Reliability",
+      "method": "Vibration Test Lab",
+      "status": "Planned",
+      "priority": "High",
+      "date": "20 May 2025",
+      "owner": "PT"
+    },
+    {
+      "id": "EVT-004",
+      "name": "Ingress Protection Verification",
+      "link": "F-02 / FM-04",
+      "type": "Validation",
+      "method": "IP Test (IP67) Lab",
+      "status": "Planned",
+      "priority": "High",
+      "date": "22 May 2025",
+      "owner": "LK"
+    }
+  ],
+  "validations": [
+    {
+      "id": "VAL-001",
+      "name": "Optical Performance Test",
+      "linked": "DF-001, DF-002",
+      "stages": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "status": "Completed"
+    },
+    {
+      "id": "VAL-002",
+      "name": "Thermal Cycling Test",
+      "linked": "DF-003, PF-004",
+      "stages": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        0
+      ],
+      "status": "In Execution"
+    },
+    {
+      "id": "VAL-003",
+      "name": "Vibration Durability Test",
+      "linked": "DF-001",
+      "stages": [
+        1,
+        1,
+        1,
+        1,
+        2,
+        0
+      ],
+      "status": "In Execution"
+    },
+    {
+      "id": "VAL-004",
+      "name": "Ingress Protection Test",
+      "linked": "DF-004, PF-005",
+      "stages": [
+        1,
+        1,
+        1,
+        1,
+        3,
+        0
+      ],
+      "status": "Overdue"
+    }
+  ],
+  "changes": [
+    {
+      "id": "CHG-024",
+      "title": "Lens material change PC → PC+ASA",
+      "type": "Design",
+      "source": "Engineering",
+      "reason": "Improve UV resistance",
+      "impact": "High",
+      "dfmea": 12,
+      "pfmea": 9,
+      "status": "Under Analysis",
+      "owner": "MK",
+      "date": "12 May 2025"
+    },
+    {
+      "id": "CHG-023",
+      "title": "LED supplier change",
+      "type": "Supplier",
+      "source": "Procurement",
+      "reason": "Supply continuity",
+      "impact": "Medium",
+      "dfmea": 6,
+      "pfmea": 8,
+      "status": "In Progress",
+      "owner": "AN",
+      "date": "08 May 2025"
+    },
+    {
+      "id": "CHG-022",
+      "title": "Lens geometry update (Optical performance)",
+      "type": "Design",
+      "source": "Engineering",
+      "reason": "Improve light pattern",
+      "impact": "High",
+      "dfmea": 18,
+      "pfmea": 14,
+      "status": "Under Analysis",
+      "owner": "LK",
+      "date": "06 May 2025"
+    },
+    {
+      "id": "CHG-021",
+      "title": "Change in legal requirement ECE R112",
+      "type": "Regulatory",
+      "source": "Regulatory",
+      "reason": "New requirement",
+      "impact": "Critical",
+      "dfmea": 24,
+      "pfmea": 17,
+      "status": "In Progress",
+      "owner": "JD",
+      "date": "02 May 2025"
+    }
+  ],
+  "characteristics": [
+    {
+      "id": "CR-001",
+      "name": "LMN-FLX",
+      "type": "FUNC",
+      "category": "OPT",
+      "importance": "Critical"
+    },
+    {
+      "id": "CR-002",
+      "name": "COL-TMP",
+      "type": "FUNC",
+      "category": "OPT",
+      "importance": "High"
+    },
+    {
+      "id": "CR-003",
+      "name": "BRM-PTN",
+      "type": "FUNC",
+      "category": "OPT",
+      "importance": "High"
+    },
+    {
+      "id": "CR-004",
+      "name": "PWR-CNS",
+      "type": "FUNC",
+      "category": "ELE",
+      "importance": "Critical"
+    },
+    {
+      "id": "CR-005",
+      "name": "OPR-VLT",
+      "type": "FUNC",
+      "category": "ELE",
+      "importance": "High"
+    },
+    {
+      "id": "CR-006",
+      "name": "ING-PRT",
+      "type": "FUNC",
+      "category": "MEC",
+      "importance": "Critical"
+    },
+    {
+      "id": "CR-007",
+      "name": "VIB-RES",
+      "type": "FUNC",
+      "category": "MEC",
+      "importance": "High"
+    },
+    {
+      "id": "CR-012",
+      "name": "DEC-FIN",
+      "type": "FUNC",
+      "category": "DEC",
+      "importance": "Low"
+    },
+    {
+      "id": "CR-013",
+      "name": "SAFE-TMP",
+      "type": "SAFE",
+      "category": "SAF",
+      "importance": "Critical"
+    }
+  ],
+  "transactions": [],
+  "knowledge": [],
+  "problemSolving": {
+    "taxonomy": {
+      "causeModels": [
+        "3WHY",
+        "5WHY",
+        "Ishikawa",
+        "5M",
+        "6M"
+      ],
+      "controlModels": [
+        "Poka-Yoke"
+      ],
+      "problemMethods": [
+        "8D"
+      ],
+      "note": "Methods are linked to the same FMEA object graph; conclusions become proposals until user confirmation."
+    },
+    "whyAnalyses": [
+      {
+        "id": "WHY-001",
+        "method": "5WHY",
+        "linkedObject": "FM-002",
+        "problem": "Water ingress after assembly",
+        "status": "In Progress",
+        "owner": "USR-MK",
+        "why": [
+          "Water entered the housing",
+          "Seal did not maintain compression",
+          "Seal seating was inconsistent",
+          "Assembly locating feature allowed skew",
+          "Fixture did not positively locate the seal"
+        ],
+        "rootCause": "Fixture does not positively locate the seal before clamping",
+        "verified": false
+      },
+      {
+        "id": "WHY-002",
+        "method": "3WHY",
+        "linkedObject": "PF-004",
+        "problem": "Poor weld strength",
+        "status": "Completed",
+        "owner": "USR-AN",
+        "why": [
+          "Weld penetration was insufficient",
+          "Heat input was below validated window",
+          "Parameter recipe was changed without locked approval"
+        ],
+        "rootCause": "Recipe governance / parameter lock missing",
+        "verified": true
+      }
+    ],
+    "ishikawa": [
+      {
+        "id": "ISH-001",
+        "linkedObject": "FM-002",
+        "problem": "Water ingress",
+        "status": "In Progress",
+        "categories": {
+          "Man": [
+            "Operator seating variation",
+            "Inspection training gap"
+          ],
+          "Machine": [
+            "Fixture locating play",
+            "Clamp force drift"
+          ],
+          "Method": [
+            "No positive seating confirmation",
+            "Work instruction tolerance unclear"
+          ],
+          "Material": [
+            "Seal hardness variation",
+            "Surface contamination"
+          ],
+          "Measurement": [
+            "No seat-depth measurement",
+            "Leak-test sampling only"
+          ],
+          "Environment": [
+            "Temperature affects seal compliance",
+            "Dust contamination risk"
+          ]
+        },
+        "selectedCauses": [
+          "Fixture locating play",
+          "No positive seating confirmation"
+        ],
+        "owner": "USR-MK"
+      }
+    ],
+    "eightD": [
+      {
+        "id": "8D-2025-006",
+        "title": "Recurring water ingress - Headlamp X1",
+        "linkedObject": "FM-002",
+        "status": "D4 Root Cause",
+        "owner": "USR-JD",
+        "team": [
+          "USR-JD",
+          "USR-MK",
+          "USR-AN"
+        ],
+        "steps": [
+          {
+            "d": "D1",
+            "title": "Team",
+            "status": "Completed",
+            "summary": "Cross-functional quality, design and process team formed."
+          },
+          {
+            "d": "D2",
+            "title": "Problem Description",
+            "status": "Completed",
+            "summary": "Water ingress after final assembly, concentrated on seal interface."
+          },
+          {
+            "d": "D3",
+            "title": "Containment",
+            "status": "Completed",
+            "summary": "100% leak test and quarantine rule active."
+          },
+          {
+            "d": "D4",
+            "title": "Root Cause",
+            "status": "In Progress",
+            "summary": "Ishikawa + 5WHY linked; fixture locating and seal confirmation under verification."
+          },
+          {
+            "d": "D5",
+            "title": "Corrective Actions",
+            "status": "Planned",
+            "summary": "Add poka-yoke fixture location and automated seat-depth detection."
+          },
+          {
+            "d": "D6",
+            "title": "Implement & Validate",
+            "status": "Not Started",
+            "summary": "Validation plan VAL-004 will confirm effectiveness."
+          },
+          {
+            "d": "D7",
+            "title": "Prevent Recurrence",
+            "status": "Not Started",
+            "summary": "Update control plan, PFMEA and standard work."
+          },
+          {
+            "d": "D8",
+            "title": "Closure",
+            "status": "Not Started",
+            "summary": "Management review and lessons learned."
+          }
+        ]
+      }
+    ],
+    "pokaYokeCatalog": [
+      {
+        "id": "PY-001",
+        "name": "Presence sensing",
+        "principle": "Prevention / detection",
+        "examples": [
+          "Part-present sensor",
+          "Seat-depth confirmation"
+        ],
+        "linkedControls": [
+          "PC-0234",
+          "PCC-006"
+        ]
+      },
+      {
+        "id": "PY-002",
+        "name": "Asymmetric locating",
+        "principle": "Prevention",
+        "examples": [
+          "Keyed fixture",
+          "Error-proof connector"
+        ],
+        "linkedControls": []
+      },
+      {
+        "id": "PY-003",
+        "name": "Interlock",
+        "principle": "Prevention",
+        "examples": [
+          "Cycle inhibit",
+          "Recipe lock"
+        ],
+        "linkedControls": []
+      }
+    ]
+  },
+  "systems": [
+    {
+      "id": "SYS-001",
+      "name": "Headlamp X1 System",
+      "code": "SYS-001",
+      "type": "System",
+      "parent": "—",
+      "status": "Active",
+      "owner": "Janez Demo"
+    },
+    {
+      "id": "SYS-001-EL",
+      "name": "Electrical System",
+      "code": "SYS-001-EL",
+      "type": "Subsystem",
+      "parent": "Headlamp X1 System",
+      "status": "Active",
+      "owner": "Ana Novak"
+    },
+    {
+      "id": "SYS-001-HO",
+      "name": "Housing System",
+      "code": "SYS-001-HO",
+      "type": "Subsystem",
+      "parent": "Headlamp X1 System",
+      "status": "Active",
+      "owner": "Marko Kovac"
+    },
+    {
+      "id": "SYS-001-OP",
+      "name": "Optical System",
+      "code": "SYS-001-OP",
+      "type": "Subsystem",
+      "parent": "Headlamp X1 System",
+      "status": "Review",
+      "owner": "Ana Novak"
+    },
+    {
+      "id": "SYS-001-TH",
+      "name": "Thermal System",
+      "code": "SYS-001-TH",
+      "type": "Subsystem",
+      "parent": "Headlamp X1 System",
+      "status": "Active",
+      "owner": "Luka Sterle"
+    }
+  ]
+}
+</script>
+<script>
+const OFMEA=(()=>{
+  const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+  const C=JSON.parse($('#open-fmea-container').textContent);
+  const state={page:'home',selected:null,selectedType:null,dirty:false,tx:[],knowledge:[],aiOpen:false};
+  const nav=[
+    ['FMEA WORKSPACE',[['home','⌂','Home'],['projects','▣','FMEA Projects'],['team','♙','FMEA Team']]],
+    ['CONTEXT (from Open-EQMS)',[['context','◫','System / Product / Process'],['systemchars','◇','System Characteristics'],['charflow','⌘','Characteristics Flow / Diagram'],['processflow','⌘','Process Flow'],['processctrl','⊞','Process Control Characteristics']]],
+    ['FMEA ANALYSIS',[['dfmea','▣','DFMEA'],['pfmea','▣','PFMEA'],['systemfmea','♧','System FMEA'],['pmfmea','◉','Preventive FMEA (PM-FMEA)']]],
+    ['FMEA ELEMENTS',[['functions','⊕','Functions'],['failuremodes','◉','Failure Modes'],['effects','⊙','Effects'],['causes','⊕','Causes'],['prevention','▦','Prevention Controls'],['detection','⊕','Detection Controls'],['actions','◉','Actions']]],
+    ['RISK & INSIGHTS',[['riskmatrix','⌘','Risk Matrix'],['risktrajectory','⌁','Risk Trajectory & Propagation'],['changeimpact','◉','Change Impact']]],
+    ['PROBLEM SOLVING',[['ishikawa','⌘','Ishikawa / 5M / 6M'],['whyanalysis','?','3WHY / 5WHY'],['eightd','⑧','8D Problem Solving'],['xda','✕','XDA Investigations']]],
+    ['VALIDATION & CHANGE',[['evidence','▤','Evidence & Tests'],['validation','⌁','Validation Trajectory']]],
+  ];
+  function allRecords(){return [...C.dfmea,...C.pfmea,...C.failureModes,...C.causes,...C.effects,...C.preventionControls,...C.detectionControls,...C.processControls,...C.actions,...C.evidence,...C.validations,...C.changes,...C.characteristics,...(C.systems||[]),...(C.problemSolving?.whyAnalyses||[]),...(C.problemSolving?.ishikawa||[]),...(C.problemSolving?.eightD||[])]}
+  function find(id){return allRecords().find(x=>x.id===id)}
+  function pill(v){let s=String(v||'');let c=/critical|extreme|high|overdue/i.test(s)?'p-red':/progress|medium|review|planned|under analysis/i.test(s)?'p-orange':/active|closed|completed|effective|low/i.test(s)?'p-green':'p-blue';return `<span class="pill ${c}">${esc(s)}</span>`}
+  function kpi(icon,label,val,foot,cls='bluebg'){return `<div class="kpi"><div class="top"><div class="ico ${cls}">${icon}</div><div><div class="lab">${label}</div><div class="val">${val}</div><div class="foot">${foot}</div></div></div></div>`}
+  function header(title,desc,buttons=true){return `<div class="pagehead"><div><h1>${esc(title)}</h1><p>${esc(desc)}</p></div>${buttons?`<div class="actions"><button class="btn primary" data-new="${esc(title)}">＋ New</button><button class="btn" data-import>⇩ Import</button><button class="btn" data-export>⇧ Export</button><button class="btn">▣ Reports⌄</button><button class="btn">☷ Filters⌄</button><button class="btn ai" data-ai>✦ AI Assistant</button></div>`:''}</div>`}
+  function table(data,cols,type){return `<div class="tablewrap"><table><thead><tr>${cols.map(c=>`<th>${c[1]}</th>`).join('')}</tr></thead><tbody>${data.map(r=>`<tr data-row="${r.id}" data-type="${type}" class="${state.selected===r.id?'sel':''}">${cols.map(c=>`<td>${cell(r,c[0])}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
+  function cell(r,k){let v=r[k];if(k==='id')return `<span class="idlink">${esc(v)}</span>`;if(['status','priority','impact','importance','ap'].includes(k))return pill(v);if(['current','rpn','initial'].includes(k))return `<b style="color:${Number(v)>=120?'var(--red)':Number(v)>=60?'var(--orange)':'var(--green)'}">${esc(v)}</b>`;if(k==='effectiveness'&&typeof v==='number')return `<b style="color:${v>=80?'var(--green)':v>=60?'var(--orange)':'var(--red)'}">${v}%</b>`;if(k==='complete')return `<div class="bar"><i style="width:${v}%"></i></div><small>${v}%</small>`;return esc(v)}
+  function filters(ph='Search...'){return `<div class="filters"><input placeholder="⌕ ${ph}"><select><option>All</option></select><select><option>Status: All</option></select><select><option>Type: All</option></select><span class="spacer"></span><button class="btn">☷ More Filters</button></div>`}
+  function detailGeneric(r,title='Details'){if(!r)return `<div class="detail"><div class="dh"><h3>${title}</h3></div><div class="db muted">Select an item to inspect context, links, history and AI analysis.</div></div>`;let pairs=Object.entries(r).filter(([k])=>!['id','name','title','description','stages'].includes(k)).slice(0,14);return `<div class="detail"><div class="dh"><h3>${title}</h3><button class="btn" style="margin-left:auto;padding:4px 8px" data-clear>×</button></div><div class="db"><div class="bigid">${esc(r.id)}</div><div style="font-weight:700;margin-bottom:9px">${esc(r.name||r.title||r.failure||'')}</div>${r.description?`<p class="muted">${esc(r.description)}</p>`:''}<div>${pairs.map(([k,v])=>`<div class="kv"><div class="k">${esc(k.replace(/([A-Z])/g,' $1'))}</div><div>${['status','priority','impact','importance'].includes(k)?pill(v):esc(Array.isArray(v)?v.join(', '):v)}</div></div>`).join('')}</div><div class="section-title">AI & Traceability</div><div class="mini-actions"><button class="btn" data-ai>✦ Analyze</button><button class="btn" data-edit="${r.id}">✎ Edit</button><button class="btn" data-history="${r.id}">↻ History</button></div></div></div>`}
+  function donut(total,parts){let acc=0,colors=['var(--green)','var(--orange)','var(--red)','#98a2b3','#2563eb'];let stops=[];parts.forEach((p,i)=>{let a=acc/total*100;acc+=p[1];let b=acc/total*100;stops.push(`${colors[i%colors.length]} ${a}% ${b}%`)});return `<div style="position:relative;width:150px;margin:auto"><div class="donut" style="background:conic-gradient(${stops.join(',')})"></div><div class="donut-label"><div style="font-size:22px">${total}</div><small>Total</small></div></div>`}
+  function lineSvg(vals1,vals2){let w=360,h=130,p=20;let max=Math.max(...vals1,...(vals2||[]),1);let pts=v=>v.map((x,i)=>`${p+i*(w-2*p)/(v.length-1)},${h-p-x/max*(h-2*p)}`).join(' ');return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><g stroke="#e5e7eb" stroke-width="1">${[30,60,90].map(y=>`<line x1="20" y1="${y}" x2="340" y2="${y}"/>`).join('')}</g><polyline fill="none" stroke="#ef4444" stroke-width="2" points="${pts(vals1)}"/>${vals2?`<polyline fill="none" stroke="#059669" stroke-width="2" points="${pts(vals2)}"/>`:''}</svg>`}
+  function renderNav(){let h='';nav.forEach(([g,items])=>{h+=`<div class="navgrp">${g}</div>`;items.forEach(([id,ic,lab])=>h+=`<button class="navbtn ${state.page===id?'active':''}" data-page="${id}"><span class="ic">${ic}</span><span>${lab}</span></button>`)});h+=`<div class="navgrp">SYSTEM</div><button class="navbtn" data-ai><span class="ic">✦</span><span>AI Assistant</span></button><button class="navbtn" data-save><span class="ic">⌑</span><span>Save Snapshot</span></button>`;$('#nav').innerHTML=h}
+  function layout(main,right){return `<div class="layout ${right?'':'no-right'}"><div class="content">${main}</div>${right?`<aside class="rightcol">${right}</aside>`:''}</div>`}
+  function home(){let main=`${header('Home','Here’s the status of your FMEA projects and engineering context.')}
+  <div class="kpis">${kpi('▣','FMEA Projects','12','Active projects')}${kpi('◉','Active Analyses','7','In progress','greenbg')}${kpi('⚠','High Risk Items','23','5 new since last review','orangebg')}${kpi('⬡','Actions Overdue','8','2 critical · 6 normal','redbg')}${kpi('✓','Reviews Due','4','Next within 7 days','purplebg')}${kpi('⌘','Unlinked Items','5','Need attention')}</div>
+  <div class="homegrid">
+   <div class="panel"><div class="ph">Risk Overview (All Projects)</div><div class="pb"><div class="matrix"><div class="mhead mcell">S/O</div>${[1,2,3,4,5].map(x=>`<div class="mhead mcell">${x}</div>`).join('')}${[5,4,3,2,1].map(s=>`<div class="mhead mcell">${s}</div>${[1,2,3,4,5].map(o=>`<div class="mcell ${s*o>=15?'risk-vh':s*o>=8?'risk-h':s*o>=4?'risk-m':'risk-l'}">${Math.max(0,Math.round((s*o-2)/3))}</div>`).join('')}`).join('')}</div><div style="text-align:center;margin-top:14px"><button class="btn" data-page="riskmatrix">Open Risk Matrix →</button></div></div></div>
+   <div class="panel"><div class="ph">Validation Trajectory (DFMEA + PFMEA + PM-FMEA)</div><div class="pb"><div class="timeline">${['Concept','Design','Prototype','DV','PV','Operation','Monitor'].map((s,i)=>`<div class="stage ${i<4?'done':i===4?'':'plan'}"><div class="ball"></div><label>${s}</label></div>`).join('')}</div>${[['DFMEA Validation Coverage',78],['PFMEA Validation Coverage',62],['PM-FMEA Coverage',54]].map(([l,v])=>`<div class="barrow"><span>${l}</span><div class="bar"><i style="width:${v}%"></i></div><b>${v}%</b></div>`).join('')}<div style="text-align:center;margin-top:14px"><button class="btn" data-page="validation">Open Validation Trajectory →</button></div></div></div>
+   <div class="panel"><div class="ph">Top High Risk Items</div><div class="pb">${table(C.failureModes.slice(0,5),[['id','Item'],['name','Failure'],['rpn','RPN'],['status','Risk']],'failureModes')}</div></div>
+  </div>
+  <div class="homebottom">
+   <div class="panel"><div class="ph">FMEA Team</div><div class="pb">${C.users.map(u=>`<div style="display:flex;align-items:center;gap:8px;margin:9px 0"><div class="avatar" style="width:28px;height:28px;font-size:10px">${u.name.split(' ').map(x=>x[0]).join('').slice(0,2)}</div><div><b>${esc(u.name)}</b><div class="muted">${esc(u.role)}</div></div></div>`).join('')}</div></div>
+   <div class="panel"><div class="ph">Characteristics Flow</div><div class="pb"><div class="flow" style="justify-content:center"><div class="flowbox">Requirements</div><span class="arrow">→</span><div class="flowbox">Functions</div><span class="arrow">→</span><div class="flowbox">Characteristics</div><span class="arrow">→</span><div class="flowbox">Failure Modes</div><span class="arrow">→</span><div class="flowbox">Controls</div></div></div></div>
+   <div class="panel"><div class="ph">Recent Projects</div><div class="pb">${['New Headlamp X1','Real Light Y2','Control Unit Z3','Lens Module L1','Cooling System C2'].map((x,i)=>`<div class="kv"><div>${x}</div><div>${pill(i%2?'In Review':'In Progress')}</div></div>`).join('')}</div></div>
+   <div class="panel"><div class="ph">Recent Activity</div><div class="pb">${['Design change DC-015 linked to FM-021','Validation test result added','PV plan created for Injection Moulding','Action A-117 completed','FMEA review completed'].map((x,i)=>`<div style="margin:9px 0"><b>${x}</b><div class="muted">${i+1}h ago</div></div>`).join('')}</div></div>
+  </div>`;
+  let right=`<div class="detail"><div class="dh"><h3>Engineering Context <span class="muted">(Open-EQMS)</span></h3></div><div class="db"><div class="tabs"><span class="tab">System</span> <span class="tab">Product</span> <span class="tab active">Process</span></div><div class="section-title">Process Flow</div><select style="width:100%;border:1px solid var(--line);padding:8px;border-radius:6px"><option>Headlamp Assembly Process</option></select><ul class="processlist">${['10  Incoming Material','20  Sub-Assembly','30  Injection Moulding','40  Post-Processing','50  Inspection','60  Packaging'].map((x,i)=>`<li class="${i===2?'active':''}">${x}</li>`).join('')}</ul><div class="section-title">Process Characteristics (Step 30)</div>${[['Injection pressure','820 ± 20 bar'],['Melt temperature','285 ± 5 °C'],['Holding pressure','600 ± 20 bar'],['Cooling time','18 ± 2 s'],['Mould temperature','90 ± 3 °C']].map(x=>`<div class="kv"><div>${x[0]}</div><div>${x[1]}</div></div>`).join('')}</div></div>`;return layout(main,right)}
+  function fmeaPage(kind){let data=kind==='DFMEA'?C.dfmea:C.pfmea;let cols=kind==='DFMEA'?[['id','ID'],['element','Element / Part'],['function','Function'],['failure','Failure Mode'],['effect','Effect(s)'],['s','S'],['o','O'],['d','D'],['initial','Initial RPN'],['current','Current RPN'],['actions','Actions'],['status','Status']]:[['id','ID'],['step','Process Step'],['function','Process Function'],['failure','Failure Mode'],['effect','Effect(s)'],['s','S'],['o','O'],['d','D'],['initial','Initial RPN'],['current','Current RPN'],['actions','Actions'],['status','Status']];let hi=data.filter(x=>x.initial>=100).length,open=data.filter(x=>x.status!=='Closed').length;let main=`${header(kind,kind==='DFMEA'?'Design Failure Mode and Effects Analysis for product / system design.':'Process Failure Mode and Effects Analysis for manufacturing / assembly processes.')}
+  <div class="kpis">${kpi('▣',kind+' Items',kind==='DFMEA'?86:112,'All items')}${kpi('⬡','High Risk (RPN ≥ 100)',hi,'of demo items','redbg')}${kpi('▤','Actions Open',open*3,'linked actions','orangebg')}${kpi('◷','Actions Overdue',kind==='DFMEA'?6:7,'need attention','redbg')}${kpi('▥','Avg. Initial RPN',kind==='DFMEA'?184:176,'Before actions','purplebg')}${kpi('▥','Avg. Current RPN',kind==='DFMEA'?62:58,'After actions','greenbg')}</div>
+  <div class="panel"><div class="ph"><div class="tabs"><span class="tab active">${kind} Table</span><span class="tab">Structure Tree</span><span class="tab">Interface Matrix</span><span class="tab">Parameter Diagram</span><span class="tab">RPN Overview</span><span class="tab">Action Tracker</span></div></div>${filters('Search '+kind+' items...')}${table(data,cols,kind.toLowerCase())}</div>
+  <div class="grid3"><div class="panel"><div class="ph">RPN Trend</div><div class="pb chartbox">${lineSvg([212,198,185,172,162],[98,90,78,68,62])}</div></div><div class="panel"><div class="ph">Top 5 Highest Current RPN</div><div class="pb">${data.slice().sort((a,b)=>b.current-a.current).slice(0,5).map(x=>`<div class="kv"><div><span class="idlink">${x.id}</span> ${esc(x.failure)}</div><div>${x.current}</div></div>`).join('')}</div></div><div class="panel"><div class="ph">Actions by Status</div><div class="pb" style="position:relative">${donut(30,[[0,17],[1,7],[2,6]])}</div></div></div>`;
+  let sel=find(state.selected)||data[0];let right=`${detailGeneric(sel,'Item Details')}<div class="detail" style="margin-top:12px"><div class="dh"><h3>RPN Risk Summary</h3></div><div class="db" style="position:relative">${donut(kind==='DFMEA'?86:112,[[0,40],[1,28],[2,14],[3,4]])}</div></div>`;return layout(main,right)}
+  function genericList(title,desc,data,cols,type,kpis,extra=''){let main=`${header(title,desc)}<div class="kpis">${kpis.join('')}</div><div class="panel"><div class="ph"><div class="tabs"><span class="tab active">${title} List</span><span class="tab">Catalog</span><span class="tab">Relationships</span><span class="tab">History</span></div></div>${filters('Search '+title.toLowerCase()+'...')}${table(data,cols,type)}</div>${extra}`;let r=find(state.selected)||data[0];return layout(main,detailGeneric(r,title.replace(/s$/,'')+' Details'))}
+  function failureModes(){return genericList('Failure Modes','Manage, classify and analyze potential and real failure modes with links to catalog and complaints.',C.failureModes,[['id','ID'],['name','Failure Mode'],['description','Description'],['function','Function / Element'],['source','Source'],['catalog','Catalog'],['complaints','Complaints'],['s','S'],['o','O'],['d','D'],['rpn','RPN'],['trend','Trend'],['status','Status']],'failureModes',[kpi('▣','Failure Modes','186','All items'),kpi('⬡','High Risk (RPN ≥ 100)','42','22.6% of total','orangebg'),kpi('♻','From Complaints','38','20.4% real cases','greenbg'),kpi('▤','Linked to Actions','134','72.0%','purplebg'),kpi('▤','Catalog Entries','2.456','Available'),kpi('▣','Last Updated','12 May 2025','10:45')],`<div class="grid4"><div class="panel"><div class="ph">Source Distribution</div><div class="pb" style="position:relative">${donut(186,[[0,68],[1,38],[2,46],[3,18],[4,16]])}</div></div><div class="panel"><div class="ph">Severity vs Occurrence</div><div class="pb chartbox">${lineSvg([20,34,42,55,68],[12,20,31,45,60])}</div></div><div class="panel"><div class="ph">Top Failure Mode Categories</div><div class="pb">${[['Optical',42],['Mechanical',36],['Electrical',28],['Thermal',24],['Software',18]].map(x=>`<div class="barrow"><span>${x[0]}</span><div class="bar"><i style="width:${x[1]*2}%"></i></div><b>${x[1]}</b></div>`).join('')}</div></div><div class="panel"><div class="ph">Trend (Real Complaints)</div><div class="pb chartbox">${lineSvg([20,25,28,35,38],[12,18,20,31,38])}</div></div></div>`)}
+  function causes(){return genericList('Causes','Manage causes, link to failure modes and catalog for reusability and knowledge building.',C.causes,[['id','ID'],['name','Cause Description'],['type','Cause Type'],['category','Category'],['source','Source'],['linked','Linked FM'],['influence','Influence (1-10)'],['status','Status']],'causes',[kpi('⌘','Total Causes','214','All time'),kpi('▤','From Catalog','152','71.0%','greenbg'),kpi('◈','New (User Defined)','62','29.0%','purplebg'),kpi('⌘','Linked to FMEA Items','186','87.0%','orangebg'),kpi('⬡','High Influence (≥7)','58','27.1%','orangebg'),kpi('▣','Last Updated','12 May 2025','10:52')],`<div class="grid3"><div class="panel"><div class="ph">Causes by Type</div><div class="pb" style="position:relative">${donut(214,[[0,62],[1,39],[2,28],[3,23],[4,21]])}</div></div><div class="panel"><div class="ph">Causes by Category</div><div class="pb">${[['Assembly',34],['Design',32],['Material',28],['Process',24],['Electrical',18]].map(x=>`<div class="barrow"><span>${x[0]}</span><div class="bar"><i style="width:${x[1]*2.3}%"></i></div><b>${x[1]}</b></div>`).join('')}</div></div><div class="panel"><div class="ph">Influence Distribution</div><div class="pb" style="position:relative">${donut(214,[[0,60],[1,96],[2,58]])}</div></div></div>`)}
+  function effects(){return genericList('Effects','Analyze how effects impact system, requirements, functions and risks. See propagation, trends and improvement impact.',C.effects,[['id','ID'],['name','Effect'],['level','Effect Level'],['severity','Severity'],['linked','Linked Items'],['ap','Current AP'],['status','Status']],'effects',[kpi('⬡','Total Effects','211','All time'),kpi('⬡','High Severity (S ≥ 7)','157','74.4%','redbg'),kpi('⌘','Affects System','128','60.7%'),kpi('⌘','Propagation Paths','343','Total paths','purplebg'),kpi('↓','Improved (↓ AP/RPN)','186','88.2% of total','greenbg'),kpi('↑','Worsened (↑ AP/RPN)','11','5.2% of total','orangebg')],`<div class="grid2"><div class="panel"><div class="ph">Impact on Risk Priority</div><div class="pb chartbox">${lineSvg([82,72,54,38,26,21,18],[70,58,42,30,22,18,14])}</div></div><div class="panel"><div class="ph">Impact Distribution by Target</div><div class="pb">${[['System Functions',82],['Requirements',75],['Characteristics',73],['Components',70],['Processes',61]].map(x=>`<div class="barrow"><span>${x[0]}</span><div class="bar"><i style="width:${x[1]}%;background:var(--green)"></i></div><b>${x[1]}</b></div>`).join('')}</div></div></div>`)}
+  function controlPage(kind){let data=kind==='Prevention'?C.preventionControls:C.detectionControls;let cols=kind==='Prevention'?[['id','ID'],['name','Control Name'],['category','Category'],['type','Type'],['controlType','Control Type'],['linked','Linked To'],['effectiveness','Effectiveness'],['operation','Operations Link'],['resource','Resource Used'],['status','Status']]:[['id','ID'],['name','Control Name'],['category','Category'],['type','Type'],['method','Detection Method'],['linked','Linked To'],['effectiveness','Effectiveness'],['resource','Resource Used'],['operation','Operations Link'],['status','Status']];return genericList(kind+' Controls',kind==='Prevention'?'Manage prevention controls that reduce likelihood of causes and failure modes.':'Manage detection controls that help detect failure modes or causes before they reach the customer.',data,cols,kind.toLowerCase(),[kpi('◫','Total Controls',kind==='Prevention'?156:142,'All time'),kpi('✓','Effective Controls',kind==='Prevention'?102:97,kind==='Prevention'?'65.4% of total':'68.3% of total','greenbg'),kpi('↗',kind==='Prevention'?'Occurrence Reduction':'Detection Improvement',kind==='Prevention'?'62%':'58%','Average improvement','orangebg'),kpi('★','High Impact Controls',kind==='Prevention'?38:31,'Major effect','purplebg'),kpi('⌘','Linked FM / Causes',kind==='Prevention'?172:189,'Total links'),kpi('▣','Last Updated','12 May 2025','10:52')],`<div class="grid4"><div class="panel"><div class="ph">Controls by Type</div><div class="pb" style="position:relative">${donut(kind==='Prevention'?156:142,[[0,52],[1,38],[2,41],[3,15],[4,10]])}</div></div><div class="panel"><div class="ph">Effectiveness</div><div class="pb chartbox">${lineSvg([22,30,48,56,68,74],[18,26,40,49,62,70])}</div></div><div class="panel"><div class="ph">Linked to Operations Controls</div><div class="pb" style="position:relative">${donut(156,[[0,72],[1,84]])}</div></div><div class="panel"><div class="ph">Top Controls by Improvement</div><div class="pb">${data.map(x=>`<div class="kv"><div>${esc(x.name)}</div><div>${x.effectiveness}%</div></div>`).join('')}</div></div></div>`)}
+  function processCtrl(){return genericList('Process Control Characteristics','Define and manage process control characteristics – what is controlled in the process, how, by which resource, and what action is taken if not OK.',C.processControls,[['id','ID'],['step','Process / Operation'],['name','Control Characteristic'],['type','Control Type'],['method','Method'],['resource','Resource / Equipment'],['frequency','Frequency / Trigger'],['links','PFMEA Links'],['status','Status'],['effectiveness','Effectiveness']],'processControls',[kpi('◫','Total Controls','132','All status'),kpi('✓','Active','118','89.4%','greenbg'),kpi('⚠','Not Effective','6','4.5%','orangebg'),kpi('◷','Needs Review','8','6.1%','purplebg'),kpi('◉','No Reaction Plan','5','3.8%','redbg'),kpi('⌘','Linked','126','95.5%')],`<div class="grid2"><div class="panel"><div class="ph">Process Control Flow</div><div class="pb"><div class="flow"><div class="flowbox">Process Step<br><b>50 - Assembly</b></div><span class="arrow">→</span><div class="flowbox">Control Characteristic<br><b>Component Presence</b></div><span class="arrow">→</span><div class="flowbox">Resource / Method<br><b>Presence Sensor</b></div><span class="arrow">→</span><div class="flowbox">Result<br><b>Detected = OK</b></div><span class="arrow">→</span><div class="flowbox">Reaction<br><b>Block cycle</b></div></div></div></div><div class="panel"><div class="ph">Effectiveness Overview</div><div class="pb" style="position:relative">${donut(132,[[0,104],[1,16],[2,6],[3,6]])}</div></div></div>`)}
+  function actions(){return genericList('Actions','Manage action plans and track completion to reduce risk and improve process effectiveness.',C.actions,[['id','ID'],['title','Action Title'],['linked','Linked To'],['type','Type'],['priority','Priority'],['responsible','Responsible'],['start','Planned Start'],['due','Due Date'],['status','Status'],['complete','% Complete'],['reduction','RPN Reduction']],'actions',[kpi('▣','Total Actions','68','All time'),kpi('◷','Open Actions','21','30.9%','orangebg'),kpi('⚠','Overdue Actions','7','10.3%','redbg'),kpi('✓','Completed Actions','47','69.1%','greenbg'),kpi('↓','Risk Reduction (RPN)','1,258','Sum of reduction','greenbg'),kpi('↘','Avg. RPN Reduction','53%','Average','purplebg')],`<div class="grid3"><div class="panel"><div class="ph">Actions by Status</div><div class="pb" style="position:relative">${donut(68,[[0,47],[1,14],[2,7]])}</div></div><div class="panel"><div class="ph">Actions by Priority</div><div class="pb" style="position:relative">${donut(68,[[0,31],[1,20],[2,15],[3,2]])}</div></div><div class="panel"><div class="ph">Risk Reduction Summary</div><div class="pb chartbox">${lineSvg([2378,2128,1876,1664,1432,1280,1120],[2000,1750,1500,1220,900,720,600])}</div></div></div>`)}
+  function riskMatrix(){let risks=[{id:'FM-001',failure:'Lamp not illuminating',effect:'No light output',s:9,o:8,d:7,rpn:504,level:'Extreme'},{id:'FM-002',failure:'Water ingress',effect:'Electrical failure',s:10,o:8,d:6,rpn:480,level:'Extreme'},{id:'FM-003',failure:'Lens cracking',effect:'Reduced visibility',s:9,o:6,d:7,rpn:378,level:'Extreme'},{id:'FM-004',failure:'Connector loose',effect:'Intermittent light',s:9,o:5,d:6,rpn:270,level:'Extreme'},{id:'FM-005',failure:'LED overheating',effect:'Shortened life',s:8,o:9,d:4,rpn:288,level:'Extreme'},{id:'FM-006',failure:'Reflector misalignment',effect:'Poor light pattern',s:8,o:5,d:5,rpn:200,level:'High'}];let matrix=`<div class="matrix"><div class="mhead mcell">S/O</div>${[1,2,3,4,5,6,7,8,9,10].map(x=>`<div class="mhead mcell">${x}</div>`).join('')}${[10,9,8,7,6,5,4,3,2,1].map(s=>`<div class="mhead mcell">${s}</div>${[1,2,3,4,5,6,7,8,9,10].map(o=>{let p=s*o,cl=p>=60?'risk-ext':p>=40?'risk-vh':p>=25?'risk-h':p>=12?'risk-m':'risk-l';return `<div class="mcell ${cl}"></div>`}).join('')}`).join('')}</div>`;let main=`${header('Risk Matrix','Visualize and evaluate risks based on Severity (S), Occurrence (O) and Detection (D).',false)}<div class="panel"><div class="ph"><div class="tabs"><span class="tab active">Matrix View</span><span class="tab" data-page="risktrajectory">Risk Trajectory & Propagation</span><span class="tab">Risk Heat Map</span><span class="tab">PM-FMEA Impact</span><span class="tab">Risk Summary</span><span class="tab">History</span></div></div><div class="pb" style="overflow:auto">${matrix}<div class="muted" style="margin-top:8px">RPN = Severity (S) × Occurrence (O) × Detection (D)</div></div></div><div class="panel"><div class="ph">Risks in Matrix</div>${table(risks,[['id','ID'],['failure','Failure Mode'],['effect','Effect'],['s','S'],['o','O'],['d','D'],['rpn','RPN'],['level','Risk Level']],'risk')}</div>`;let r=state.selected?risks.find(x=>x.id===state.selected):risks[1];let right=detailGeneric(r,'Selected Risk');return layout(main,right)}
+  function riskTrajectory(){let rows=[['FM-021','LED overcurrent','DFMEA',[240,144,72,48,36,36]],['FM-034','Seal leakage','PFMEA',[180,150,120,80,40,40]],['FM-041','Connector pin corrosion','PFMEA',[216,216,144,144,108,108]],['FM-052','Incorrect aim adjustment','PFMEA',[160,100,60,30,24,24]],['FM-063','Body deformation','DFMEA',[128,128,96,96,96,96]]];let main=`${header('Risk Trajectory & Propagation','Track how risks change over time and how they propagate through system functions. See how actions reduce risk.')}
+  <div class="kpis">${kpi('⬡','Initial High Risks','23','RPN ≥ 100','redbg')}${kpi('⬡','Current High Risks','8','RPN ≥ 100','orangebg')}${kpi('⌘','AP Reduced','66%','Average reduction','greenbg')}${kpi('⌘','PM-FMEA Controlled','15','Risks with PM control')}${kpi('◷','Revalidation Required','6','Tests due / expired','purplebg')}${kpi('⬡','Uncontrolled Propagation','3','Paths at risk','orangebg')}</div>
+  <div class="panel"><div class="ph"><div class="tabs"><span class="tab active">Risk Trajectory</span><span class="tab">Risk Propagation</span><span class="tab">Risk Heat Map</span><span class="tab">PM-FMEA Impact</span><span class="tab">Risk Summary</span></div></div><div class="pb">${rows.map(r=>`<div class="riskline"><b class="idlink">${r[0]}</b>${r[3].map((v,i)=>`<span class="pt ${v>=120?'hot':v>=60?'mid':''}" title="${v}"></span>${i<5?'<span class="seg"></span>':''}`).join('')}<b>${r[3][5]}</b></div>`).join('')}</div></div>
+  <div class="grid2"><div class="panel"><div class="ph">Risk Propagation Preview (FM-021)</div><div class="pb"><div class="flow"><div class="flowbox">LED overcurrent<br><b>Failure Mode</b></div><span class="arrow">→</span><div class="flowbox">LED overheating<br><b>Local Effect</b></div><span class="arrow">→</span><div class="flowbox">Reduced lifetime</div><span class="arrow">→</span><div class="flowbox">Loss of illumination</div><span class="arrow">→</span><div class="flowbox">Safety requirement not fulfilled</div></div></div></div><div class="panel"><div class="ph">How Risk Was Reduced</div><div class="pb">${[['Heat sink redesign','Occurrence 6 → 3'],['Current limit algorithm','Occurrence 3 → 1'],['Thermal monitoring','Detection 5 → 2'],['Coolant flow check','Occurrence 2 → 1']].map(x=>`<div class="kv"><div>${x[0]}</div><div>${pill(x[1])}</div></div>`).join('')}</div></div></div>`;return layout(main,detailGeneric({id:'FM-021',name:'LED overcurrent (LED Driver)',status:'Active',type:'DFMEA',initial:240,current:36,s:9,o:2,d:2,primaryCause:'C-0003 Seal design not appropriate',actions:4},'Risk Details'))}
+  function validation(){let main=`${header('Validation Trajectory','Plan, execute and track validation activities across FMEA items and product/process lifecycle.')}
+  <div class="kpis">${kpi('▣','Total Validations','68','All time')}${kpi('▣','Planned','26','38.2%','purplebg')}${kpi('▶','In Execution','18','26.5%','greenbg')}${kpi('✓','Completed','20','29.4%','greenbg')}${kpi('◷','Overdue','4','5.9%','redbg')}${kpi('⌘','Linked to FMEA Items','56','82.4%')}</div>
+  <div class="panel"><div class="ph"><div class="tabs"><span class="tab active">Trajectory View</span><span class="tab">Validation Table</span><span class="tab">Validation Plan</span><span class="tab">Test Plan</span><span class="tab">Coverage Matrix</span></div></div>${filters('Validation filter...')}<div class="pb"><table><thead><tr><th>ID</th><th>Validation / Test</th><th>Linked FMEA Item(s)</th>${['Concept','Design','Prototype','Verification','Validation','Release'].map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>${C.validations.map(v=>`<tr data-row="${v.id}" data-type="validation"><td class="idlink">${v.id}</td><td>${v.name}</td><td>${v.linked}</td>${v.stages.map(s=>`<td style="text-align:center"><span class="dot" style="background:${s===1?'var(--green)':s===2?'var(--blue)':s===3?'var(--red)':'#cbd5e1'}"></span></td>`).join('')}</tr>`).join('')}</tbody></table></div></div>
+  <div class="grid3"><div class="panel"><div class="ph">Validations by Status</div><div class="pb" style="position:relative">${donut(68,[[0,20],[1,18],[2,26],[3,4]])}</div></div><div class="panel"><div class="ph">Validation Type Distribution</div><div class="pb" style="position:relative">${donut(68,[[0,16],[1,18],[2,10],[3,8],[4,9]])}</div></div><div class="panel"><div class="ph">Validation Coverage</div><div class="pb">${[['DFMEA',84],['PFMEA',82],['System FMEA',75],['PM-FMEA',62]].map(x=>`<div class="barrow"><span>${x[0]}</span><div class="bar"><i style="width:${x[1]}%"></i></div><b>${x[1]}%</b></div>`).join('')}</div></div></div>`;return layout(main,detailGeneric(find(state.selected)||C.validations[1],'Validation Details'))}
+  function evidence(){return genericList('Evidence & Tests','Plan, execute and track validation tests and evidence for DFMEA.',C.evidence,[['id','ID'],['name','Evidence / Test Name'],['link','DFMEA Link'],['type','Test Type'],['method','Method'],['status','Status'],['priority','Priority'],['date','Planned Date'],['owner','Owner']],'evidence',[kpi('▣','Total Evidence / Tests','48','All items'),kpi('▣','Planned','15','31.3%','purplebg'),kpi('▶','In Execution','12','25.0%','greenbg'),kpi('✓','Completed','16','33.3%','greenbg'),kpi('⌘','Linked to DFMEA','44','91.7%'),kpi('◷','Overdue','5','10.4%','redbg')],`<div class="grid4"><div class="panel"><div class="ph">Status Overview</div><div class="pb" style="position:relative">${donut(48,[[0,16],[1,12],[2,15],[3,5]])}</div></div><div class="panel"><div class="ph">By Test Type</div><div class="pb" style="position:relative">${donut(48,[[0,20],[1,12],[2,9],[3,4],[4,3]])}</div></div><div class="panel"><div class="ph">By Priority</div><div class="pb">${[['High',22],['Medium',18],['Low',6],['None',2]].map(x=>`<div class="barrow"><span>${x[0]}</span><div class="bar"><i style="width:${x[1]*4}%"></i></div><b>${x[1]}</b></div>`).join('')}</div></div><div class="panel"><div class="ph">Linked to DFMEA</div><div class="pb" style="position:relative">${donut(48,[[0,44],[1,4]])}</div></div></div>`)}
+  function changeImpact(){return genericList('Change Impact','Identify, analyze and track the impact of design or requirement changes on FMEA and related items.',C.changes,[['id','ID'],['title','Change Title'],['type','Type'],['source','Source'],['reason','Reason'],['impact','Impact Level'],['dfmea','Affected DFMEA'],['pfmea','Affected PFMEA'],['status','Status'],['owner','Owner'],['date','Date']],'changes',[kpi('◷','Total Changes','24','All time'),kpi('⌛','Under Analysis','8','33.3%','purplebg'),kpi('⚠','Impacts Identified','18','75.0%','orangebg'),kpi('◎','High / Critical Impact','7','29.2%','redbg'),kpi('☑','Actions Required','15','62.5%','greenbg'),kpi('✓','Closed','9','37.5%','greenbg')],`<div class="grid4"><div class="panel"><div class="ph">Impact Level Distribution</div><div class="pb" style="position:relative">${donut(24,[[0,6],[1,9],[2,5],[3,4]])}</div></div><div class="panel"><div class="ph">Change Type Distribution</div><div class="pb" style="position:relative">${donut(24,[[0,13],[1,3],[2,3],[3,2],[4,3]])}</div></div><div class="panel"><div class="ph">Changes Over Time</div><div class="pb chartbox">${lineSvg([6,9,11,13,16,24],[2,3,4,5,6,9])}</div></div><div class="panel"><div class="ph">Top Affected Areas</div><div class="pb">${[['Optical Performance',10],['Housing / Enclosure',8],['Electrical',7],['Mechanical / Assembly',6],['Thermal Management',4]].map(x=>`<div class="barrow"><span>${x[0]}</span><div class="bar"><i style="width:${x[1]*10}%"></i></div><b>${x[1]}</b></div>`).join('')}</div></div></div>`)}
+  function charFlow(){let main=`${header('Characteristics Flow / Diagram','Define and manage relationships between system characteristics.')}
+  <div class="kpis">${kpi('▣','Total Characteristics','142','All in base')}${kpi('⌘','Linked Characteristics','118','83.1% of total')}${kpi('☝','Manual Links','36','30.5% of linked')}${kpi('♙','Auto Links','82','69.5% of linked','greenbg')}${kpi('⬡','Critical Links','24','High impact paths','redbg')}${kpi('⚠','Warnings','7','Check recommended','orangebg')}</div>
+  <div class="panel"><div class="ph"><div class="tabs"><span class="tab active">Link Matrix</span><span class="tab">Link Network</span><span class="tab">Link Rules</span><span class="tab">Impact Paths</span></div></div><div class="grid2" style="grid-template-columns:360px 1fr"><div>${filters('Search characteristics...')}${table(C.characteristics,[['id','ID'],['name','Characteristic'],['type','Type'],['category','Category'],['importance','Importance']],'characteristics')}</div><div class="nodegraph"><div class="connector c1"></div><div class="connector c2"></div><div class="connector c3"></div><div class="connector c4"></div><div class="connector c5"></div><div class="connector c6"></div><div class="connector c7"></div><div class="node center">CR-001<br>LMN-FLX</div><div class="node n1">CR-013<br>SAFE-TMP</div><div class="node n2">CR-003<br>BRM-PTN</div><div class="node n3">CR-004<br>PWR-CNS</div><div class="node n4">CR-006<br>ING-PRT</div><div class="node n5">CR-005<br>OPR-VLT</div><div class="node n6">CR-002<br>COL-TMP</div><div class="node n7">CR-012<br>DEC-FIN</div></div></div></div>`;return layout(main,detailGeneric(find(state.selected)||C.characteristics[0],'Link Details'))}
+  function contextPage(){let main=`${header('System / Product / Process','Engineering context shared from Open-EQMS and used by every FMEA view.')}
+  <div class="summarycards">${[['System','Headlamp X1'],['Product','Headlamp Assembly'],['Process','Injection Moulding'],['Characteristics','84 linked'],['Revision','A / Working']].map(x=>`<div class="smallcard">${x[0]}<b>${x[1]}</b></div>`).join('')}</div><div class="grid2" style="margin-top:12px"><div class="panel"><div class="ph">System / Product Structure</div><div class="pb"><div class="flow"><div class="flowbox">Headlamp X1</div><span class="arrow">→</span><div class="flowbox">Housing</div><span class="arrow">→</span><div class="flowbox">Lens</div><span class="arrow">→</span><div class="flowbox">LED Module</div></div></div></div><div class="panel"><div class="ph">Process Structure</div><div class="pb"><ul class="processlist">${['10 Incoming Material','20 Sub-Assembly','30 Injection Moulding','40 Post-Processing','50 Inspection','60 Packaging'].map((x,i)=>`<li class="${i===2?'active':''}">${x}</li>`).join('')}</ul></div></div></div>`;return layout(main,detailGeneric({id:'CTX-001',name:'Engineering Context',system:'Headlamp X1',product:'Headlamp Assembly',process:'Injection Moulding',characteristics:84,status:'Active'},'Context Details'))}
+  function placeholders(title,desc){let main=`${header(title,desc)}<div class="panel"><div class="pb"><div class="summarycards">${[['Objects',84],['Linked',72],['Warnings',5],['Open Actions',8],['Coverage','86%']].map(x=>`<div class="smallcard">${x[0]}<b>${x[1]}</b></div>`).join('')}</div><div style="margin-top:16px" class="muted">This workspace uses the same Open FMEA object graph and embedded container.</div></div></div>`;return layout(main,detailGeneric(null,'Context'))}
+  function projects(){let rows=[
+    {id:'DFMEA-001',name:'New Headlamp X1 - DFMEA',type:'DFMEA',related:'Headlamp X1',owner:'Janez Demo',status:'In Progress',progress:68,updated:'12 May 2025 10:30'},
+    {id:'PFMEA-002',name:'Injection Moulding Process - PFMEA',type:'PFMEA',related:'Injection Moulding Process',owner:'Marko Kovac',status:'In Progress',progress:74,updated:'11 May 2025 15:45'},
+    {id:'SYSFMEA-001',name:'Headlamp X1 - System FMEA',type:'System FMEA',related:'Headlamp X1 System',owner:'Ana Novak',status:'Review',progress:52,updated:'10 May 2025 09:20'},
+    {id:'PMFMEA-001',name:'CNC Machine Preventive FMEA',type:'PM-FMEA',related:'CNC-01 Milling Machine',owner:'Peter Turk',status:'In Progress',progress:41,updated:'09 May 2025 14:10'}];
+    let main=`${header('FMEA Projects','Manage all FMEA projects and their analyses.')}<div class="kpis">${kpi('▣','Total Projects','12','Active FMEA projects')}${kpi('▣','DFMEA','4','Design FMEA projects')}${kpi('▣','PFMEA','5','Process FMEA projects','greenbg')}${kpi('⌘','System FMEA','2','System level FMEA','purplebg')}${kpi('▦','PM-FMEA','1','Preventive FMEA','orangebg')}</div><div class="panel">${filters('Search projects...')}${table(rows,[['name','Project Name'],['id','Project Code'],['type','FMEA Type'],['related','Related Product / Process'],['owner','Owner'],['status','Status'],['progress','Progress'],['updated','Last Updated']],'projects')}</div>`;return layout(main)}
+  function team(){let main=`${header('FMEA Team','Manage team members, roles and permissions.')}<div class="kpis">${kpi('♙','Total Members','18','Active users')}${kpi('⬡','Administrators','3','System administrators')}${kpi('★','FMEA Leaders','5','Lead FMEA projects','orangebg')}${kpi('●','Contributors','10','Team contributors','greenbg')}</div><div class="panel">${table(C.users.map((u,i)=>({...u,email:(u.name.toLowerCase().replace(' ',' .').replace(' .','.')+'@openeqms.local'),fmeaRole:i===0?'FMEA Leader':i===3?'PM-FMEA Responsible':'Contributor',projects:[5,6,4,3,2][i],status:'Active'})),[['name','Name'],['email','Email'],['role','Role'],['fmeaRole','FMEA Role'],['projects','Projects'],['status','Status']],'users')}</div>`;return layout(main,`<div class="detail"><div class="dh"><h3>Team Roles</h3></div><div class="db"><div class="section-title">Administrator</div><p class="muted">Full system access and configuration.</p><div class="section-title">FMEA Leader</div><p class="muted">Lead analyses and approve results.</p><div class="section-title">PM-FMEA Responsible</div><p class="muted">Responsible for preventive FMEA and maintenance.</p><div class="section-title">Contributor</div><p class="muted">Contribute to FMEA analyses and actions.</p></div></div>`) }
+  function pmfmea(){return placeholders('Preventive FMEA (PM-FMEA)','Maintenance-oriented FMEA workspace linked to assets, maintenance plans and validation trajectory.')}
+  function systemfmea(){return placeholders('System FMEA','System-level analysis using the same shared function, failure, effect, cause and control graph.')}
+  function functions(){let rows=C.dfmea.slice(0,8).map((r,i)=>({id:'F-'+String(i+1).padStart(3,'0'),name:r.function||'Function '+(i+1),element:r.element||r.part||'System element',fmea:r.id,status:r.status||'Active'}));return genericList('Functions','Reusable system, product and process functions linked to requirements and FMEA items.',rows,[['id','ID'],['name','Function'],['element','Element / Process'],['fmea','Linked FMEA'],['status','Status']],'functions',[kpi('⊕','Functions','84','Loaded / derived'),kpi('⌘','Linked','78','92.9%','greenbg'),kpi('⚠','Unlinked','6','Needs review','orangebg')])}
+  function systemchars(){let rows=(C.characteristics||[]).map((r,i)=>({...r,system:['Optical System','Electrical System','Housing System','Mounting System'][i%4],monitoring:'Monitored',target:['1200 ± 60','5700 ± 300','Per Spec','48 ± 2','13.5 ± 0.5','IP67'][i%6],unit:['lm','K','—','W','V','—'][i%6],linked:(i%3)+1+' FMEA'}));let main=`${header('System Characteristics Base','Define and manage system characteristics and their properties.')}<div class="kpis">${kpi('▣','Total Characteristics','142','All system characteristics')}${kpi('⬡','Critical Characteristics','28','19.7% of total','orangebg')}${kpi('●','Monitored Characteristics','96','67.6% of total','greenbg')}${kpi('⌘','Linked to FMEA','118','83.1% of total')}${kpi('♙','Organizations','3','Sources','purplebg')}</div><div class="panel">${filters('Search characteristics...')}${table(rows,[['id','Characteristic ID'],['name','Characteristic Name'],['system','System / Subsystem'],['type','Type'],['category','Category'],['importance','Importance'],['monitoring','Monitoring'],['target','Nominal Value / Target'],['unit','Unit'],['linked','Linked to FMEA']],'characteristics')}</div>`;return layout(main,detailGeneric(rows.find(x=>x.id===state.selected)||rows[0],'Characteristic Details'))}
+  function processflow(){let steps=['10 Incoming Material','20 Cutting','30 Bending','40 Welding','50 Cleaning','60 Coating','70 Assembly','80 Functional Test','90 Visual Inspection','100 Packaging'];let main=`${header('Process Flow','Process steps, operations and links to PFMEA and process controls.')}<div class="panel"><div class="pb"><div class="flow">${steps.map((s,i)=>`<div class="flowbox" style="border-color:${i===3?'#2563eb':'var(--line)'}"><b>${s}</b><div class="muted">${i%3+1} PFMEA links</div></div>${i<steps.length-1?'<span class="arrow">→</span>':''}`).join('')}</div></div></div>`;return layout(main)}
+  function ishikawa(){let a=C.problemSolving.ishikawa[0],cats=Object.entries(a.categories);let bones=cats.map(([k,v],i)=>`<div class="bone b${i+1}"><div class="btitle">${esc(k)}</div><div class="chips">${v.map(x=>`<div class="chip">${esc(x)}</div>`).join('')}</div></div>`).join('');let main=`${header('Ishikawa / 5M / 6M','Analyze potential causes using fishbone categories; promote only verified causes into authoritative FMEA data.')}<div class="kpis">${kpi('⌘','Analysis','ISH-001','Linked to FM-002')}${kpi('●','Categories','6','6M model','greenbg')}${kpi('⊕','Candidate Causes',cats.reduce((n,[,v])=>n+v.length,0),'Before verification','orangebg')}${kpi('✓','Selected','2','For verification','purplebg')}</div><div class="panel"><div class="ph"><div class="tabs"><span class="tab active">Ishikawa</span><span class="tab">5M</span><span class="tab">6M</span><span class="tab">Linked Evidence</span></div></div><div class="pb"><div class="fishbone"><div class="spine"></div>${bones}<div class="head">${esc(a.problem)}</div></div></div></div><div class="taxonomy"><div class="taxbox"><h4>5M</h4>${['Man','Machine','Method','Material','Measurement'].map(x=>`<span class="mini-tag">${x}</span>`).join('')}</div><div class="taxbox"><h4>6M</h4>${['Man','Machine','Method','Material','Measurement','Mother Nature / Environment'].map(x=>`<span class="mini-tag">${x}</span>`).join('')}</div><div class="taxbox"><h4>Poka-Yoke bridge</h4><p class="muted">Selected root causes can create prevention/detection proposals and link to process controls.</p><button class="btn" data-page="prevention">Open controls →</button></div></div>`;return layout(main,detailGeneric(a,'Analysis Details'))}
+  function whyAnalysis(){let a=C.problemSolving.whyAnalyses[0];let chain=a.why.map((x,i)=>`<div class="whyrow"><div class="whybadge">WHY ${i+1}</div><div class="whybox">${esc(x)}</div><div class="whyarrow">↓</div></div>`).join('');let main=`${header('3WHY / 5WHY','Structured why-analysis linked directly to FMEA causes, actions and evidence.')}<div class="methodgrid"><div class="panel"><div class="ph">Analyses</div><div class="pb methodlist">${C.problemSolving.whyAnalyses.map((x,i)=>`<div class="methodcard ${i===0?'active':''}"><b>${x.id} · ${x.method}</b><small>${esc(x.problem)} · ${esc(x.status)}</small></div>`).join('')}</div></div><div><div class="panel"><div class="ph">${esc(a.problem)}</div><div class="pb whychain">${chain}<div class="whyrow"><div class="whybadge" style="background:#e8f8f2;color:#087a52">ROOT</div><div class="whybox"><b>${esc(a.rootCause)}</b><div class="muted">Requires evidence / verification before authoritative cause update.</div></div><div></div></div></div></div></div></div>`;return layout(main,detailGeneric(a,'Why Analysis'))}
+  function eightd(){let a=C.problemSolving.eightD[0];let main=`${header('8D Problem Solving','Cross-functional 8D workflow linked to FMEA, containment, root cause, actions and lessons learned.')}<div class="kpis">${kpi('⑧','8D Case',a.id,a.status)}${kpi('✓','Completed','3','D1–D3','greenbg')}${kpi('⌘','Current Step','D4','Root Cause')}${kpi('⚠','Linked Risk','FM-002','Water ingress','orangebg')}</div><div class="panel"><div class="ph">${esc(a.title)}</div><div class="pb"><div class="dsteps">${a.steps.map(s=>`<div class="dstep ${s.status==='Completed'?'done':s.status==='In Progress'?'progress':'plan'}"><div class="dnum">${s.d}</div><b>${esc(s.title)}</b><div style="margin:7px 0">${pill(s.status)}</div><div class="muted">${esc(s.summary)}</div></div>`).join('')}</div></div></div><div class="grid3"><div class="panel"><div class="ph">Root Cause Tools</div><div class="pb"><button class="btn" data-page="ishikawa">Ishikawa / 6M</button> <button class="btn" data-page="whyanalysis">5WHY</button></div></div><div class="panel"><div class="ph">Corrective Action</div><div class="pb">Poka-Yoke fixture location + automated seat-depth detection.</div></div><div class="panel"><div class="ph">Prevention of Recurrence</div><div class="pb">PFMEA + Control Plan + lessons learned update.</div></div></div>`;return layout(main,detailGeneric(a,'8D Details'))}
+  function xda(){return placeholders('XDA Investigations','Cross-domain investigation workspace connecting failures, complaints, causes, evidence, 8D and FMEA history.')}
+  const pages={home,projects,team,context:contextPage,systemchars,charflow:charFlow,processflow,processctrl:processCtrl,dfmea:()=>fmeaPage('DFMEA'),pfmea:()=>fmeaPage('PFMEA'),systemfmea,pmfmea,functions,failuremodes:failureModes,effects,causes,prevention:()=>controlPage('Prevention'),detection:()=>controlPage('Detection'),actions,riskmatrix:riskMatrix,risktrajectory:riskTrajectory,evidence,validation,changeimpact:changeImpact,ishikawa,whyanalysis,eightd,xda};
+  function render(){renderNav();let f=pages[state.page]||home;$('#page').innerHTML=f();$('#pageTitle').textContent=nav.flatMap(x=>x[1]).find(x=>x[0]===state.page)?.[2]||'Open FMEA';wire()}
+  function wire(){$$('[data-page]').forEach(x=>x.onclick=()=>{state.page=x.dataset.page;state.selected=null;render()});$$('[data-row]').forEach(x=>x.onclick=()=>{state.selected=x.dataset.row;state.selectedType=x.dataset.type;render()});$$('[data-ai]').forEach(x=>x.onclick=openAI);$$('[data-clear]').forEach(x=>x.onclick=()=>{state.selected=null;render()});$$('[data-edit]').forEach(x=>x.onclick=()=>editRecord(x.dataset.edit));$$('[data-new]').forEach(x=>x.onclick=()=>newRecord(x.dataset.new));$$('[data-import]').forEach(x=>x.onclick=openContainer);$$('[data-export]').forEach(x=>x.onclick=saveContainer);$$('[data-save]').forEach(x=>x.onclick=saveSnapshot)}
+  function addTx(kind,id,field,oldv,newv){C.transactions.push({id:'TX-'+String(C.transactions.length+1).padStart(5,'0'),at:new Date().toISOString(),user:'USR-JD',kind,objectId:id,field,oldValue:oldv,newValue:newv});state.dirty=true}
+  function editRecord(id){let r=find(id);if(!r)return;let fields=Object.keys(r).filter(k=>!['id','stages'].includes(k)).slice(0,8);modal('Edit '+id,fields.map(k=>`<label>${esc(k)}<input data-field="${k}" value="${esc(r[k])}"></label>`).join(''),()=>{fields.forEach(k=>{let el=$(`[data-field="${k}"]`);let nv=el.value;if(String(r[k])!==nv){addTx('FIELD_UPDATE',id,k,r[k],nv);r[k]=isNaN(Number(nv))||nv.trim()===''?nv:Number(nv)}});C.manifest.knowledgeVersion++;rebuildKnowledge();render()})}
+  function newRecord(title){modal('Create '+title,`<label>Name / title<input id="newName" value="New ${esc(title)}"></label><label>Status<select id="newStatus"><option>Open</option><option>In Progress</option><option>Active</option></select></label>`,()=>{let map={DFMEA:'dfmea',PFMEA:'pfmea','Failure Modes':'failureModes','Causes':'causes','Effects':'effects','Actions':'actions'};let key=map[title];if(!key)return;let arr=C[key];let id=(title==='DFMEA'?'DF-NEW-':title==='PFMEA'?'PF-NEW-':'NEW-')+(arr.length+1);let r={id,name:$('#newName').value,title:$('#newName').value,status:$('#newStatus').value};arr.push(r);addTx('CREATE',id,'record',null,r);rebuildKnowledge();render()})}
+  function modal(title,body,onok){$('#modal').innerHTML=`<h3>${esc(title)}</h3><div class="formgrid">${body}</div><div class="foot"><button class="btn" id="mCancel">Cancel</button><button class="btn primary" id="mOk">Confirm</button></div>`;$('#modalBg').classList.add('open');$('#mCancel').onclick=()=>$('#modalBg').classList.remove('open');$('#mOk').onclick=()=>{onok&&onok();$('#modalBg').classList.remove('open')}}
+  function rebuildKnowledge(){C.knowledge=allRecords().map(r=>({id:r.id,text:Object.entries(r).filter(([k,v])=>typeof v!=='object').map(([k,v])=>`${k}:${v}`).join(' | '),type:inferType(r.id)}));state.knowledge=C.knowledge}
+  function inferType(id){if(id.startsWith('DF-'))return'DFMEA';if(id.startsWith('PF-'))return'PFMEA';if(id.startsWith('FM-'))return'FailureMode';if(id.startsWith('C-'))return'Cause';if(id.startsWith('E-'))return'Effect';if(id.startsWith('PC-'))return'PreventionControl';if(id.startsWith('DC-'))return'DetectionControl';if(id.startsWith('A-'))return'Action';return'Object'}
+  function openAI(){state.aiOpen=true;$('#aiPanel').classList.add('open');let sel=find(state.selected);if(!$('#aiLog').children.length)aiMsg(`<span class="kind">CONTEXT</span>${sel?`Selected <b>${esc(sel.id)}</b> — ${esc(sel.name||sel.title||sel.failure||'')}`:'No item selected. I can analyze the full embedded open_fmea.container.'}`)}
+  function aiMsg(t,user=false){let d=document.createElement('div');d.className='msg'+(user?' user':'');d.innerHTML=t;$('#aiLog').appendChild(d);$('#aiLog').scrollTop=99999}
+  function aiAnswer(q){let l=q.toLowerCase(),sel=find(state.selected),parts=[];if(sel){parts.push(`<span class="kind">FACT</span>Selected object <b>${esc(sel.id)}</b> is ${esc(sel.name||sel.title||sel.failure||'')} with status ${esc(sel.status||'n/a')}.`);if(sel.rpn||sel.initial||sel.current)parts.push(`<span class="kind">CALCULATION</span>Risk context: initial/RPN ${esc(sel.initial??sel.rpn??'—')}, current ${esc(sel.current??'—')}.`)}if(l.includes('high risk')||l.includes('risk')){let hi=[...C.dfmea,...C.pfmea,...C.failureModes].filter(x=>(x.current??x.rpn??x.initial)>=100);parts.push(`<span class="kind">FACT</span>${hi.length} loaded demo items currently meet the ≥100 threshold.`);parts.push(`<span class="kind">RECOMMENDATION</span>Review ${hi.slice(0,3).map(x=>x.id).join(', ')} first and verify linked controls/actions.`)}else if(l.includes('cause')){let top=C.causes.slice().sort((a,b)=>b.influence-a.influence)[0];parts.push(`<span class="kind">INFERENCE</span>The strongest loaded cause signal is ${top.id} “${esc(top.name)}” with influence ${top.influence}/10.`)}else if(l.includes('action')){let open=C.actions.filter(a=>a.status!=='Completed');parts.push(`<span class="kind">FACT</span>${open.length} demo actions are still open or in progress.`)}else if(l.includes('ishikawa')||l.includes('5m')||l.includes('6m')){let a=C.problemSolving.ishikawa[0];parts.push(`<span class="kind">FACT</span>Ishikawa ${a.id} contains ${Object.values(a.categories).flat().length} candidate causes across ${Object.keys(a.categories).length} categories.`);parts.push(`<span class="kind">RECOMMENDATION</span>Verify selected causes before promoting them into FMEA.`)}else if(l.includes('5why')||l.includes('5 why')||l.includes('3why')||l.includes('3 why')){let a=C.problemSolving.whyAnalyses[0];parts.push(`<span class="kind">FACT</span>${a.id} currently proposes root cause: ${esc(a.rootCause)}.`)}else if(l.includes('8d')){let a=C.problemSolving.eightD[0];parts.push(`<span class="kind">FACT</span>${a.id} is at ${esc(a.status)} and is linked to ${esc(a.linkedObject)}.`)}else if(l.includes('poka')){parts.push(`<span class="kind">FACT</span>${C.problemSolving.pokaYokeCatalog.length} Poka-Yoke patterns are loaded in the container.`)}else if(l.includes('learn')||l.includes('knowledge')||l.includes('container')){parts.push(`<span class="kind">FACT</span>The AI knowledge layer indexes ${C.knowledge.length} records from the embedded container and rebuilds after approved edits.`);parts.push(`<span class="kind">RECOMMENDATION</span>Keep authoritative changes user-confirmed; use AI only for retrieval, comparison and proposals.`)}else parts.push(`<span class="kind">RECOMMENDATION</span>Ask me about risk, causes, actions, controls, validation, change impact, or the selected object.`);let src=sel?[sel.id]:[...C.failureModes.slice(0,2).map(x=>x.id),'open_fmea.container'];parts.push(`<div class="source">Sources: ${src.map(esc).join(', ')}</div>`);aiMsg(parts.join('<br><br>'))}
+  function saveSnapshot(){localStorage.setItem('open_fmea_embedded_container',JSON.stringify(C));state.dirty=false;alert('Snapshot saved in browser local storage. The single HTML file remains unchanged.')}
+  function saveContainer(){let blob=new Blob([JSON.stringify(C,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='open_fmea.container';a.click();URL.revokeObjectURL(a.href)}
+  function openContainer(){let i=document.createElement('input');i.type='file';i.accept='.container,.json';i.onchange=()=>{let f=i.files[0];if(!f)return;let fr=new FileReader();fr.onload=()=>{try{let d=JSON.parse(fr.result);Object.keys(C).forEach(k=>delete C[k]);Object.assign(C,d);try{localStorage.removeItem('open_fmea_embedded_container')}catch(_){ }rebuildKnowledge();render();alert('Container loaded into the single HTML runtime.')}catch(e){alert('Invalid container: '+e.message)}};fr.readAsText(f)};i.click()}
+  function init(){
+  // Backward-compatible local snapshot loading. Older Open FMEA snapshots may not
+  // contain arrays introduced in newer builds; never replace the embedded defaults wholesale.
+  const defaults=JSON.parse(JSON.stringify(C));
+  let saved=localStorage.getItem('open_fmea_embedded_container');
+  if(saved){
+    try{
+      const d=JSON.parse(saved);
+      const arrayKeys=['users','projects','dfmea','pfmea','failureModes','causes','effects','preventionControls','detectionControls','processControls','actions','evidence','validations','changes','characteristics','transactions','knowledge','systems'];
+      const objectKeys=['manifest','settings','problemSolving'];
+      arrayKeys.forEach(k=>{ if(Array.isArray(d[k])) C[k]=d[k]; else if(!Array.isArray(C[k])) C[k]=defaults[k]||[]; });
+      objectKeys.forEach(k=>{ C[k]={...(defaults[k]||{}),...(C[k]||{}),...(d[k]||{})}; });
+      // Preserve newly introduced nested problem-solving collections when an old snapshot is loaded.
+      C.problemSolving={...(defaults.problemSolving||{}),...(d.problemSolving||{})};
+      ['taxonomy','whyAnalyses','ishikawa','eightD','pokaYokeCatalog'].forEach(k=>{
+        if(d.problemSolving && d.problemSolving[k]!=null) C.problemSolving[k]=d.problemSolving[k];
+        else C.problemSolving[k]=defaults.problemSolving?.[k] ?? (k==='taxonomy'?{}:[]);
+      });
+    }catch(e){
+      console.warn('Open FMEA: ignored incompatible saved snapshot',e);
+      try{localStorage.removeItem('open_fmea_embedded_container')}catch(_){ }
+    }
+  }
+  // Final structural guard so a partial/corrupt snapshot can never prevent GUI rendering.
+  ['users','projects','dfmea','pfmea','failureModes','causes','effects','preventionControls','detectionControls','processControls','actions','evidence','validations','changes','characteristics','transactions','knowledge','systems'].forEach(k=>{if(!Array.isArray(C[k]))C[k]=defaults[k]||[]});
+  if(!C.problemSolving||typeof C.problemSolving!=='object')C.problemSolving=defaults.problemSolving||{};
+  ['whyAnalyses','ishikawa','eightD','pokaYokeCatalog'].forEach(k=>{if(!Array.isArray(C.problemSolving[k]))C.problemSolving[k]=defaults.problemSolving?.[k]||[]});
+  if(!C.problemSolving.taxonomy)C.problemSolving.taxonomy=defaults.problemSolving?.taxonomy||{};
+  rebuildKnowledge();render();$('#aiClose').onclick=()=>$('#aiPanel').classList.remove('open');$('#aiSend').onclick=()=>{let q=$('#aiInput').value.trim();if(!q)return;aiMsg(esc(q),true);$('#aiInput').value='';aiAnswer(q)};$('#aiInput').onkeydown=e=>{if(e.key==='Enter')$('#aiSend').click()};$('#globalSearch').onkeydown=e=>{if(e.key==='Enter'){let q=e.target.value.toLowerCase();let hit=allRecords().find(r=>JSON.stringify(r).toLowerCase().includes(q));if(hit){state.selected=hit.id;let t=inferType(hit.id);state.page=t==='DFMEA'?'dfmea':t==='PFMEA'?'pfmea':t==='FailureMode'?'failuremodes':t==='Cause'?'causes':t==='Effect'?'effects':t==='PreventionControl'?'prevention':t==='DetectionControl'?'detection':'home';render()}}};document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('#globalSearch').focus()}})}
+  return{init,C,state,render};
+})();
+document.addEventListener('DOMContentLoaded',OFMEA.init);
+window.OFMEA=OFMEA;
+</script>
+</body>
+</html>

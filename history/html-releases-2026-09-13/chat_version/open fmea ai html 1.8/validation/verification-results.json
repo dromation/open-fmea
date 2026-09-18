@@ -1,0 +1,244 @@
+{
+  "at": "2026-09-13T10:48:46.383Z",
+  "checks": [
+    "Design classification filter",
+    "Explicit interface creation and traceable matrix",
+    "P-Diagram saved against source function and failure IDs",
+    "JSON import writes authoritative dataset in active project",
+    "CSV multiline round trip and numeric ratings",
+    "Invalid rating import is atomic",
+    "Portable container export/import preserves operational records",
+    "Invalid external container leaves state unchanged",
+    "New 8D and initially empty D0-D8 fields editable",
+    "WHY findings become source-linked drafts; unsupported approval blocked",
+    "Explicit evidence and completed-validation approval",
+    "Imported learning cannot silently become approved",
+    "Feedback quality affects deterministic retrieval ranking",
+    "Corrupt browser snapshot recovers to embedded data",
+    "Fresh-load responsive DFMEA and visible topbar controls at seven widths"
+  ],
+  "widths": [
+    {
+      "width": 320,
+      "overflow": false,
+      "controls": [
+        {
+          "name": "hamb",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "projectSel",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "globalSearch",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "notifBtn",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "helpBtn",
+          "visible": true,
+          "inViewport": true
+        }
+      ]
+    },
+    {
+      "width": 480,
+      "overflow": false,
+      "controls": [
+        {
+          "name": "hamb",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "projectSel",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "globalSearch",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "notifBtn",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "helpBtn",
+          "visible": true,
+          "inViewport": true
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "overflow": false,
+      "controls": [
+        {
+          "name": "hamb",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "projectSel",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "globalSearch",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "notifBtn",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "helpBtn",
+          "visible": true,
+          "inViewport": true
+        }
+      ]
+    },
+    {
+      "width": 1024,
+      "overflow": false,
+      "controls": [
+        {
+          "name": "hamb",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "projectSel",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "globalSearch",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "notifBtn",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "helpBtn",
+          "visible": true,
+          "inViewport": true
+        }
+      ]
+    },
+    {
+      "width": 1366,
+      "overflow": false,
+      "controls": [
+        {
+          "name": "hamb",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "projectSel",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "globalSearch",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "notifBtn",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "helpBtn",
+          "visible": true,
+          "inViewport": true
+        }
+      ]
+    },
+    {
+      "width": 1920,
+      "overflow": false,
+      "controls": [
+        {
+          "name": "hamb",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "projectSel",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "globalSearch",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "notifBtn",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "helpBtn",
+          "visible": true,
+          "inViewport": true
+        }
+      ]
+    },
+    {
+      "width": 2560,
+      "overflow": false,
+      "controls": [
+        {
+          "name": "hamb",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "projectSel",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "globalSearch",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "notifBtn",
+          "visible": true,
+          "inViewport": true
+        },
+        {
+          "name": "helpBtn",
+          "visible": true,
+          "inViewport": true
+        }
+      ]
+    }
+  ],
+  "status": "PASS",
+  "limitations": [
+    "Historical legacy ratings and links still flagged",
+    "Other pages retain legacy reference widgets; not a full 23-page mockup acceptance"
+  ]
+}

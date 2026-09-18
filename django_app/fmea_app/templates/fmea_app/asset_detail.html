@@ -1,0 +1,63 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}{{ asset.name }} - Open FMEA{% endblock %}
+{% block topbar_title %}Asset{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>{{ asset.name }}</h1>
+    <p class="muted">{{ asset.asset_code|default:"" }}</p>
+  </div>
+  <div class="button-row">
+    <a class="button" href="{% url 'fmea:asset_list' %}">Assets</a>
+    <a class="button primary" href="{% url 'fmea:asset_edit' asset.stable_id %}">Edit</a>
+  </div>
+</div>
+
+<div class="grid">
+  <section class="panel span-6">
+    <div class="panel-heading">
+      <h2>Details</h2>
+    </div>
+    <table>
+      <tbody>
+        <tr><th>Name</th><td>{{ asset.name }}</td></tr>
+        <tr><th>Asset Code</th><td>{{ asset.asset_code|default:"—" }}</td></tr>
+        <tr><th>Location</th><td>{{ asset.location|default:"—" }}</td></tr>
+        <tr><th>Status</th><td><span class="status">{{ asset.get_status_display }}</span></td></tr>
+        <tr><th>Notes</th><td>{{ asset.notes|default:"" }}</td></tr>
+        <tr><th>Stable ID</th><td><code>{{ asset.stable_id }}</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="panel span-6">
+    <div class="panel-heading">
+      <h2>Linked Failure Modes</h2>
+    </div>
+    <div class="table-shell">
+      <table>
+        <thead>
+          <tr>
+            <th>Failure Mode</th>
+            <th>FMEA</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for failure_mode in failure_modes %}
+          <tr>
+            <td>{{ failure_mode.name }}</td>
+            <td><a href="{% url 'fmea:fmea_detail' failure_mode.fmea.stable_id %}">{{ failure_mode.fmea.name }}</a></td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="2" class="muted">No failure modes linked to this asset yet.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+{% endblock %}

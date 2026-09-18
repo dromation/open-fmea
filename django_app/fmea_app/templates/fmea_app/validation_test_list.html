@@ -1,0 +1,87 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}Evidence & Tests - Open FMEA{% endblock %}
+{% block topbar_title %}Evidence & Tests{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>Evidence & Tests</h1>
+    <p class="muted">Validation, verification, reliability, and acceptance tests linked to Failure Modes.</p>
+  </div>
+  <a class="button primary" href="{% url 'fmea:new_validation_test' %}">New Validation Test</a>
+</div>
+
+<form class="panel compact section-block" method="get" action="{% url 'fmea:validation_test_list' %}">
+  <div class="field-grid">
+    <label>Test Type
+      <select name="test_type">
+        <option value="">All</option>
+        {% for value, label in test_type_choices %}
+          <option value="{{ value }}" {% if test_type == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Status
+      <select name="status">
+        <option value="">All</option>
+        {% for value, label in status_choices %}
+          <option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Lifecycle Gate
+      <select name="lifecycle_gate">
+        <option value="">All</option>
+        {% for value, label in lifecycle_gate_choices %}
+          <option value="{{ value }}" {% if lifecycle_gate == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <div>
+      <button class="button" type="submit">Apply</button>
+    </div>
+  </div>
+</form>
+
+<section class="panel">
+  <div class="table-shell">
+    <table>
+      <thead>
+        <tr>
+          <th>Failure Mode</th>
+          <th>Test Type</th>
+          <th>Method</th>
+          <th>Result Status</th>
+          <th>Planned Date</th>
+          <th>Executed Date</th>
+          <th>Priority</th>
+          <th>Owner</th>
+          <th>Status</th>
+          <th>Lifecycle Gate</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for test in validation_tests %}
+        <tr>
+          <td><a href="{% url 'fmea:fmea_detail' test.failure_mode.fmea.stable_id %}">{{ test.failure_mode.name }}</a></td>
+          <td>{{ test.get_test_type_display }}</td>
+          <td>{{ test.method|default:"" }}</td>
+          <td><span class="status status-{{ test.result_status }}">{{ test.get_result_status_display }}</span></td>
+          <td>{{ test.planned_date|default:"" }}</td>
+          <td>{{ test.executed_date|default:"" }}</td>
+          <td>{{ test.get_priority_display }}</td>
+          <td>{{ test.owner|default:"" }}</td>
+          <td><span class="status status-{{ test.status }}">{{ test.get_status_display }}</span></td>
+          <td>{{ test.get_lifecycle_gate_display }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="10" class="muted">No validation tests yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

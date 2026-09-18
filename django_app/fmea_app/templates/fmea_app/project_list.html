@@ -1,0 +1,80 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}FMEA Projects - Open FMEA{% endblock %}
+{% block topbar_title %}FMEA Projects{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>FMEA Projects</h1>
+    <p class="muted">Project-level view across all controlled FMEA records.</p>
+  </div>
+  <div class="button-row">
+    <a class="button" href="{% url 'fmea:dashboard' %}">Workspace</a>
+    <a class="button" href="{% url 'fmea_review:session_list' %}">Import XLSX</a>
+  </div>
+</div>
+
+<div class="grid section-block">
+  {% include "fmea_app/_components/_stat_tile.html" with label="Total Projects" value=project_count detail="All FMEA projects" tile_class="span-3" %}
+  {% include "fmea_app/_components/_stat_tile.html" with label="Active" value=active_project_count detail="Projects currently in work" tile_class="span-3" %}
+  {% include "fmea_app/_components/_stat_tile.html" with label="On Hold" value=on_hold_project_count detail="Paused project records" tile_class="span-3" %}
+  {% include "fmea_app/_components/_stat_tile.html" with label="Completed" value=completed_project_count detail="Closed project records" tile_class="span-3" %}
+</div>
+
+<div class="grid">
+  <section class="panel span-8">
+    <div class="panel-heading">
+      <h2>Project Register</h2>
+      <p class="muted">FMEA count and type breakdown are computed from linked FMEA records.</p>
+    </div>
+    <div class="table-shell">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Project Code</th>
+            <th>Status</th>
+            <th>FMEAs</th>
+            <th>Type Breakdown</th>
+            <th>Last Updated</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in project_rows %}
+          <tr>
+            <td>
+              <a href="{% url 'fmea:project_detail' row.project.stable_id %}">{{ row.project.name }}</a>
+              <span class="cell-detail">{{ row.project.description }}</span>
+            </td>
+            <td>{{ row.project.project_code|default:"" }}</td>
+            <td>{% include "fmea_app/_components/_status_badge.html" with label=row.project.get_status_display status=row.project.status %}</td>
+            <td>{{ row.fmea_count }}</td>
+            <td>{{ row.type_breakdown|default:"No FMEAs" }}</td>
+            <td>{{ row.last_updated|date:"Y-m-d H:i" }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="muted">No FMEA projects yet.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel span-4">
+    <div class="panel-heading">
+      <h2>Create Project</h2>
+    </div>
+    <form class="compact" method="post" action="{% url 'fmea:create_project' %}">
+      {% csrf_token %}
+      <label>Name {{ project_form.name }}</label>
+      <label>Project Code {{ project_form.project_code }}</label>
+      <label>Status {{ project_form.status }}</label>
+      <label>Description {{ project_form.description }}</label>
+      <button class="button primary" type="submit">Create Project</button>
+    </form>
+  </section>
+</div>
+{% endblock %}

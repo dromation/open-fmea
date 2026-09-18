@@ -9,7 +9,7 @@
   --border-strong: #3a465b;
   --text-primary: #edf1f7;
   --text-secondary: #a5afc2;
-  --text-muted: #77849a;
+  --text-muted: #8b96ab;
   --accent-primary: #3b82f6;
   --accent-primary-strong: #2563eb;
   --accent-secondary: #14b8a6;
@@ -853,6 +853,15 @@ td {
   margin-bottom: var(--space-4);
 }
 
+.related-list {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.related-list p {
+  margin-bottom: var(--space-2);
+}
+
 .process-steps {
   display: flex;
   flex-direction: column;
@@ -1050,4 +1059,113 @@ td {
   .topbar-meta {
     justify-content: flex-start;
   }
+}
+
+/* Slice N — Process Control Characteristics richer page: additive-only
+   classes for the right-docked detail panel, its GET-param tab nav, the
+   row-selected highlight, and the static Process Control Flow diagram.
+   No existing class above is modified. */
+.detail-panel {
+  align-self: start;
+}
+
+.row-selected {
+  background: var(--bg-nav-active);
+}
+
+.tab-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-4) 0;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: var(--space-3);
+}
+
+.tab-link {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  font-weight: 650;
+  font-size: 13px;
+}
+
+.tab-link:hover,
+.tab-link:focus {
+  border-color: var(--accent-primary);
+  color: var(--text-primary);
+}
+
+.tab-link.is-active {
+  border-color: var(--accent-primary-strong);
+  background: var(--bg-nav-active);
+  color: var(--text-primary);
+}
+
+.flow-diagram {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.flow-step {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius);
+  background: var(--bg-card-strong);
+  min-width: 120px;
+}
+
+.flow-step-label {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.flow-arrow {
+  color: var(--text-muted);
+  font-weight: 800;
+}
+
+.rating-reference {
+  margin-top: var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-card-strong);
+}
+
+.rating-reference summary {
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.rating-reference-body {
+  margin-top: var(--space-2);
+}
+
+.rating-reference-body h4 {
+  margin: var(--space-2) 0 var(--space-1);
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.rating-reference-body table td {
+  vertical-align: top;
+  font-size: 13px;
+}
+
+.rating-reference-body table td:first-child {
+  font-weight: 800;
+  width: 32px;
 }

@@ -1,0 +1,106 @@
+{% extends "fmea_app/base.html" %}
+
+{% block title %}DFMEA - Open FMEA{% endblock %}
+{% block topbar_title %}DFMEA{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>DFMEA</h1>
+    <p class="muted">Design-side FMEAs (design, product, software, system) across every project, in one worksheet. Read-only — edit from each FMEA's own worksheet page.</p>
+  </div>
+</div>
+
+<section class="panel span-12">
+  <div class="panel-heading">
+    <h2>DFMEA Worksheet</h2>
+  </div>
+  <div class="worksheet-wrap">
+    <table class="worksheet">
+      <thead>
+        <tr>
+          <th class="wide">FMEA</th>
+          <th class="wide">Function / Requirement</th>
+          <th class="wide">Failure Mode</th>
+          <th class="wide">Effects</th>
+          <th class="wide">Cause</th>
+          <th class="rating">S</th>
+          <th class="rating">O</th>
+          <th class="wide">Prevention Controls</th>
+          <th class="wide">Detection Controls</th>
+          <th class="rating">D</th>
+          <th>Risk</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+        <tr>
+          <td class="wide">
+            <a href="{% url 'fmea:fmea_detail' row.fmea.stable_id %}">{{ row.fmea.name }}</a>
+          </td>
+          <td class="wide">
+            {{ row.function|default:"" }}
+            <span class="cell-detail">{{ row.requirement|default:"" }}</span>
+          </td>
+          <td class="wide">
+            <strong>{{ row.failure_mode.name }}</strong>
+            <span class="cell-detail">{{ row.failure_mode.description }}</span>
+          </td>
+          <td class="wide">
+            <span class="cell-list">
+              {% for effect in row.effects %}
+                <span class="cell-item">{{ effect.name }}<span class="cell-detail">{{ effect.description }}</span></span>
+              {% empty %}
+                <span class="muted">No effects</span>
+              {% endfor %}
+            </span>
+          </td>
+          <td class="wide">
+            {% if row.cause %}
+              <strong>{{ row.cause.name }}</strong>
+              <span class="cell-detail">{{ row.cause.description }}</span>
+            {% else %}
+              <span class="muted">No cause</span>
+            {% endif %}
+          </td>
+          <td class="rating">{{ row.severity }}</td>
+          <td class="rating">{{ row.occurrence }}</td>
+          <td class="wide">
+            <span class="cell-list">
+              {% for control in row.prevention_controls %}
+                <span class="cell-item">{{ control.name }}<span class="cell-detail">{{ control.description }}</span></span>
+              {% empty %}
+                <span class="muted">No prevention controls</span>
+              {% endfor %}
+            </span>
+          </td>
+          <td class="wide">
+            <span class="cell-list">
+              {% for control in row.detection_controls %}
+                <span class="cell-item">{{ control.name }}<span class="cell-detail">{{ control.description }}</span></span>
+              {% empty %}
+                <span class="muted">No detection controls</span>
+              {% endfor %}
+            </span>
+          </td>
+          <td class="rating">{{ row.detection }}</td>
+          <td>
+            {% if row.result %}
+              <span class="risk-{{ row.result_class }}">{{ row.result }}</span>
+            {% else %}
+              <span class="muted">Not evaluated</span>
+            {% endif %}
+          </td>
+          <td>{{ row.actions_open }} open / {{ row.actions_overdue }} overdue</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="12" class="muted">No design-side FMEAs yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

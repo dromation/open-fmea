@@ -1,0 +1,45 @@
+{
+  "name": "open-fmea-sharepoint",
+  "version": "0.0.2",
+  "private": true,
+  "engines": {
+    "node": ">=22.14.0 < 23.0.0"
+  },
+  "scripts": {
+    "prepare-demo": "node tools/prepare-demo.cjs",
+    "build": "npm run prepare-demo && heft test --clean --production && heft package-solution --production",
+    "preview:build": "npm run prepare-demo && node tools/build-preview.cjs",
+    "test:browser": "npm run preview:build && playwright test",
+    "clean": "heft clean",
+    "eject-webpack": "heft eject-webpack",
+    "start": "npm run prepare-demo && heft start --clean"
+  },
+  "dependencies": {
+    "@microsoft/sp-component-base": "1.23.2",
+    "@microsoft/sp-core-library": "1.23.2",
+    "@microsoft/sp-lodash-subset": "1.23.2",
+    "@microsoft/sp-office-ui-fabric-core": "1.23.2",
+    "@microsoft/sp-property-pane": "1.23.2",
+    "@microsoft/sp-webpart-base": "1.23.2",
+    "tslib": "2.3.1"
+  },
+  "devDependencies": {
+    "@fluentui/react": "^8.106.4",
+    "@microsoft/eslint-config-spfx": "1.23.2",
+    "@microsoft/eslint-plugin-spfx": "1.23.2",
+    "@microsoft/sp-module-interfaces": "1.23.2",
+    "@microsoft/spfx-heft-plugins": "1.23.2",
+    "@microsoft/spfx-web-build-rig": "1.23.2",
+    "@playwright/test": "1.63.0",
+    "@rushstack/heft": "1.2.17",
+    "@types/jest": "30.0.0",
+    "@types/webpack-env": "~1.15.2",
+    "css-loader": "~7.1.2",
+    "esbuild": "0.28.2",
+    "eslint": "9.37.0",
+    "typescript": "~5.8.0"
+  },
+  "overrides": {
+    "@rushstack/heft": "1.2.17"
+  }
+}

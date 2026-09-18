@@ -18,14 +18,36 @@ class GuiNavigationScopeTests(TestCase):
         self.assertContains(response, "Process Characteristics")
         self.assertContains(response, "Risk Matrix")
 
+        self.assertContains(response, "HOME")
+        self.assertContains(response, "WORKSPACE")
+        self.assertContains(response, "CONTEXT")
+        self.assertContains(response, "Characteristics Flow")
+        self.assertContains(response, "RISK")
+        self.assertContains(response, "FMEA ANALYSIS")
+        self.assertContains(response, "DFMEA")
+        self.assertContains(response, "PFMEA")
+        self.assertContains(response, "VALIDATION & CHANGE")
+        self.assertContains(response, "Evidence & Tests")
+        self.assertContains(response, "Change Impact")
+        self.assertContains(response, "FMEA ELEMENTS")
+        self.assertContains(response, "Failure Modes")
+        self.assertContains(response, "Causes")
+        self.assertContains(response, "Effects")
+        self.assertContains(response, "Preventive Controls")
+        self.assertContains(response, "Detection Controls")
+        self.assertContains(response, "Actions")
+        self.assertContains(response, "Import & Review")
+        self.assertContains(response, "Ishikawa / Cause Analysis")
+
+        self.assertContains(response, "Process Characteristics")
+        self.assertNotContains(response, "Process Control Characteristics")
+
         for unbuilt_label in (
             "Validation Trajectory",
             "CAPA",
             "Control Plans",
             "AI Assistant",
             "AP/Detection",
-            "Evidence & Tests",
-            "Change Impact",
             "XDA Investigations",
             "SPC/ITRA-DT",
             "Documents & Links",
@@ -33,6 +55,7 @@ class GuiNavigationScopeTests(TestCase):
             "Knowledge & References",
             "Operations",
             "Project Health",
+            "FMEA Team",
         ):
             self.assertNotContains(response, unbuilt_label)
 

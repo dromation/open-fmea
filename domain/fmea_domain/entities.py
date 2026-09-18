@@ -26,6 +26,7 @@ class ActionStatus(str, Enum):
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
     VERIFIED = "verified"
+    ON_HOLD = "on_hold"
     CANCELLED = "cancelled"
 
 
@@ -36,6 +37,42 @@ class CauseInfluenceStatus(str, Enum):
     EXPERIMENTALLY_SUPPORTED = "experimentally_supported"
     CONFIRMED_ROOT_CAUSE = "confirmed_root_cause"
     REJECTED = "rejected"
+
+
+class TestType(str, Enum):
+    VALIDATION = "validation"
+    VERIFICATION = "verification"
+    RELIABILITY = "reliability"
+    ACCEPTANCE = "acceptance"
+
+
+class ValidationResultStatus(str, Enum):
+    PASS = "pass"
+    FAIL = "fail"
+    PENDING = "pending"
+
+
+class Priority(str, Enum):
+    HIGH = "high"
+    MEDIUM = "medium"
+    LOW = "low"
+
+
+class LifecycleGate(str, Enum):
+    CONCEPT_DESIGN = "concept_design"
+    DESIGN_VERIFICATION = "design_verification"
+    PROCESS_VALIDATION = "process_validation"
+    PRE_PRODUCTION = "pre_production"
+    SERIAL_PRODUCTION = "serial_production"
+    CURRENT = "current"
+
+
+class ValidationTestStatus(str, Enum):
+    PLANNED = "planned"
+    IN_EXECUTION = "in_execution"
+    COMPLETED = "completed"
+    ON_HOLD = "on_hold"
+    CANCELLED = "cancelled"
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -118,14 +155,32 @@ class ProcessCharacteristic(NamedEntity):
     operation_id: str
     cause_category_id: str | None = None
     attributes: dict[str, Any] = field(default_factory=dict)
+    special_classification_id: str | None = None
 
     def __post_init__(self) -> None:
         super().__post_init__()
         require_stable_id(self.operation_id)
         if self.cause_category_id is not None:
             require_stable_id(self.cause_category_id)
+        if self.special_classification_id is not None:
+            require_stable_id(self.special_classification_id)
         if not isinstance(self.attributes, dict):
             raise ValueError("attributes must be a dict")
+
+
+@dataclass(frozen=True, kw_only=True)
+class Asset(NamedEntity):
+    """PM-FMEA concept (Mockup 3): a physical machine/equipment identifier.
+
+    First increment only - see FailureMode.asset_id below. Maintenance-module
+    concepts (WorkOrder, MaintenancePlan, PM Compliance) have no domain
+    entity here; out of scope for this increment.
+    """
+
+    asset_code: str = ""
+    location: str = ""
+    status: str = "operational"
+    notes: str = ""
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -133,6 +188,7 @@ class FailureMode(NamedEntity):
     fmea_id: str
     function_id: str | None = None
     requirement_id: str | None = None
+    asset_id: str | None = None
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -180,6 +236,24 @@ class RecommendedAction(NamedEntity):
     responsible_role_id: str | None = None
     status: ActionStatus = ActionStatus.OPEN
     due_date: date | None = None
+
+
+@dataclass(frozen=True, kw_only=True)
+class ValidationTest(NamedEntity):
+    failure_mode_id: str
+    test_type: TestType
+    lifecycle_gate: LifecycleGate
+    recommended_action_id: str | None = None
+    method: str = ""
+    objective: str = ""
+    nominal_target: str = ""
+    acceptance_criteria: str = ""
+    result_status: ValidationResultStatus = ValidationResultStatus.PENDING
+    planned_date: date | None = None
+    executed_date: date | None = None
+    priority: Priority = Priority.MEDIUM
+    owner_id: str | None = None
+    status: ValidationTestStatus = ValidationTestStatus.PLANNED
 
 
 @dataclass(frozen=True, kw_only=True)

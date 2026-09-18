@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Open-EQMS</title>
+<!--
+  OPEN-EQMS — Management Game ERP  ·  Milestone 1 (vertical slice)
+  Single self-contained file. No external dependencies, no build step, runs from file://, offline.
+  Two-file deployment: open_eqms.html (this) + open_eqms.container (data bundle).
+
+  Architecture (all under the OEQMS namespace, one <script> block below):
+    OEQMS.util       - ids, hashing, formatting, escaping
+    OEQMS.store      - in-memory world state (objects + relations) and transaction log
+    OEQMS.tx         - transaction records for every meaningful change
+    OEQMS.health     - deterministic, explainable health / KPI computation (§23 traceable scores)
+    OEQMS.container  - .container (de)serialization  [M1: JSON format; ZIP w/ native files = later phase]
+    OEQMS.fileio     - open/save .container (File System Access API + download/input fallback)
+    OEQMS.ai         - AI context builder + provider adapter (mock provider for M1)
+    OEQMS.perm       - permission gate (real permissions must never be bypassed by the game UI, §22)
+    OEQMS.ui         - command center rendering + event wiring
+    OEQMS.app        - bootstrap & app state
+
+  Rule kept throughout: game PRESENTATION over REAL data + DETERMINISTIC rules + TRACEABLE transactions.
+-->
+<style>
+  :root{
+    --bg:#12161c; --panel:#1a2029; --panel-2:#212a35; --panel-3:#28323f;
+    --line:#2c3745; --line-2:#374556;
+    --text:#dfe6ee; --muted:#8b98a8; --muted-2:#6b7684;
+    --accent:#4ea3c9; --accent-dim:#2f6a86;
+    --ok:#4bb377; --warn:#d9a441; --bad:#d15b5b; --idle:#6b7684; --info:#7a8bd0;
+    --radius:6px; --radius-lg:10px;
+    --shadow:0 8px 30px rgba(0,0,0,.35);
+    --fs:14px;
+    --nav-w:214px; --ctx-w:340px; --top-h:52px; --tl-h:120px;
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{
+    background:var(--bg); color:var(--text); font-family:var(--font); font-size:var(--fs);
+    line-height:1.45; -webkit-font-smoothing:antialiased; overflow:hidden;
+  }
+  button{font-family:inherit;font-size:inherit;color:inherit;cursor:pointer}
+  input,select{font-family:inherit;font-size:inherit}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:6px}
+  ::-webkit-scrollbar-track{background:transparent}
+
+  /* ---------- Layout grid ---------- */
+  #app{
+    display:grid; height:100vh;
+    grid-template-columns:var(--nav-w) 1fr var(--ctx-w);
+    grid-template-rows:var(--top-h) 1fr var(--tl-h);
+    grid-template-areas:
+      "top top top"
+      "nav main ctx"
+      "nav timeline ctx";
+  }
+  body.profile-minimal #app{grid-template-rows:var(--top-h) 1fr 0}
+  body.profile-minimal .timeline{display:none}
+  body.profile-minimal .ctx-ai{display:none}
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    grid-area:top; display:flex; align-items:center; gap:14px; padding:0 14px;
+    background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border-bottom:1px solid var(--line);
+  }
+  .brand{display:flex;align-items:center;gap:9px;min-width:var(--nav-w);}
+  .brand .mark{width:22px;height:22px;flex:0 0 auto}
+  .brand b{font-weight:650;letter-spacing:.2px}
+  .brand span{color:var(--muted);font-weight:500}
+  .top-scope{color:var(--muted);display:flex;gap:6px;align-items:center}
+  .top-scope b{color:var(--text);font-weight:600}
+  .top-search{flex:1;position:relative;max-width:520px}
+  .top-search input{
+    width:100%;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);
+    color:var(--text);padding:8px 10px;outline:none;
+  }
+  .top-search input:focus{border-color:var(--accent-dim)}
+  .search-results{
+    position:absolute;top:110%;left:0;right:0;background:var(--panel-2);border:1px solid var(--line-2);
+    border-radius:var(--radius);box-shadow:var(--shadow);max-height:320px;overflow:auto;z-index:40;display:none;
+  }
+  .search-results.open{display:block}
+  .search-results .row{padding:8px 10px;display:flex;gap:8px;align-items:center;cursor:pointer;border-bottom:1px solid var(--line)}
+  .search-results .row:hover{background:var(--panel-3)}
+  .search-results .row small{color:var(--muted);margin-left:auto}
+  .top-right{display:flex;align-items:center;gap:10px;margin-left:auto}
+  .conn{display:flex;align-items:center;gap:6px;color:var(--muted)}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);display:inline-block}
+  .user-chip{display:flex;align-items:center;gap:8px;padding:5px 10px;background:var(--panel-3);border:1px solid var(--line);border-radius:20px}
+  .user-chip .av{width:22px;height:22px;border-radius:50%;background:var(--accent-dim);display:grid;place-items:center;font-size:11px;font-weight:700;color:#fff}
+  .btn{background:var(--panel-3);border:1px solid var(--line-2);border-radius:var(--radius);padding:7px 12px;color:var(--text)}
+  .btn:hover{border-color:var(--accent-dim)}
+  .btn.primary{background:var(--accent-dim);border-color:var(--accent)}
+  .btn.primary:hover{background:var(--accent)}
+  .btn.ghost{background:transparent}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .menu-wrap{position:relative}
+  .menu{position:absolute;top:110%;right:0;background:var(--panel-2);border:1px solid var(--line-2);border-radius:var(--radius);box-shadow:var(--shadow);min-width:190px;z-index:40;display:none;overflow:hidden}
+  .menu.open{display:block}
+  .menu button{display:block;width:100%;text-align:left;background:none;border:0;padding:9px 12px}
+  .menu button:hover{background:var(--panel-3)}
+  .menu .sep{height:1px;background:var(--line);margin:4px 0}
+
+  /* ---------- Left nav ---------- */
+  .nav{grid-area:nav;background:var(--panel);border-right:1px solid var(--line);padding:10px 8px;overflow:auto}
+  .nav .group{color:var(--muted-2);font-size:11px;font-weight:600;padding:12px 10px 5px;letter-spacing:.3px}
+  .nav button{
+    display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:0;
+    color:var(--muted);padding:8px 10px;border-radius:var(--radius);margin-bottom:1px;
+  }
+  .nav button:hover{background:var(--panel-2);color:var(--text)}
+  .nav button.active{background:var(--panel-3);color:var(--text);box-shadow:inset 2px 0 0 var(--accent)}
+  .nav button .ico{width:16px;height:16px;flex:0 0 auto;opacity:.85}
+  .nav button .count{margin-left:auto;font-size:11px;color:var(--muted-2);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:0 7px}
+
+  /* ---------- Main ---------- */
+  .main{grid-area:main;overflow:auto;padding:16px 18px}
+  .page-head{display:flex;align-items:baseline;gap:12px;margin-bottom:14px}
+  .page-head h1{font-size:19px;font-weight:650;margin:0}
+  .page-head .sub{color:var(--muted)}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin-bottom:18px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);padding:14px}
+  .kpi .label{color:var(--muted);font-size:12.5px}
+  .kpi .val{font-size:26px;font-weight:680;margin-top:6px;letter-spacing:-.5px}
+  .kpi .val.small{font-size:20px}
+  .kpi .foot{color:var(--muted-2);font-size:11.5px;margin-top:4px}
+  .kpi.alert .val{color:var(--bad)} .kpi.warnc .val{color:var(--warn)} .kpi.okc .val{color:var(--ok)}
+
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);margin-bottom:16px;overflow:hidden}
+  .panel > .ph{display:flex;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid var(--line);font-weight:600}
+  .panel > .ph .sub{color:var(--muted);font-weight:400;font-size:12.5px;margin-left:auto}
+  .panel .pb{padding:0}
+
+  table{width:100%;border-collapse:collapse}
+  th,td{text-align:left;padding:9px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+  th{color:var(--muted);font-weight:600;font-size:12px;position:sticky;top:0;background:var(--panel)}
+  tbody tr{cursor:pointer}
+  tbody tr:hover{background:var(--panel-2)}
+  tbody tr.sel{background:var(--panel-3);box-shadow:inset 3px 0 0 var(--accent)}
+  td .id{color:var(--muted-2);font-size:12px}
+
+  .chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:2px 9px;border-radius:20px;border:1px solid var(--line-2);color:var(--text)}
+  .chip .d{width:7px;height:7px;border-radius:50%}
+  .s-ok{color:var(--ok)} .s-warn{color:var(--warn)} .s-bad{color:var(--bad)} .s-idle{color:var(--muted)}
+  .chip.s-ok{border-color:#2f5f47} .chip.s-warn{border-color:#5c4c22} .chip.s-bad{border-color:#5c2f2f} .chip.s-idle{border-color:var(--line-2)}
+
+  .attention .item{display:flex;gap:10px;align-items:flex-start;padding:11px 14px;border-bottom:1px solid var(--line);cursor:pointer}
+  .attention .item:hover{background:var(--panel-2)}
+  .attention .item .sev{width:8px;height:8px;border-radius:50%;margin-top:6px;flex:0 0 auto}
+  .attention .item .t{font-weight:550}
+  .attention .item .m{color:var(--muted);font-size:12.5px}
+  .attention .item .go{margin-left:auto;color:var(--muted-2);align-self:center}
+
+  /* ---------- Context panel ---------- */
+  .ctx{grid-area:ctx;background:var(--panel);border-left:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden}
+  .ctx-head{padding:14px;border-bottom:1px solid var(--line)}
+  .ctx-head .type{color:var(--muted);font-size:12px}
+  .ctx-head h2{font-size:16px;margin:4px 0 8px;font-weight:640}
+  .ctx-head .idline{color:var(--muted-2);font-size:12px}
+  .ctx-body{flex:1;overflow:auto}
+  .ctx-empty{padding:30px 16px;color:var(--muted);text-align:center}
+  .ctx-sec{border-bottom:1px solid var(--line);padding:12px 14px}
+  .ctx-sec h3{font-size:12px;color:var(--muted);margin:0 0 8px;font-weight:600}
+  .kv{display:grid;grid-template-columns:120px 1fr;gap:5px 10px;font-size:13px}
+  .kv .k{color:var(--muted)}
+  .rel{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--line);border-radius:var(--radius);margin-bottom:6px;cursor:pointer}
+  .rel:hover{border-color:var(--accent-dim);background:var(--panel-2)}
+  .rel .rt{color:var(--muted-2);font-size:11px}
+  .rel .rn{margin-left:auto;color:var(--muted);font-size:12px}
+  .actions{display:flex;flex-wrap:wrap;gap:8px}
+  .health-bar{height:8px;border-radius:6px;background:var(--bg);overflow:hidden;border:1px solid var(--line)}
+  .health-bar > i{display:block;height:100%}
+  .health-break{margin-top:8px;font-size:12px;color:var(--muted)}
+  .health-break div{display:flex;justify-content:space-between;padding:2px 0}
+
+  .ctx-ai{border-top:1px solid var(--line);display:flex;flex-direction:column;max-height:46%}
+  .ctx-ai .aih{padding:10px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px;font-weight:600}
+  .ctx-ai .aih .tag{margin-left:auto;font-size:11px;color:var(--muted-2);border:1px solid var(--line);border-radius:10px;padding:1px 8px}
+  .ai-log{flex:1;overflow:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+  .ai-msg{font-size:13px}
+  .ai-msg.u{color:var(--text)}
+  .ai-msg.a{background:var(--panel-2);border:1px solid var(--line);border-radius:var(--radius);padding:10px}
+  .ai-kind{font-size:10.5px;font-weight:700;letter-spacing:.4px;padding:1px 6px;border-radius:4px;margin-right:6px}
+  .k-fact{background:#22402f;color:#8fe0b0} .k-calc{background:#213a4a;color:#93cbe6}
+  .k-infer{background:#3a3520;color:#e6cf93} .k-rec{background:#2c2140;color:#c8a6ec} .k-unknown{background:#3a2323;color:#e69a9a}
+  .ai-src{margin-top:8px;font-size:11.5px;color:var(--muted)}
+  .ai-src b{color:var(--muted)}
+  .ai-src .s{color:var(--accent);cursor:pointer}
+  .ai-input{display:flex;gap:8px;padding:10px 14px;border-top:1px solid var(--line)}
+  .ai-input input{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);color:var(--text);padding:8px 10px;outline:none}
+  .ai-input input:focus{border-color:var(--accent-dim)}
+
+  /* ---------- Timeline ---------- */
+  .timeline{grid-area:timeline;background:var(--panel);border-top:1px solid var(--line);border-right:1px solid var(--line);display:flex;flex-direction:column}
+  .tl-head{display:flex;align-items:center;gap:10px;padding:7px 14px;border-bottom:1px solid var(--line)}
+  .tl-head b{font-weight:600}
+  .tl-head .sub{color:var(--muted);font-size:12px}
+  .tl-scroll{flex:1;overflow-x:auto;overflow-y:hidden;position:relative}
+  .tl-track{position:relative;height:100%;min-width:100%;padding:10px 14px}
+  .tl-axis{position:absolute;left:0;right:0;top:50%;height:1px;background:var(--line-2)}
+  .tl-ev{position:absolute;top:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;cursor:pointer;min-width:84px}
+  .tl-ev .pt{width:11px;height:11px;border-radius:50%;border:2px solid var(--bg)}
+  .tl-ev .lbl{margin-top:6px;font-size:11px;color:var(--muted);text-align:center;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tl-ev .tm{font-size:10px;color:var(--muted-2)}
+  .tl-ev:hover .lbl{color:var(--text)}
+
+  /* ---------- Toast + modal ---------- */
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--panel-3);border:1px solid var(--line-2);border-radius:var(--radius);padding:10px 16px;box-shadow:var(--shadow);z-index:80;opacity:0;transition:opacity .2s, transform .2s;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+  .modal-bg{position:fixed;inset:0;background:rgba(6,9,13,.6);display:none;align-items:center;justify-content:center;z-index:70}
+  .modal-bg.open{display:flex}
+  .modal{background:var(--panel-2);border:1px solid var(--line-2);border-radius:var(--radius-lg);box-shadow:var(--shadow);width:min(460px,92vw);overflow:hidden}
+  .modal h3{margin:0;padding:14px 16px;border-bottom:1px solid var(--line);font-size:15px}
+  .modal .mb{padding:16px}
+  .modal .mb label{display:block;color:var(--muted);font-size:12px;margin:0 0 5px}
+  .modal .mb input,.modal .mb select,.modal .mb textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);color:var(--text);padding:8px 10px;outline:none;margin-bottom:12px}
+  .modal .mf{display:flex;justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid var(--line)}
+
+  .muted{color:var(--muted)} .small{font-size:12px}
+  @media (max-width:1100px){
+    #app{grid-template-columns:var(--nav-w) 1fr;grid-template-areas:"top top" "nav main" "nav timeline"}
+    .ctx{position:fixed;right:0;top:var(--top-h);bottom:0;width:min(360px,88vw);z-index:50;transform:translateX(100%);transition:transform .2s}
+    body.ctx-open .ctx{transform:none;box-shadow:var(--shadow)}
+  }
+</style>
+</head>
+<body class="profile-standard">
+
+<div id="app">
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="2" width="20" height="20" rx="4" stroke="var(--accent)" stroke-width="1.6"/>
+        <path d="M6 15l3-4 3 3 4-6" stroke="var(--accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="19" cy="6" r="1.6" fill="var(--warn)"/>
+      </svg>
+      <div><b>Open-EQMS</b> <span class="small">command center</span></div>
+    </div>
+    <div class="top-scope">
+      <span class="small" id="scopeCompany">—</span>
+      <span class="muted">/</span>
+      <b class="small" id="scopeSite">—</b>
+    </div>
+    <div class="top-search">
+      <input id="search" type="text" placeholder="Search objects — machines, orders, NCRs, people…" autocomplete="off">
+      <div class="search-results" id="searchResults"></div>
+    </div>
+    <div class="top-right">
+      <div class="conn" title="Container status"><span class="dot" id="connDot"></span><span class="small" id="containerName">demo (unsaved)</span></div>
+      <select id="profileSel" class="btn ghost small" title="GUI profile">
+        <option value="standard">Standard</option>
+        <option value="minimal">Minimal</option>
+      </select>
+      <div class="menu-wrap">
+        <button class="btn" id="fileBtn">Container</button>
+        <div class="menu" id="fileMenu">
+          <button data-cmd="new">New (load demo)</button>
+          <button data-cmd="open">Open .container…</button>
+          <button data-cmd="save">Save .container…</button>
+          <div class="sep"></div>
+          <button data-cmd="attach">Attach file…</button>
+        </div>
+      </div>
+      <div class="user-chip" title="Current user">
+        <span class="av" id="userAv">–</span>
+        <span class="small" id="userName">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEFT NAV -->
+  <nav class="nav" id="nav"></nav>
+
+  <!-- MAIN -->
+  <main class="main" id="main"></main>
+
+  <!-- CONTEXT PANEL -->
+  <aside class="ctx">
+    <div class="ctx-head" id="ctxHead">
+      <div class="type">Context</div>
+      <h2>Nothing selected</h2>
+      <div class="idline">Select an object to inspect it</div>
+    </div>
+    <div class="ctx-body" id="ctxBody">
+      <div class="ctx-empty">Pick a machine, order, NCR, supplier or person from the workspace or timeline to see its properties, relations, related events and the actions you're allowed to take.</div>
+    </div>
+    <div class="ctx-ai">
+      <div class="aih">AI copilot <span class="tag" id="aiTag">mock provider</span></div>
+      <div class="ai-log" id="aiLog">
+        <div class="ai-msg a small muted">Select an object and ask, e.g. "Why is this machine flagged?" — answers are built only from data you're authorized to see, with sources.</div>
+      </div>
+      <div class="ai-input">
+        <input id="aiInput" type="text" placeholder="Ask about the current context…">
+        <button class="btn primary" id="aiSend">Ask</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- TIMELINE -->
+  <section class="timeline">
+    <div class="tl-head"><b>Event timeline</b> <span class="sub" id="tlSub">live operational events</span></div>
+    <div class="tl-scroll"><div class="tl-track" id="tlTrack"><div class="tl-axis"></div></div></div>
+  </section>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="modal-bg" id="modalBg"><div class="modal" id="modal"></div></div>
+
+<!-- Embedded default world (loaded by "New"). Single source of truth, identical to the shipped .container. -->
+<script type="application/json" id="demo-world">{"objects":[{"id":"COMPANY-001","type":"company","name":"Meridian Precision d.o.o.","state":"active","owner":"Management","properties":{"industry":"Precision machining","employees":84,"country":"SI"},"relations":[{"type":"has_site","to":"SITE-001"}],"permissions":{},"history":[]},{"id":"SITE-001","type":"site","name":"Kranj Plant","state":"active","owner":"Operations","properties":{"address":"Industrijska cesta 4, Kranj","shifts":2},"relations":[{"type":"part_of","to":"COMPANY-001"},{"type":"has_department","to":"DEPT-PROD"},{"type":"has_department","to":"DEPT-QA"},{"type":"has_department","to":"DEPT-ENG"}],"permissions":{},"history":[]},{"id":"DEPT-PROD","type":"department","name":"Production","state":"active","owner":"USER-002","properties":{"code":"PROD"},"relations":[{"type":"part_of","to":"SITE-001"}],"permissions":{},"history":[]},{"id":"DEPT-QA","type":"department","name":"Quality Assurance","state":"active","owner":"USER-003","properties":{"code":"QA"},"relations":[{"type":"part_of","to":"SITE-001"}],"permissions":{},"history":[]},{"id":"DEPT-ENG","type":"department","name":"Engineering","state":"active","owner":"USER-004","properties":{"code":"ENG"},"relations":[{"type":"part_of","to":"SITE-001"}],"permissions":{},"history":[]},{"id":"USER-001","type":"user","name":"Janez Novak","state":"active","owner":"Management","properties":{"role":"Plant Manager","authority":"approve","email":"j.novak@meridian.si"},"relations":[],"permissions":{},"history":[]},{"id":"USER-002","type":"user","name":"Marko Zupan","state":"active","owner":"DEPT-PROD","properties":{"role":"Production Lead","authority":"act","competencies":["CNC setup","PPAP"]},"relations":[{"type":"leads","to":"DEPT-PROD"}],"permissions":{},"history":[]},{"id":"USER-003","type":"user","name":"Ana Kovač","state":"active","owner":"DEPT-QA","properties":{"role":"Quality Engineer","authority":"approve","competencies":["FMEA","MSA","8D"]},"relations":[{"type":"leads","to":"DEPT-QA"}],"permissions":{},"history":[]},{"id":"USER-004","type":"user","name":"Peter Horvat","state":"active","owner":"DEPT-ENG","properties":{"role":"Process Engineer","authority":"act","competencies":["CAM","SPC"]},"relations":[{"type":"leads","to":"DEPT-ENG"}],"permissions":{},"history":[]},{"id":"USER-005","type":"user","name":"Nina Bizjak","state":"active","owner":"DEPT-PROD","properties":{"role":"CNC Operator","authority":"record","competencies":["CNC operation"]},"relations":[],"permissions":{},"history":[]},{"id":"MACHINE-001","type":"machine","name":"CNC Mill 01 (DMG DMU 50)","state":"running","owner":"DEPT-PROD","properties":{"tag":"CNC-01","toolLifePct":41,"spindleHours":12840,"lastCalibration":"2026-06-12"},"relations":[{"type":"in_department","to":"DEPT-PROD"},{"type":"operated_by","to":"USER-005"}],"permissions":{},"history":[]},{"id":"MACHINE-002","type":"machine","name":"CNC Mill 02 (Haas VF-2)","state":"warning","owner":"DEPT-PROD","properties":{"tag":"CNC-02","toolLifePct":94,"spindleHours":21110,"lastCalibration":"2026-02-03","warningReason":"Tool lifetime 94% + 2 recent dimensional warnings"},"relations":[{"type":"in_department","to":"DEPT-PROD"}],"permissions":{},"history":[]},{"id":"MACHINE-003","type":"machine","name":"CNC Lathe 01 (Okuma LB3000)","state":"running","owner":"DEPT-PROD","properties":{"tag":"LATHE-01","toolLifePct":33,"spindleHours":8420,"lastCalibration":"2026-07-01"},"relations":[{"type":"in_department","to":"DEPT-PROD"}],"permissions":{},"history":[]},{"id":"MACHINE-004","type":"machine","name":"CMM (Zeiss Contura)","state":"running","owner":"DEPT-QA","properties":{"tag":"CMM-01","toolLifePct":0,"lastCalibration":"2026-08-20"},"relations":[{"type":"in_department","to":"DEPT-QA"}],"permissions":{},"history":[]},{"id":"MACHINE-005","type":"machine","name":"Washing Line 01","state":"stopped","owner":"DEPT-PROD","properties":{"tag":"WASH-01","stoppedReason":"Scheduled maintenance","lastCalibration":"2026-05-15"},"relations":[{"type":"in_department","to":"DEPT-PROD"}],"permissions":{},"history":[]},{"id":"PRODUCT-A21","type":"product","name":"Hydraulic Manifold A21","state":"active","owner":"DEPT-ENG","properties":{"partNumber":"MP-A21","material":"AlSi7Mg","revision":"C","targetPPM":200},"relations":[{"type":"produced_on","to":"MACHINE-002"}],"permissions":{},"history":[]},{"id":"PRODUCT-B14","type":"product","name":"Valve Body B14","state":"active","owner":"DEPT-ENG","properties":{"partNumber":"MP-B14","material":"Steel 1.4404","revision":"B","targetPPM":150},"relations":[{"type":"produced_on","to":"MACHINE-003"}],"permissions":{},"history":[]},{"id":"PRODUCT-C07","type":"product","name":"Sensor Housing C07","state":"development","owner":"DEPT-ENG","properties":{"partNumber":"MP-C07","material":"PA66-GF30","revision":"A","targetPPM":300},"relations":[],"permissions":{},"history":[]},{"id":"SUPPLIER-001","type":"supplier","name":"AlpTech Alloys","state":"approved","owner":"DEPT-QA","properties":{"supplies":"Aluminium billets","ppm":180,"lateDeliveries":1,"score":88},"relations":[{"type":"supplies_to","to":"PRODUCT-A21"}],"permissions":{},"history":[]},{"id":"SUPPLIER-002","type":"supplier","name":"NordSteel GmbH","state":"conditional","owner":"DEPT-QA","properties":{"supplies":"Stainless bar","ppm":420,"lateDeliveries":4,"score":61,"riskNote":"PPM above target and 4 late deliveries"},"relations":[{"type":"supplies_to","to":"PRODUCT-B14"}],"permissions":{},"history":[]},{"id":"CUSTOMER-001","type":"customer","name":"Hydro Systems AG","state":"active","owner":"Sales","properties":{"segment":"Hydraulics","onTimeExpectation":98},"relations":[{"type":"orders","to":"PRODUCT-A21"}],"permissions":{},"history":[]},{"id":"CUSTOMER-002","type":"customer","name":"FlowControl s.r.l.","state":"active","owner":"Sales","properties":{"segment":"Valves"},"relations":[{"type":"orders","to":"PRODUCT-B14"}],"permissions":{},"history":[]},{"id":"PO-882","type":"production_order","name":"PO-882 — Manifold A21 x500","state":"in_progress","owner":"DEPT-PROD","properties":{"product":"PRODUCT-A21","qty":500,"done":310,"due":"2026-09-18","customer":"CUSTOMER-001"},"relations":[{"type":"for_product","to":"PRODUCT-A21"},{"type":"on_machine","to":"MACHINE-002"}],"permissions":{},"history":[]},{"id":"PO-883","type":"production_order","name":"PO-883 — Valve Body B14 x300","state":"in_progress","owner":"DEPT-PROD","properties":{"product":"PRODUCT-B14","qty":300,"done":120,"due":"2026-09-22","customer":"CUSTOMER-002"},"relations":[{"type":"for_product","to":"PRODUCT-B14"},{"type":"on_machine","to":"MACHINE-003"}],"permissions":{},"history":[]},{"id":"PO-884","type":"production_order","name":"PO-884 — Manifold A21 x200","state":"planned","owner":"DEPT-PROD","properties":{"product":"PRODUCT-A21","qty":200,"done":0,"due":"2026-09-30","customer":"CUSTOMER-001"},"relations":[{"type":"for_product","to":"PRODUCT-A21"}],"permissions":{},"history":[]},{"id":"MEAS-101","type":"measurement","name":"Bore Ø12.00 H7 — sample","state":"out_of_tolerance","owner":"DEPT-QA","properties":{"characteristic":"Bore Ø12 H7","nominal":12.0,"upper":12.018,"lower":12.0,"value":12.024,"unit":"mm","at":"2026-09-11T09:20:00","machine":"MACHINE-002"},"relations":[{"type":"measured_on","to":"MACHINE-002"},{"type":"of_product","to":"PRODUCT-A21"}],"permissions":{},"history":[]},{"id":"MEAS-102","type":"measurement","name":"Flatness 0.05 — sample","state":"in_tolerance","owner":"DEPT-QA","properties":{"characteristic":"Flatness","nominal":0.0,"upper":0.05,"value":0.032,"unit":"mm","at":"2026-09-11T10:05:00","machine":"MACHINE-002"},"relations":[{"type":"measured_on","to":"MACHINE-002"}],"permissions":{},"history":[]},{"id":"MEAS-103","type":"measurement","name":"OD Ø40 g6 — sample","state":"in_tolerance","owner":"DEPT-QA","properties":{"characteristic":"OD Ø40 g6","value":39.991,"unit":"mm","at":"2026-09-10T14:40:00","machine":"MACHINE-003"},"relations":[{"type":"measured_on","to":"MACHINE-003"}],"permissions":{},"history":[]},{"id":"NCR-045","type":"quality_event","name":"NCR-045 — Oversize bore on A21","state":"open","owner":"DEPT-QA","properties":{"kind":"nonconformity","severity":"major","opened":"2026-09-11","machine":"MACHINE-002","product":"PRODUCT-A21","description":"Bore Ø12 H7 exceeded upper tolerance on CNC-02"},"relations":[{"type":"on_machine","to":"MACHINE-002"},{"type":"affects_product","to":"PRODUCT-A21"},{"type":"from_measurement","to":"MEAS-101"}],"permissions":{},"history":[]},{"id":"NCR-044","type":"quality_event","name":"NCR-044 — Surface finish B14","state":"in_review","owner":"DEPT-QA","properties":{"kind":"nonconformity","severity":"minor","opened":"2026-09-08","machine":"MACHINE-003","product":"PRODUCT-B14"},"relations":[{"type":"on_machine","to":"MACHINE-003"}],"permissions":{},"history":[]},{"id":"MAINT-201","type":"maintenance","name":"MAINT-201 — Washing line service","state":"in_progress","owner":"DEPT-PROD","properties":{"machine":"MACHINE-005","kind":"preventive","start":"2026-09-12T06:00:00","planned_end":"2026-09-12T12:00:00"},"relations":[{"type":"on_machine","to":"MACHINE-005"}],"permissions":{},"history":[]},{"id":"MAINT-200","type":"maintenance","name":"MAINT-200 — CNC-02 tool change","state":"planned","owner":"DEPT-PROD","properties":{"machine":"MACHINE-002","kind":"corrective","planned":"2026-09-12T15:00:00"},"relations":[{"type":"on_machine","to":"MACHINE-002"}],"permissions":{},"history":[]},{"id":"TASK-301","type":"task","name":"Investigate oversize bore (NCR-045)","state":"open","owner":"USER-003","properties":{"priority":"high","due":"2026-09-13","assignee":"USER-003","overdue":false},"relations":[{"type":"for_event","to":"NCR-045"}],"permissions":{},"history":[]},{"id":"TASK-302","type":"task","name":"Replace tooling on CNC-02","state":"open","owner":"USER-002","properties":{"priority":"high","due":"2026-09-12","assignee":"USER-002","overdue":false},"relations":[{"type":"for_machine","to":"MACHINE-002"}],"permissions":{},"history":[]},{"id":"TASK-303","type":"task","name":"Supplier review — NordSteel","state":"open","owner":"USER-003","properties":{"priority":"medium","due":"2026-09-05","assignee":"USER-003","overdue":true},"relations":[{"type":"for_supplier","to":"SUPPLIER-002"}],"permissions":{},"history":[]},{"id":"TASK-304","type":"task","name":"PPAP documentation for C07","state":"open","owner":"USER-004","properties":{"priority":"low","due":"2026-09-28","assignee":"USER-004","overdue":false},"relations":[{"type":"for_product","to":"PRODUCT-C07"}],"permissions":{},"history":[]},{"id":"DOC-401","type":"document","name":"Control Plan — A21 Rev C","state":"approved","owner":"DEPT-QA","properties":{"docType":"control_plan","revision":"C","format":"pdf"},"relations":[{"type":"for_product","to":"PRODUCT-A21"}],"permissions":{},"history":[]},{"id":"DOC-402","type":"document","name":"PFMEA — A21","state":"approved","owner":"DEPT-QA","properties":{"docType":"pfmea","revision":"4","format":"xlsx"},"relations":[{"type":"for_product","to":"PRODUCT-A21"}],"permissions":{},"history":[]},{"id":"DOC-403","type":"document","name":"Work Instruction — CNC-02 setup","state":"draft","owner":"DEPT-PROD","properties":{"docType":"work_instruction","revision":"1","format":"docx"},"relations":[{"type":"for_machine","to":"MACHINE-002"}],"permissions":{},"history":[]},{"id":"RISK-501","type":"risk","name":"Single-source alloy dependency","state":"monitored","owner":"DEPT-QA","properties":{"severity":4,"likelihood":3,"rpn":12,"note":"AlpTech is single approved source for A21 alloy"},"relations":[{"type":"related_to","to":"SUPPLIER-001"}],"permissions":{},"history":[]},{"id":"RISK-502","type":"risk","name":"Key-expert dependency (FMEA)","state":"open","owner":"Management","properties":{"severity":4,"likelihood":2,"rpn":8,"note":"Only one qualified FMEA facilitator (Ana Kovač)"},"relations":[{"type":"related_to","to":"USER-003"}],"permissions":{},"history":[]}]}</script>
+
+<script>
+"use strict";
+/* ============================================================================
+   OEQMS — Open-EQMS Management Game runtime (Milestone 1)
+   ========================================================================== */
+const OEQMS = (() => {
+
+/* ---------------------------------------------------------------- util ---- */
+const util = {
+  now(){ return new Date().toISOString(); },
+  uid(prefix){ return (prefix||'ID') + '-' + Math.random().toString(36).slice(2,8).toUpperCase(); },
+  // Small deterministic 32-bit hash for content-addressed attachment ids (§7 provenance).
+  hash(str){ let h=0x811c9dc5; for(let i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,0x01000193);} return ('0000000'+(h>>>0).toString(16)).slice(-8); },
+  esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); },
+  fmtDate(iso){ if(!iso) return '—'; const d=new Date(iso); if(isNaN(d)) return String(iso);
+    return d.toLocaleDateString(undefined,{day:'2-digit',month:'short'}) + ' ' + d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'}); },
+  fmtDay(iso){ if(!iso) return '—'; const d=new Date(iso); if(isNaN(d)) return String(iso);
+    return d.toLocaleDateString(undefined,{day:'2-digit',month:'short'}); },
+  titleCase(s){ return String(s||'').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()); },
+};
+
+/* --------------------------------------------------------------- store ---- */
+/* Universal object store. Every entity is an object; applications are views over it. */
+const store = {
+  objects:new Map(),
+  transactions:[],
+  listeners:new Set(),
+
+  load(objectsArray, transactions){
+    this.objects.clear();
+    (objectsArray||[]).forEach(o=>{
+      // normalise shape
+      o.properties = o.properties||{}; o.relations = o.relations||[];
+      o.permissions = o.permissions||{}; o.history = o.history||[];
+      this.objects.set(o.id, o);
+    });
+    this.transactions = transactions ? transactions.slice() : [];
+    this.emit();
+  },
+  get(id){ return this.objects.get(id) || null; },
+  all(){ return [...this.objects.values()]; },
+  byType(...types){ const set=new Set(types); return this.all().filter(o=>set.has(o.type)); },
+
+  // outbound + inbound relations, resolved to objects
+  related(id){
+    const o=this.get(id); if(!o) return {out:[],in:[]};
+    const out=(o.relations||[]).map(r=>({type:r.type,obj:this.get(r.to),to:r.to})).filter(r=>r.obj);
+    const inn=[];
+    for(const other of this.all()){
+      if(other.id===id) continue;
+      for(const r of (other.relations||[])) if(r.to===id) inn.push({type:r.type,obj:other,from:other.id});
+    }
+    return {out, in:inn};
+  },
+
+  // Controlled mutation — every meaningful change produces a transaction (§16 / North Star §6).
+  update(id, field, newValue, user){
+    const o=this.get(id); if(!o) return null;
+    const path=field.split('.');
+    let target=o, key=path[0];
+    if(path.length>1){ target=o.properties; key=path[1]; }
+    const oldValue=target[key];
+    target[key]=newValue;
+    const t=tx.create(id,'FIELD_UPDATE',field,oldValue,newValue,user);
+    o.history.push({tx:t.transactionId,at:t.timestamp,field,from:oldValue,to:newValue});
+    this.emit();
+    return t;
+  },
+  add(obj, user){
+    obj.properties=obj.properties||{}; obj.relations=obj.relations||[];
+    obj.permissions=obj.permissions||{}; obj.history=obj.history||[];
+    this.objects.set(obj.id,obj);
+    tx.create(obj.id,'OBJECT_CREATE',null,null,obj.type,user);
+    this.emit();
+    return obj;
+  },
+  on(fn){ this.listeners.add(fn); },
+  emit(){ this.listeners.forEach(fn=>{ try{fn();}catch(e){console.error(e);} }); },
+};
+
+/* ------------------------------------------------------------------ tx ---- */
+const tx = {
+  seq:0,
+  create(objectId,operation,field,oldValue,newValue,user){
+    const t={
+      transactionId: 'TX-' + Date.now().toString(36).toUpperCase() + '-' + (++this.seq),
+      objectId, operation, field,
+      oldValue: oldValue===undefined?null:oldValue,
+      newValue: newValue===undefined?null:newValue,
+      user: user||'system',
+      timestamp: util.now(),
+    };
+    store.transactions.push(t);
+    return t;
+  }
+};
+
+/* -------------------------------------------------------------- health ---- */
+/* Deterministic, explainable scores (North Star §23: never arbitrary game scores). */
+const health = {
+  machine(m){
+    let score=100; const breakdown=[];
+    if(m.state==='stopped'){ score-=35; breakdown.push(['Machine stopped', -35]); }
+    if(m.state==='warning'){ score-=20; breakdown.push(['State: warning', -20]); }
+    const tl=m.properties.toolLifePct;
+    if(typeof tl==='number' && tl>=90){ score-=18; breakdown.push(['Tool lifetime '+tl+'%', -18]); }
+    else if(typeof tl==='number' && tl>=75){ score-=8; breakdown.push(['Tool lifetime '+tl+'%', -8]); }
+    const rel=store.related(m.id).in;
+    const openNcr=rel.filter(r=>r.obj.type==='quality_event' && r.obj.state!=='closed').length;
+    if(openNcr){ score-=openNcr*12; breakdown.push([openNcr+' open quality event(s)', -openNcr*12]); }
+    const oot=store.byType('measurement').filter(x=>x.properties.machine===m.id && x.state==='out_of_tolerance').length;
+    if(oot){ score-=oot*10; breakdown.push([oot+' out-of-tolerance measurement(s)', -oot*10]); }
+    score=Math.max(0,Math.min(100,Math.round(score)));
+    return {score, breakdown};
+  },
+  supplier(s){
+    let score=100; const breakdown=[];
+    const ppm=s.properties.ppm, late=s.properties.lateDeliveries;
+    if(typeof ppm==='number' && ppm>300){ const p=Math.min(30,Math.round((ppm-300)/20)); score-=p; breakdown.push(['PPM '+ppm+' above target', -p]); }
+    if(typeof late==='number' && late>=3){ score-=late*5; breakdown.push([late+' late deliveries', -late*5]); }
+    score=Math.max(0,Math.min(100,Math.round(score)));
+    return {score, breakdown};
+  },
+  // KPI roll-up for the dashboard
+  kpis(){
+    const ncrOpen=store.byType('quality_event').filter(o=>o.state!=='closed').length;
+    const tasks=store.byType('task');
+    const overdue=tasks.filter(t=>t.properties.overdue).length;
+    const machines=store.byType('machine');
+    const attn=machines.filter(m=>m.state==='warning'||m.state==='stopped').length;
+    const suppliers=store.byType('supplier');
+    const avgSup=suppliers.length? Math.round(suppliers.reduce((a,s)=>a+health.supplier(s).score,0)/suppliers.length):0;
+    // On-time risk: in-progress POs whose progress rate lags days remaining (simple, explainable)
+    const pos=store.byType('production_order').filter(p=>p.state==='in_progress');
+    let atRisk=0;
+    pos.forEach(p=>{ const pct=(p.properties.done||0)/(p.properties.qty||1);
+      const due=new Date(p.properties.due); const daysLeft=(due-Date.now())/86400000;
+      if(pct<0.7 && daysLeft<7) atRisk++; });
+    return {ncrOpen, overdue, attn, avgSup, atRisk, poActive:pos.length, machines:machines.length};
+  }
+};
+
+/* ----------------------------------------------------------- container ---- */
+/* M1 container format: a single JSON document (.container extension).
+   Holds the world, the transaction log, layouts/queries/knowledge stubs, and
+   attachments (base64) so ANY file type can be added now. A ZIP-based bundle
+   that stores native files uncompressed is the planned Phase-5b upgrade. */
+const container = {
+  FORMAT:'open-eqms-container', VERSION:1, APP:'M1',
+  fromStore(name){
+    return {
+      format:this.FORMAT, formatVersion:this.VERSION,
+      manifest:{
+        id: app.state.containerId || util.uid('OEQMS'),
+        name: name || app.state.containerName || 'Untitled',
+        createdAt: app.state.createdAt || util.now(),
+        modifiedAt: util.now(),
+        appVersion: this.APP, schemaVersion:1,
+      },
+      world:{ objects: store.all() },
+      transactions: store.transactions,
+      layouts:{}, queries:{}, knowledge:{},
+      attachments: app.state.attachments || [],
+    };
+  },
+  serialize(name){ return JSON.stringify(this.fromStore(name), null, 2); },
+  parse(text){
+    let c; try{ c=JSON.parse(text); }catch(e){ throw new Error('Not a valid .container file (JSON parse failed).'); }
+    if(c.format!==this.FORMAT) throw new Error('Unrecognised container format: '+(c.format||'unknown'));
+    if(!c.world || !Array.isArray(c.world.objects)) throw new Error('Container has no world.objects array.');
+    return c;
+  },
+  loadInto(c){
+    store.load(c.world.objects, c.transactions);
+    app.state.containerId = c.manifest && c.manifest.id;
+    app.state.containerName = (c.manifest && c.manifest.name) || 'container';
+    app.state.createdAt = (c.manifest && c.manifest.createdAt) || util.now();
+    app.state.attachments = c.attachments || [];
+  }
+};
+
+/* ------------------------------------------------------------- fileio ---- */
+const fileio = {
+  supportsFS(){ return typeof window!=='undefined' && 'showSaveFilePicker' in window; },
+  async save(){
+    const text = container.serialize(app.state.containerName);
+    const suggested = 'open_eqms.container';
+    if(this.supportsFS()){
+      try{
+        const handle = await window.showSaveFilePicker({ suggestedName:suggested,
+          types:[{description:'Open-EQMS container', accept:{'application/json':['.container','.json']}}]});
+        const w = await handle.createWritable(); await w.write(text); await w.close();
+        app.state.containerName = handle.name || suggested; app.markSaved();
+        ui.toast('Saved '+app.state.containerName); return;
+      }catch(e){ if(e && e.name==='AbortError') return; /* fall through to download */ }
+    }
+    const blob=new Blob([text],{type:'application/json'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=suggested;
+    document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(a.href);
+    app.markSaved(); ui.toast('Downloaded '+suggested);
+  },
+  async open(){
+    const handleOpen = async (text, name)=>{
+      try{ const c=container.parse(text); container.loadInto(c); app.markSaved();
+        app.select(null); ui.renderAll(); ui.toast('Opened '+(name||'container'));
+      }catch(err){ ui.toast('Could not open: '+err.message); }
+    };
+    if(this.supportsFS()){
+      try{
+        const [handle]=await window.showOpenFilePicker({types:[{description:'Open-EQMS container',accept:{'application/json':['.container','.json']}}]});
+        const f=await handle.getFile(); handleOpen(await f.text(), handle.name); return;
+      }catch(e){ if(e && e.name==='AbortError') return; }
+    }
+    const inp=document.createElement('input'); inp.type='file'; inp.accept='.container,.json,application/json';
+    inp.onchange=()=>{ const f=inp.files[0]; if(!f) return; const r=new FileReader();
+      r.onload=()=>handleOpen(r.result, f.name); r.readAsText(f); };
+    inp.click();
+  },
+  async attach(){
+    const inp=document.createElement('input'); inp.type='file';
+    inp.onchange=()=>{ const f=inp.files[0]; if(!f) return; const r=new FileReader();
+      r.onload=()=>{
+        const b64=String(r.result).split(',')[1]||'';
+        const id='ATT-'+util.hash(f.name+f.size+b64.slice(0,64));
+        (app.state.attachments=app.state.attachments||[]).push({
+          id, name:f.name, mime:f.type||'application/octet-stream', size:f.size,
+          hash:util.hash(b64), provenance:{importedAt:util.now(), importedBy:app.currentUser().id},
+          dataBase64:b64
+        });
+        app.markDirty(); ui.toast('Attached '+f.name+' ('+id+')'); ui.renderAll();
+      };
+      r.readAsDataURL(f);
+    };
+    inp.click();
+  }
+};
+
+/* --------------------------------------------------------------- perm ---- */
+/* The game UI must never bypass real permissions (North Star §34, prompt §22). */
+const perm = {
+  roles:{
+    'approve':['view','edit','create','act','approve'],
+    'act':['view','edit','create','act'],
+    'record':['view','record'],
+    'view':['view'],
+  },
+  can(action){
+    const u=app.currentUser(); const authority=(u&&u.properties.authority)||'view';
+    return (this.roles[authority]||['view']).includes(action);
+  }
+};
+
+/* ----------------------------------------------------------------- ai ---- */
+/* Provider-neutral adapter (North Star §15, prompt §10). Mock provider for M1.
+   Must distinguish fact / calculation / inference / recommendation and cite sources (§25, §33). */
+const ai = {
+  provider:{ name:'mock',
+    async respond(question, ctx){ return ai.mockAnalyse(question, ctx); }
+  },
+  buildContext(){
+    const sel=app.state.selectedId? store.get(app.state.selectedId):null;
+    const rel=sel? store.related(sel.id):{out:[],in:[]};
+    return {
+      user: app.currentUser().id,
+      permissions: perm.roles[app.currentUser().properties.authority]||['view'],
+      currentView: app.state.section,
+      selectedObject: sel? {id:sel.id,type:sel.type,name:sel.name,state:sel.state,properties:sel.properties}:null,
+      relatedObjects: [...rel.out,...rel.in].map(r=>r.obj.id),
+      recentTransactions: store.transactions.slice(-5).map(t=>t.transactionId),
+      kpi: health.kpis(),
+    };
+  },
+  mockAnalyse(question, ctx){
+    const parts=[];
+    const sel=ctx.selectedObject? store.get(ctx.selectedObject.id):null;
+    if(sel && sel.type==='machine'){
+      const h=health.machine(sel);
+      parts.push({kind:'fact', text:`${sel.name} is currently `+`"${util.titleCase(sel.state)}".`});
+      parts.push({kind:'calc', text:`Computed health ${h.score}% — `+ (h.breakdown.length? h.breakdown.map(b=>`${b[0]} (${b[1]})`).join('; ') : 'no deductions.')});
+      const inn=store.related(sel.id).in;
+      const ncrs=inn.filter(r=>r.obj.type==='quality_event');
+      if(ncrs.length) parts.push({kind:'infer', text:`This machine is linked to ${ncrs.length} quality event(s); recent dimensional issues and tool age tend to appear together before a required tool change.`});
+      parts.push({kind:'rec', text:`Suggested: review the open task(s) for this machine and confirm the planned tool change. AI cannot approve or close records — a human must decide.`});
+      parts.push({kind:'sources', ids:[sel.id, ...ncrs.map(r=>r.obj.id)]});
+    } else if(sel && sel.type==='supplier'){
+      const h=health.supplier(sel);
+      parts.push({kind:'fact', text:`${sel.name} — status "${util.titleCase(sel.state)}", PPM ${sel.properties.ppm}, late deliveries ${sel.properties.lateDeliveries}.`});
+      parts.push({kind:'calc', text:`Computed supplier health ${h.score}% — `+(h.breakdown.map(b=>`${b[0]} (${b[1]})`).join('; ')||'within targets.')});
+      parts.push({kind:'rec', text:`Consider a supplier corrective action if PPM stays above target. Decision requires authorised quality approval.`});
+      parts.push({kind:'sources', ids:[sel.id]});
+    } else if(sel){
+      parts.push({kind:'fact', text:`${sel.name} (${util.titleCase(sel.type)}) — state "${util.titleCase(sel.state)}".`});
+      const rel=store.related(sel.id);
+      parts.push({kind:'infer', text:`It has ${rel.out.length} outbound and ${rel.in.length} inbound relationships in the current world.`});
+      parts.push({kind:'sources', ids:[sel.id, ...rel.out.map(r=>r.obj.id).slice(0,4)]});
+    } else {
+      const k=ctx.kpi;
+      parts.push({kind:'fact', text:`Plant overview: ${k.ncrOpen} open quality events, ${k.overdue} overdue task(s), ${k.attn} machine(s) needing attention.`});
+      parts.push({kind:'rec', text:`Select a specific object (machine, NCR, supplier) so I can ground an answer in its data and sources.`});
+      parts.push({kind:'unknown', text:`Without a selected object I can only report aggregate figures.`});
+    }
+    return parts;
+  }
+};
+
+/* ----------------------------------------------------------------- ui ---- */
+const STATE_CLASS = {
+  running:'s-ok', active:'s-ok', approved:'s-ok', in_tolerance:'s-ok', closed:'s-ok', current:'s-ok',
+  warning:'s-warn', in_review:'s-warn', conditional:'s-warn', monitored:'s-warn', development:'s-warn', in_progress:'s-warn',
+  open:'s-bad', out_of_tolerance:'s-bad', stopped:'s-idle', planned:'s-idle', draft:'s-idle',
+};
+const STATE_COLOR = { 's-ok':'var(--ok)', 's-warn':'var(--warn)', 's-bad':'var(--bad)', 's-idle':'var(--idle)' };
+function stateClass(s){ return STATE_CLASS[s] || 's-idle'; }
+
+const NAV = [
+  {group:'Overview', items:[ {id:'workspace', label:'Workspace', types:null} ]},
+  {group:'Operations', items:[
+    {id:'operations', label:'Operations', types:['production_order','machine']},
+    {id:'production', label:'Production', types:['production_order']},
+    {id:'maintenance', label:'Maintenance', types:['maintenance']},
+  ]},
+  {group:'Quality & Engineering', items:[
+    {id:'quality', label:'Quality', types:['quality_event','measurement']},
+    {id:'engineering', label:'Engineering', types:['product']},
+    {id:'risks', label:'Risks', types:['risk']},
+    {id:'documents', label:'Documents', types:['document']},
+  ]},
+  {group:'Value chain', items:[
+    {id:'projects', label:'Projects & tasks', types:['task']},
+    {id:'suppliers', label:'Suppliers', types:['supplier']},
+    {id:'customers', label:'Customers', types:['customer']},
+  ]},
+  {group:'System', items:[
+    {id:'analytics', label:'Analytics', types:null},
+    {id:'administration', label:'Administration', types:['user','department','site','company']},
+  ]},
+];
+const ICON = (name)=>{
+  const p={
+    workspace:'M4 4h7v7H4zM13 4h7v4h-7zM13 10h7v10h-7zM4 13h7v7H4z',
+    operations:'M5 8h14M5 12h14M5 16h9',
+    production:'M4 20V8l5 3V8l5 3V8l6 3v9z',
+    maintenance:'M14 7a4 4 0 00-5 5l-6 6 2 2 6-6a4 4 0 005-5l-2 2-2-2 2-2z',
+    quality:'M12 3l2.5 5 5.5.8-4 3.9 1 5.5L12 21l-5-2.9 1-5.5-4-3.9L10.5 8z',
+    engineering:'M12 8a4 4 0 100 8 4 4 0 000-8zM12 2v3M12 19v3M2 12h3M19 12h3',
+    risks:'M12 3l9 16H3zM12 10v4M12 17h.01',
+    documents:'M6 3h8l4 4v14H6zM14 3v4h4',
+    projects:'M4 6h4v4H4zM10 7h10M4 12h4v4H4zM10 13h10M4 18h4v2H4z',
+    suppliers:'M3 7l9-4 9 4-9 4zM3 7v10l9 4 9-4V7',
+    customers:'M16 11a4 4 0 10-8 0M4 20a8 8 0 0116 0',
+    analytics:'M4 20V4M4 20h16M8 16v-4M12 16V8M16 16v-7',
+    administration:'M12 12a4 4 0 100-8 4 4 0 000 8zM4 21a8 8 0 0116 0',
+  }[name] || 'M4 4h16v16H4z';
+  return `<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="${p}"/></svg>`;
+};
+
+const ui = {
+  toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+    clearTimeout(this._tt); this._tt=setTimeout(()=>t.classList.remove('show'),2200); },
+
+  renderAll(){ this.renderTop(); this.renderNav(); this.renderMain(); this.renderCtx(); this.renderTimeline(); },
+
+  renderTop(){
+    const co=store.byType('company')[0], site=store.byType('site')[0], u=app.currentUser();
+    document.getElementById('scopeCompany').textContent = co? co.name : '—';
+    document.getElementById('scopeSite').textContent = site? site.name : '—';
+    document.getElementById('userName').textContent = u? u.name : '—';
+    document.getElementById('userAv').textContent = u? u.name.split(' ').map(x=>x[0]).slice(0,2).join('') : '–';
+    document.getElementById('containerName').textContent = app.state.dirty ? (app.state.containerName+' *') : app.state.containerName;
+    document.getElementById('connDot').style.background = app.state.dirty ? 'var(--warn)' : 'var(--ok)';
+    document.getElementById('aiTag').textContent = ai.provider.name + ' provider';
+  },
+
+  renderNav(){
+    const nav=document.getElementById('nav'); nav.innerHTML='';
+    NAV.forEach(g=>{
+      const gd=document.createElement('div'); gd.className='group'; gd.textContent=g.group; nav.appendChild(gd);
+      g.items.forEach(it=>{
+        const b=document.createElement('button'); b.dataset.section=it.id;
+        if(it.id===app.state.section) b.className='active';
+        const count = it.types? store.byType(...it.types).length : '';
+        b.innerHTML = ICON(it.id) + '<span>'+util.esc(it.label)+'</span>' + (count!==''?'<span class="count">'+count+'</span>':'');
+        b.onclick=()=>{ app.state.section=it.id; ui.renderNav(); ui.renderMain(); };
+        nav.appendChild(b);
+      });
+    });
+  },
+
+  chip(state){ const c=stateClass(state); return `<span class="chip ${c}"><span class="d" style="background:${STATE_COLOR[c]}"></span>${util.esc(util.titleCase(state))}</span>`; },
+
+  renderMain(){
+    const main=document.getElementById('main');
+    const sec = NAV.flatMap(g=>g.items).find(i=>i.id===app.state.section) || NAV[0].items[0];
+    if(sec.id==='workspace') return this.renderWorkspace(main);
+    if(sec.id==='analytics') return this.renderAnalytics(main);
+    // generic object list view
+    const objs = store.byType(...sec.types);
+    main.innerHTML =
+      `<div class="page-head"><h1>${util.esc(sec.label)}</h1><span class="sub">${objs.length} object${objs.length!==1?'s':''}</span></div>`
+      + this.tableFor(sec, objs);
+    this.wireTable(main);
+  },
+
+  columnsFor(sec){
+    switch(sec.id){
+      case 'operations': case 'production': return [['name','Order / machine'],['state','State'],['properties.due','Due'],['properties.done','Progress']];
+      case 'quality': return [['name','Event / measurement'],['state','State'],['properties.severity','Severity'],['properties.machine','Machine']];
+      case 'maintenance': return [['name','Task'],['state','State'],['properties.kind','Kind'],['properties.planned','Planned']];
+      case 'suppliers': return [['name','Supplier'],['state','State'],['properties.ppm','PPM'],['properties.lateDeliveries','Late']];
+      case 'customers': return [['name','Customer'],['state','State'],['properties.segment','Segment']];
+      case 'projects': return [['name','Task'],['state','State'],['properties.priority','Priority'],['properties.due','Due']];
+      case 'risks': return [['name','Risk'],['state','State'],['properties.rpn','RPN'],['properties.note','Note']];
+      case 'engineering': return [['name','Product'],['state','State'],['properties.partNumber','Part no.'],['properties.revision','Rev']];
+      case 'documents': return [['name','Document'],['state','State'],['properties.docType','Type'],['properties.revision','Rev']];
+      case 'administration': return [['name','Name'],['type','Type'],['state','State'],['properties.role','Role']];
+      default: return [['name','Name'],['type','Type'],['state','State']];
+    }
+  },
+  cell(o, path){
+    if(path==='state') return this.chip(o.state);
+    const parts=path.split('.'); let v = parts.length>1? (o.properties||{})[parts[1]] : o[parts[0]];
+    if(path==='name') return `<div>${util.esc(o.name)}</div><div class="id">${util.esc(o.id)}</div>`;
+    if(path==='type') return util.esc(util.titleCase(v));
+    if(path==='properties.due'||path==='properties.planned') return util.esc(util.fmtDay(v));
+    if(path==='properties.done'){ const q=(o.properties.qty)||0; return q? `${v||0}/${q}` : util.esc(v==null?'—':v); }
+    if(path==='properties.overdue') return v?'Yes':'No';
+    return util.esc(v==null?'—':v);
+  },
+  tableFor(sec, objs){
+    const cols=this.columnsFor(sec);
+    const head=cols.map(c=>`<th>${util.esc(c[1])}</th>`).join('');
+    const rows=objs.map(o=>{
+      const sel = o.id===app.state.selectedId ? ' class="sel"' : '';
+      const tds=cols.map(c=>`<td>${this.cell(o,c[0])}</td>`).join('');
+      return `<tr data-id="${o.id}"${sel}>${tds}</tr>`;
+    }).join('') || `<tr><td colspan="${cols.length}" class="muted" style="padding:22px 14px">No objects of this type yet.</td></tr>`;
+    return `<div class="panel"><div class="pb"><table><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div></div>`;
+  },
+  wireTable(root){
+    root.querySelectorAll('tbody tr[data-id]').forEach(tr=>tr.onclick=()=>app.select(tr.dataset.id));
+  },
+
+  renderWorkspace(main){
+    const k=health.kpis();
+    const kpi=(cls,label,val,foot,small)=>`<div class="kpi ${cls}"><div class="label">${label}</div><div class="val ${small?'small':''}">${val}</div><div class="foot">${foot}</div></div>`;
+    const kpis =
+      kpi(k.ncrOpen?'alert':'okc','Open quality events', k.ncrOpen, k.ncrOpen?'need disposition':'all clear')
+    + kpi(k.overdue?'warnc':'okc','Overdue tasks', k.overdue, k.overdue?'past due date':'on schedule')
+    + kpi(k.attn?'warnc':'okc','Machines needing attention', k.attn+' / '+k.machines, 'warning or stopped')
+    + kpi(k.atRisk?'warnc':'okc','Orders at delivery risk', k.atRisk+' / '+k.poActive, 'behind pace, due <7d')
+    + kpi(k.avgSup<70?'warnc':'okc','Avg supplier health', k.avgSup+'%', 'weighted from PPM + delivery');
+
+    // Attention list = machines/NCRs/overdue tasks needing action, most severe first
+    const attn=[];
+    store.byType('machine').filter(m=>m.state!=='running'&&m.state!=='active').forEach(m=>{
+      const h=health.machine(m);
+      attn.push({sev:m.state==='warning'?'var(--warn)':'var(--idle)', id:m.id, t:m.name,
+        m:(m.properties.warningReason||m.properties.stoppedReason||'Attention')+` · health ${h.score}%`});
+    });
+    store.byType('quality_event').filter(o=>o.state!=='closed').forEach(o=>{
+      attn.push({sev:o.properties.severity==='major'?'var(--bad)':'var(--warn)', id:o.id, t:o.name, m:(o.properties.description||util.titleCase(o.state))});
+    });
+    store.byType('task').filter(t=>t.properties.overdue).forEach(t=>{
+      attn.push({sev:'var(--warn)', id:t.id, t:t.name, m:'Overdue since '+util.fmtDay(t.properties.due)});
+    });
+
+    main.innerHTML =
+      `<div class="page-head"><h1>Workspace</h1><span class="sub">what needs attention right now</span></div>
+       <div class="kpis">${kpis}</div>
+       <div class="panel"><div class="ph">Needs attention <span class="sub">${attn.length} item${attn.length!==1?'s':''}</span></div>
+         <div class="attention pb">${
+           attn.map(a=>`<div class="item" data-id="${a.id}"><span class="sev" style="background:${a.sev}"></span>
+             <div><div class="t">${util.esc(a.t)}</div><div class="m">${util.esc(a.m)}</div></div>
+             <span class="go">Inspect</span></div>`).join('') || '<div class="ctx-empty">Nothing needs attention. Nice.</div>'
+         }</div></div>`;
+    main.querySelectorAll('.attention .item[data-id]').forEach(el=>el.onclick=()=>app.select(el.dataset.id));
+  },
+
+  renderAnalytics(main){
+    // Simple deterministic SVG bar chart: open quality events by machine
+    const machines=store.byType('machine');
+    const data=machines.map(m=>({name:m.properties.tag||m.name, v: store.related(m.id).in.filter(r=>r.obj.type==='quality_event').length
+        + store.byType('measurement').filter(x=>x.properties.machine===m.id && x.state==='out_of_tolerance').length }));
+    const max=Math.max(1,...data.map(d=>d.v));
+    const bw=52, gap=22, h=170, base=h-24;
+    const bars=data.map((d,i)=>{ const bh=Math.round((d.v/max)*(base-10)); const x=30+i*(bw+gap);
+      return `<g><rect x="${x}" y="${base-bh}" width="${bw}" height="${bh}" rx="3" fill="${d.v?'var(--warn)':'var(--accent-dim)'}"/>
+        <text x="${x+bw/2}" y="${base+14}" fill="var(--muted)" font-size="11" text-anchor="middle">${util.esc(d.name)}</text>
+        <text x="${x+bw/2}" y="${base-bh-6}" fill="var(--text)" font-size="12" text-anchor="middle">${d.v}</text></g>`; }).join('');
+    main.innerHTML =
+      `<div class="page-head"><h1>Analytics</h1><span class="sub">deterministic, traceable — no AI-generated numbers</span></div>
+       <div class="panel"><div class="ph">Quality signals by machine <span class="sub">open events + out-of-tolerance measurements</span></div>
+         <div class="pb" style="padding:14px"><svg viewBox="0 0 ${30+data.length*(bw+gap)} ${h}" width="100%" height="${h}">
+           <line x1="30" y1="${base}" x2="${30+data.length*(bw+gap)}" y2="${base}" stroke="var(--line-2)"/>${bars}</svg></div></div>
+       <div class="panel"><div class="ph">Transaction log <span class="sub">last ${Math.min(8,store.transactions.length)} changes</span></div>
+         <div class="pb"><table><thead><tr><th>Transaction</th><th>Object</th><th>Operation</th><th>Change</th><th>User</th><th>Time</th></tr></thead>
+         <tbody>${store.transactions.slice(-8).reverse().map(t=>`<tr data-id="${t.objectId}"><td class="id">${t.transactionId}</td>
+           <td>${util.esc(t.objectId)}</td><td>${util.esc(t.operation)}</td>
+           <td class="small muted">${t.field?util.esc(t.field)+': '+util.esc(String(t.oldValue))+' → '+util.esc(String(t.newValue)):'—'}</td>
+           <td>${util.esc(t.user)}</td><td class="small muted">${util.fmtDate(t.timestamp)}</td></tr>`).join('')
+           || '<tr><td colspan="6" class="muted" style="padding:20px 14px">No transactions yet — edit an object to create one.</td></tr>'}</tbody></table></div></div>`;
+    this.wireTable(main);
+  },
+
+  renderCtx(){
+    const head=document.getElementById('ctxHead'), body=document.getElementById('ctxBody');
+    const o = app.state.selectedId? store.get(app.state.selectedId):null;
+    if(!o){
+      head.innerHTML=`<div class="type">Context</div><h2>Nothing selected</h2><div class="idline">Select an object to inspect it</div>`;
+      body.innerHTML=`<div class="ctx-empty">Pick a machine, order, NCR, supplier or person to see its properties, relations, related events and permitted actions.</div>`;
+      return;
+    }
+    head.innerHTML=`<div class="type">${util.esc(util.titleCase(o.type))}</div><h2>${util.esc(o.name)}</h2>
+      <div class="idline">${util.esc(o.id)} · ${this.chip(o.state)}</div>`;
+
+    let html='';
+    // Health section for machines/suppliers
+    let h=null; if(o.type==='machine') h=health.machine(o); else if(o.type==='supplier') h=health.supplier(o);
+    if(h){
+      const col = h.score>=80?'var(--ok)':h.score>=55?'var(--warn)':'var(--bad)';
+      html+=`<div class="ctx-sec"><h3>Health — ${h.score}% (explainable)</h3>
+        <div class="health-bar"><i style="width:${h.score}%;background:${col}"></i></div>
+        <div class="health-break">${h.breakdown.length? h.breakdown.map(b=>`<div><span>${util.esc(b[0])}</span><span class="s-bad">${b[1]}</span></div>`).join('') : '<div class="muted">No deductions — nominal.</div>'}</div></div>`;
+    }
+    // Properties
+    const props=Object.entries(o.properties||{});
+    if(props.length){
+      html+=`<div class="ctx-sec"><h3>Properties</h3><div class="kv">${
+        props.map(([k,v])=>`<div class="k">${util.esc(util.titleCase(k))}</div><div>${util.esc(typeof v==='object'?JSON.stringify(v):v)}</div>`).join('')
+      }</div></div>`;
+    }
+    // Relations
+    const rel=store.related(o.id);
+    if(rel.out.length||rel.in.length){
+      const rrow=(r,dir)=>`<div class="rel" data-id="${r.obj.id}"><span class="rt">${util.esc(util.titleCase(r.type))}</span>
+        <span>${util.esc(r.obj.name)}</span><span class="rn">${dir}</span></div>`;
+      html+=`<div class="ctx-sec"><h3>Relations</h3>${rel.out.map(r=>rrow(r,'→')).join('')}${rel.in.map(r=>rrow(r,'←')).join('')}</div>`;
+    }
+    // Actions (permission-gated)
+    const acts=[];
+    if(perm.can('edit')) acts.push(['edit-state','Change state']);
+    if(perm.can('create')) acts.push(['create-task','Create task']);
+    acts.push(['open-timeline','Focus timeline']);
+    acts.push(['ask-ai','Explain with AI']);
+    html+=`<div class="ctx-sec"><h3>Actions${perm.can('edit')?'':' (view-only role)'}</h3><div class="actions">${
+      acts.map(a=>`<button class="btn" data-act="${a[0]}" data-id="${o.id}">${util.esc(a[1])}</button>`).join('')
+    }</div></div>`;
+    // History
+    if(o.history && o.history.length){
+      html+=`<div class="ctx-sec"><h3>History</h3>${o.history.slice(-5).reverse().map(hh=>
+        `<div class="small muted">${util.fmtDate(hh.at)} · ${util.esc(hh.field)}: ${util.esc(String(hh.from))} → ${util.esc(String(hh.to))}</div>`).join('')}</div>`;
+    }
+    body.innerHTML=html;
+    body.querySelectorAll('.rel[data-id]').forEach(el=>el.onclick=()=>app.select(el.dataset.id));
+    body.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>ui.doAction(b.dataset.act, b.dataset.id));
+    document.body.classList.add('ctx-open');
+  },
+
+  doAction(act, id){
+    const o=store.get(id); if(!o) return;
+    if(act==='edit-state'){
+      if(!perm.can('edit')) return ui.toast('Your role cannot edit this.');
+      this.modal('Change state — '+o.name, `<label>New state</label><input id="mState" value="${util.esc(o.state)}">`,
+        ()=>{ const v=document.getElementById('mState').value.trim(); if(!v) return;
+          store.update(id,'state',v,app.currentUser().id); app.markDirty(); ui.renderAll(); ui.toast('State changed → transaction logged'); });
+    } else if(act==='create-task'){
+      if(!perm.can('create')) return ui.toast('Your role cannot create tasks.');
+      this.modal('Create task for '+o.name, `<label>Task title</label><input id="mTitle" value="Follow up on ${util.esc(o.name)}">
+        <label>Priority</label><select id="mPrio"><option>high</option><option selected>medium</option><option>low</option></select>`,
+        ()=>{ const title=document.getElementById('mTitle').value.trim()||'Task'; const prio=document.getElementById('mPrio').value;
+          const t={id:util.uid('TASK'),type:'task',name:title,state:'open',owner:app.currentUser().id,
+            properties:{priority:prio,assignee:app.currentUser().id,overdue:false},relations:[{type:'for_object',to:id}]};
+          store.add(t,app.currentUser().id); app.markDirty(); app.state.section='projects'; ui.renderAll(); app.select(t.id); ui.toast('Task created: '+t.id); });
+    } else if(act==='open-timeline'){
+      app.state.timelineFocus=id; ui.renderTimeline(); ui.toast('Timeline focused on related events');
+    } else if(act==='ask-ai'){
+      const q = o.type==='machine'?'Why is this machine flagged?': o.type==='supplier'?'How is this supplier performing?':'Summarise this object.';
+      ai_ui.ask(q);
+    }
+  },
+
+  modal(title, bodyHtml, onOk){
+    const bg=document.getElementById('modalBg'), m=document.getElementById('modal');
+    m.innerHTML=`<h3>${util.esc(title)}</h3><div class="mb">${bodyHtml}</div>
+      <div class="mf"><button class="btn ghost" id="mCancel">Cancel</button><button class="btn primary" id="mOk">Confirm</button></div>`;
+    bg.classList.add('open');
+    const close=()=>bg.classList.remove('open');
+    document.getElementById('mCancel').onclick=close;
+    bg.onclick=(e)=>{ if(e.target===bg) close(); };
+    document.getElementById('mOk').onclick=()=>{ try{ onOk&&onOk(); }finally{ close(); } };
+  },
+
+  renderTimeline(){
+    const track=document.getElementById('tlTrack');
+    track.querySelectorAll('.tl-ev').forEach(e=>e.remove());
+    // Collect events with timestamps
+    const evs=[];
+    store.byType('measurement').forEach(m=>evs.push({at:m.properties.at, id:m.id, label:m.properties.characteristic||m.name, color: m.state==='out_of_tolerance'?'var(--bad)':'var(--ok)'}));
+    store.byType('quality_event').forEach(o=>evs.push({at:o.properties.opened, id:o.id, label:o.name.split(' — ')[0], color:o.properties.severity==='major'?'var(--bad)':'var(--warn)'}));
+    store.byType('maintenance').forEach(o=>evs.push({at:o.properties.start||o.properties.planned, id:o.id, label:o.name.split(' — ')[0], color:'var(--info)'}));
+    store.byType('production_order').filter(p=>p.properties.due).forEach(p=>evs.push({at:p.properties.due, id:p.id, label:p.id+' due', color:'var(--accent)'}));
+    const valid=evs.filter(e=>e.at && !isNaN(new Date(e.at))).sort((a,b)=>new Date(a.at)-new Date(b.at));
+    if(!valid.length){ document.getElementById('tlSub').textContent='no dated events'; return; }
+    const t0=new Date(valid[0].at).getTime(), t1=new Date(valid[valid.length-1].at).getTime();
+    const span=Math.max(1,t1-t0);
+    const width=Math.max(track.clientWidth-28, valid.length*118);
+    track.style.minWidth=width+'px';
+    document.getElementById('tlSub').textContent=`${valid.length} events · ${util.fmtDay(valid[0].at)} – ${util.fmtDay(valid[valid.length-1].at)}`;
+    valid.forEach(e=>{
+      const x = 14 + ((new Date(e.at).getTime()-t0)/span) * (width-28);
+      const focused = app.state.timelineFocus && (e.id===app.state.timelineFocus || store.related(app.state.timelineFocus).out.some(r=>r.obj.id===e.id) || store.related(app.state.timelineFocus).in.some(r=>r.obj.id===e.id));
+      const el=document.createElement('div'); el.className='tl-ev'; el.style.left=x+'px';
+      el.style.opacity = (app.state.timelineFocus && !focused) ? '0.35' : '1';
+      el.innerHTML=`<span class="pt" style="background:${e.color}"></span><span class="lbl">${util.esc(e.label)}</span><span class="tm">${util.fmtDay(e.at)}</span>`;
+      el.onclick=()=>app.select(e.id);
+      track.appendChild(el);
+    });
+  },
+};
+
+/* AI panel controller (kept small, uses ai.* + ui.*) */
+const ai_ui = {
+  add(html, cls){ const log=document.getElementById('aiLog'); const d=document.createElement('div');
+    d.className='ai-msg '+(cls||''); d.innerHTML=html; log.appendChild(d); log.scrollTop=log.scrollHeight; },
+  async ask(question){
+    if(!question) return;
+    this.add(util.esc(question),'u');
+    const ctx=ai.buildContext();
+    const parts=await ai.provider.respond(question, ctx);
+    const kindLabel={fact:'FACT',calc:'CALCULATION',infer:'INFERENCE',rec:'RECOMMENDATION',unknown:'UNKNOWN'};
+    const kindCls={fact:'k-fact',calc:'k-calc',infer:'k-infer',rec:'k-rec',unknown:'k-unknown'};
+    let html=''; let sources=[];
+    parts.forEach(p=>{ if(p.kind==='sources'){ sources=p.ids; return; }
+      html+=`<div style="margin-bottom:6px"><span class="ai-kind ${kindCls[p.kind]}">${kindLabel[p.kind]}</span>${util.esc(p.text)}</div>`; });
+    if(sources.length){ html+=`<div class="ai-src"><b>Sources:</b> ${sources.map(id=>`<span class="s" data-id="${id}">${util.esc(id)}</span>`).join(', ')}</div>`; }
+    this.add(html,'a');
+    document.querySelectorAll('#aiLog .ai-src .s[data-id]').forEach(s=>s.onclick=()=>app.select(s.dataset.id));
+  }
+};
+
+/* ---------------------------------------------------------------- app ---- */
+const app = {
+  state:{ section:'workspace', selectedId:null, containerName:'demo', containerId:null, createdAt:null,
+          dirty:false, attachments:[], timelineFocus:null },
+  currentUser(){ return store.get('USER-001') || store.byType('user')[0] || {id:'anon',name:'Guest',properties:{authority:'view'}}; },
+  markDirty(){ this.state.dirty=true; ui.renderTop(); },
+  markSaved(){ this.state.dirty=false; ui.renderTop(); },
+
+  select(id){ this.state.selectedId=id; this.state.timelineFocus=id;
+    ui.renderMain(); ui.renderCtx(); ui.renderTimeline();
+    if(id){ const el=document.querySelector(`tr[data-id="${id}"]`); if(el) el.classList.add('sel'); } },
+
+  loadDemo(){
+    const raw=document.getElementById('demo-world').textContent;
+    const world=JSON.parse(raw);
+    store.load(world.objects, []);
+    this.state.containerName='demo'; this.state.containerId=util.uid('OEQMS');
+    this.state.createdAt=util.now(); this.state.dirty=false; this.state.attachments=[]; this.state.selectedId=null;
+  },
+
+  wireChrome(){
+    // File menu
+    const fileBtn=document.getElementById('fileBtn'), fileMenu=document.getElementById('fileMenu');
+    fileBtn.onclick=(e)=>{ e.stopPropagation(); fileMenu.classList.toggle('open'); };
+    document.addEventListener('click',()=>fileMenu.classList.remove('open'));
+    fileMenu.querySelectorAll('[data-cmd]').forEach(b=>b.onclick=()=>{
+      const c=b.dataset.cmd;
+      if(c==='new'){ if(this.state.dirty && !confirm('Discard unsaved changes and load the demo world?')) return; this.loadDemo(); ui.renderAll(); ui.toast('Loaded demo world'); }
+      else if(c==='open') fileio.open();
+      else if(c==='save') fileio.save();
+      else if(c==='attach') fileio.attach();
+    });
+    // Profile
+    document.getElementById('profileSel').onchange=(e)=>{
+      document.body.className = 'profile-'+e.target.value;
+      ui.renderTimeline();
+    };
+    // Search
+    const search=document.getElementById('search'), results=document.getElementById('searchResults');
+    const doSearch=()=>{ const q=search.value.trim().toLowerCase(); if(!q){ results.classList.remove('open'); return; }
+      const hits=store.all().filter(o=>o.name.toLowerCase().includes(q)||o.id.toLowerCase().includes(q)||o.type.includes(q)).slice(0,12);
+      results.innerHTML=hits.map(o=>`<div class="row" data-id="${o.id}">${ui.chip(o.state)}<span>${util.esc(o.name)}</span><small>${util.esc(o.id)}</small></div>`).join('')
+        || '<div class="row muted">No matches</div>';
+      results.classList.add('open');
+      results.querySelectorAll('.row[data-id]').forEach(r=>r.onclick=()=>{ app.select(r.dataset.id); results.classList.remove('open'); search.value=''; });
+    };
+    search.oninput=doSearch;
+    search.onfocus=doSearch;
+    document.addEventListener('click',(e)=>{ if(!e.target.closest('.top-search')) results.classList.remove('open'); });
+    // AI input
+    const aiInput=document.getElementById('aiInput');
+    const send=()=>{ const q=aiInput.value.trim(); if(!q) return; aiInput.value=''; ai_ui.ask(q); };
+    document.getElementById('aiSend').onclick=send;
+    aiInput.onkeydown=(e)=>{ if(e.key==='Enter') send(); };
+  },
+
+  init(){
+    this.loadDemo();
+    this.wireChrome();
+    ui.renderAll();
+    // open on workspace, nothing selected
+  }
+};
+
+return { util, store, tx, health, container, fileio, perm, ai, ui, ai_ui, app };
+})();
+
+document.addEventListener('DOMContentLoaded', ()=>OEQMS.app.init());
+// expose for console debugging
+window.OEQMS = OEQMS;
+</script>
+</body>
+</html>
